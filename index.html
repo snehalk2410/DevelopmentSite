@@ -389,7 +389,14 @@ let consentObj = {
     newsletterSignup: true, // Custom user preferences (e.g., newsletter signup preference)
   }
 }
-   
+
+     function checkCookie(cookieName) {
+    // Get all cookies as a single string
+    const cookies = document.cookie;    
+    // Check if the cookie name exists in the cookies string
+    const cookieExists = cookies.split(';').some(cookie => cookie.trim().startsWith(`${cookieName}=`));    
+    return cookieExists;
+}
 // Function to structure the consent payload
 async function consentPayload(allConsented, allConsentsGiven, cmpId, gdprApplies, gdprConsent, eventName, vendorConsentedPurposes) {
   // Prepare the purposes object dynamically based on allConsented data
@@ -735,6 +742,11 @@ console.log("vendorData ", vendorData);
                   cookieStore.delete("userConsentedPurposes");
                   cookieStore.delete("userID");
                   cookieStore.delete("sessionID");
+                const checkRdCookie = checkCookie('rdUserId');
+                if(checkRdCookie){
+                   cookieStore.delete("rdUserId");
+                }
+                
 
               }
 
