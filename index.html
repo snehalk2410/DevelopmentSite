@@ -857,6 +857,7 @@ var eventData = await createEventData("page View", "page", {pageName,...properti
   };
 analytics.push(['page', eventData]);
  // Send the event data to an API for further processing or storage
+  console.log("analyics.pageview eventData ", eventData);
 analytics.sendEventToAPI(eventData);
 }
 // Function to track "User Identity" events
@@ -878,6 +879,7 @@ analytics.userIdentity = async function(customerId = '', properties = {}) {
 // Push the event data to the analytics array for tracking (this will be processed by analytics services)
 analytics.push(['track', eventData]);
 // Send the event data to an API (for server-side tracking or storage)
+   console.log("analyics.useridentity eventData ", eventData);
 analytics.sendEventToAPI(eventData);
 };
 
@@ -898,6 +900,7 @@ analytics.trackCustomEvent = async function(eventName, properties = {}) {
  };
 // Push the event data to the analytics array for tracking purposes
 analytics.push(['track', eventData]);
+   console.log("analyics.trackCustomEvent eventData ", eventData);
 // Send the event data to an API for further processing or storage
 analytics.sendEventToAPI(eventData);
 };
@@ -973,8 +976,10 @@ if (automaticTracking === true ) {
 // Function to capture a page view event
 async function trackPageView() {
   console.log("7 ",getCookie('trackConsentStatus'))
+  console.log(" trackPageView ")
 var eventData = await createEventData("Page View", "page"); 
 // Send the event data to the dataLayer
+    console.log(" trackPageView eventData ", eventData)
 await sendEventToAPI(eventData);
 }
 
@@ -1022,6 +1027,7 @@ window.addEventListener('scroll', function() {
 
 // Function to send scroll data to tracking platforms (e.g., Google Analytics, API)
 async function sendScrollEvent(percentage) {
+   console.log(" sendScrollEvent percentage ", percentage)
 // Get UTM parameters (used for campaign tracking)
 const utmParams = getUTMParams();
 
@@ -1088,6 +1094,7 @@ var eventData = {
 
 };
 // Send the event data to the API
+    console.log(" sendScrollEvent eventData ", eventData)
 await sendEventToAPI(eventData);
 }
 
@@ -1165,7 +1172,7 @@ console.log(" osInfo ", osInfo);
     },
     consent: consentObj
   };
-
+ console.log(" trackButtonClick eventData ", eventData)
   // Send the button click event data to the dataLayer
  await sendEventToAPI(eventData);
 
