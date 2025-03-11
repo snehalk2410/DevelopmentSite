@@ -813,7 +813,7 @@ console.log(" browserInfo ", browserInfo);
 const osInfo =getOS();
 console.log(" osInfo ", osInfo);
 
-return {
+var eventData= {
   eventInfo: {
     eventName: eventname, // Event name
     eventId: randomEventId, // Randomly generated event ID
@@ -861,6 +861,10 @@ return {
   },
    consent: consentObj
 }
+   if(rdUserID){
+    eventData.userInfo.rdUserId = rdUserID
+  }
+  return eventData
 };
 
 ///////////////////////////////////////////////// Tracking Using Function///////////////////////////////////////////
@@ -1131,6 +1135,9 @@ var eventData = {
    consent: consentObj
 
 };
+   if(rdUserID){
+    eventData.userInfo.rdUserId = rdUserID
+  }
    console.log("sendScrollEvent eventData ", eventData);
 // Send the event data to the API
 await sendEventToAPI(eventData);
@@ -1211,6 +1218,9 @@ console.log(" osInfo ", osInfo);
     },
      consent: consentObj
   };
+   if(rdUserID){
+    eventData.userInfo.rdUserId = rdUserID
+  }
  console.log("trackbuttonclick eventData ", eventData);
   // Send the button click event data to the dataLayer
  await sendEventToAPI(eventData);
