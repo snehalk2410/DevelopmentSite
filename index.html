@@ -25,7 +25,7 @@ function OptanonWrapper() { }
 
    <script type="text/javascript">
 
-     function generateUserID() {
+function generateUserID() {
   let randomPart=crypto.randomUUID();
   var timestampPart = Math.floor(Date.now() / 1000).toString(16); // Current timestamp in seconds (to ensure uniqueness)
   return randomPart + '.' + timestampPart; // Combine random part and timestamp for a unique ID  
@@ -364,6 +364,26 @@ try {
 }
 }
 
+let consentObj = {
+  status: "opted_in", // Consent status (opted-in to data tracking)
+  timestamp: new Date().toISOString(), // Timestamp when consent was given
+  version: consentVersion, // Consent version (from dataLayer)
+  purposes: {
+    essential: true, // Essential purposes (always true)
+    analytics: true, // Analytics purposes (set to true here)
+    marketing: true, // Marketing purposes (set to true here)
+    personalization: false // Personalization purposes (false in this case)
+  },
+  vendors: {
+    googleAnalytics: true, // Google Analytics consent (set to true here)
+    googleAdsWords: true, // Google Ads consent (set to true here)
+    facebookAds: true, // Facebook Ads consent (set to true here)
+    adobeTarget: false // Adobe Target consent (set to false here)
+  },
+  customPreferences: {
+    newsletterSignup: true, // Custom user preferences (e.g., newsletter signup preference)
+  }
+}
    
 // Function to structure the consent payload
 async function consentPayload(allConsented, allConsentsGiven, cmpId, gdprApplies, gdprConsent, eventName, vendorConsentedPurposes) {
@@ -409,7 +429,7 @@ if (!sessionID) {
       vendorPurposes.push(vendorPurpose);
   });
  
-  eventData2 = {
+  consentObj = {
       status: trackStatus, // Set status based on whether all mandatory consents are given
       purposes: {
           purposes, // Dynamic purposes based on the consent data
@@ -419,7 +439,7 @@ if (!sessionID) {
       }
   };
 
-  console.log('eventData2 : ' + JSON.stringify(eventData2)); 
+  console.log('consentObj : ' + JSON.stringify(consentObj)); 
   cmpEventData = {
       eventName: eventName,
       status: trackStatus, // Set status based on whether all mandatory consents are given
@@ -798,26 +818,7 @@ return {
     campaign: utmParams.utm_campaign || '', // UTM campaign (from URL query params)
     content: utmParams.utm_content || '', // UTM content (from URL query params)
   },
-  consent: {
-    status: "opted_in", // Consent status (opted-in to data tracking)
-    timestamp: new Date().toISOString(), // Timestamp when consent was given
-    version: consentVersion, // Consent version (from dataLayer)
-    purposes: {
-      essential: true, // Essential purposes (always true)
-      analytics: true, // Analytics purposes (set to true here)
-      marketing: true, // Marketing purposes (set to true here)
-      personalization: false // Personalization purposes (false in this case)
-    },
-    vendors: {
-      googleAnalytics: true, // Google Analytics consent (set to true here)
-      googleAdsWords: true, // Google Ads consent (set to true here)
-      facebookAds: true, // Facebook Ads consent (set to true here)
-      adobeTarget: false // Adobe Target consent (set to false here)
-    },
-    customPreferences: {
-      newsletterSignup: true, // Custom user preferences (e.g., newsletter signup preference)
-    }
-  }
+  consent: consentObj
 }
 };
 
@@ -1083,26 +1084,7 @@ var eventData = {
     campaign: utmParams.utm_campaign || '', // UTM campaign (from URL query params)
     content: utmParams.utm_content || '', // UTM content (from URL query params)
   },
-  consent: {
-    status: "opted_in", // Consent status (opted-in to data tracking)
-    timestamp: new Date().toISOString(), // Timestamp when consent was given
-    version: consentVersion, // Consent version (from dataLayer)
-    purposes: {
-      essential: true, // Essential purposes (always true)
-      analytics: true, // Analytics purposes (set to true here)
-      marketing: true, // Marketing purposes (set to true here)
-      personalization: false // Personalization purposes (false in this case)
-    },
-    vendors: {
-      googleAnalytics: true, // Google Analytics consent (set to true here)
-      googleAdsWords: true, // Google Ads consent (set to true here)
-      facebookAds: true, // Facebook Ads consent (set to true here)
-      adobeTarget: false // Adobe Target consent (set to false here)
-    },
-    customPreferences: {
-      newsletterSignup: true, // Custom user preferences (e.g., newsletter signup preference)
-    }
-  }
+  consent: consentObj
 
 };
 // Send the event data to the API
@@ -1181,26 +1163,7 @@ console.log(" osInfo ", osInfo);
       campaign: utmParams.utm_campaign || '', // UTM campaign (from URL query params)
       content: utmParams.utm_content || '', // UTM content (from URL query params)
     },
-    consent: {
-      status: "opted_in", // Consent status (opted-in to data tracking)
-      timestamp: new Date().toISOString(), // Timestamp when consent was given
-      version: consentVersion, // Consent version (from dataLayer)
-      purposes: {
-        essential: true, // Essential purposes (always true)
-        analytics: true, // Analytics purposes (set to true here)
-        marketing: true, // Marketing purposes (set to true here)
-        personalization: false // Personalization purposes (false in this case)
-      },
-      vendors: {
-        googleAnalytics: true, // Google Analytics consent (set to true here)
-        googleAdsWords: true, // Google Ads consent (set to true here)
-        facebookAds: true, // Facebook Ads consent (set to true here)
-        adobeTarget: false // Adobe Target consent (set to false here)
-      },
-      customPreferences: {
-        newsletterSignup: true, // Custom user preferences (e.g., newsletter signup preference)
-      }
-    }
+    consent: consentObj
   };
 
   // Send the button click event data to the dataLayer
