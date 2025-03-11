@@ -299,17 +299,6 @@ if (ua.includes("opr") || ua.includes("opera")) {
   }
 }
 
-  // Explicitly check for Edge first
-  // if (ua.includes("edg")) return "Edge";
-  // if (ua.includes("opr") || ua.includes("opera")) return "Opera";
-  // if (ua.includes("vivaldi")) return "Vivaldi";
-  // if (ua.includes("brave")) return  "Brave";
-  // if (ua.includes("samsung")) return  "Samsung Internet";
-  // if (ua.includes("firefox")) return "Firefox";
-  // if (ua.includes("chrome")) return "Chrome"; // Chrome is checked after Edge
-  // if (ua.includes("safari")) return "Safari";
-  // if (ua.includes("msie") || ua.includes("trident")) return "IE";
-  // return "Unknown";
 }
 
 // Retrieve values from the dataLayer, falling back to cookies if not available
@@ -369,13 +358,11 @@ try {
     city: 'Unknown'
   };
   console.error('Error fetching location data', error);
-
   sessionStorage.setItem("locationObj", JSON.stringify(locationObj) );
   return locationObj;
 }
 }
 
-  
    
 // Function to structure the consent payload
 async function consentPayload(allConsented, allConsentsGiven, cmpId, gdprApplies, gdprConsent, eventName, vendorConsentedPurposes) {
@@ -431,11 +418,7 @@ async function consentPayload(allConsented, allConsentsGiven, cmpId, gdprApplies
       }
   };
 
-  console.log('eventData2 : ' + JSON.stringify(eventData2));
-
-   var eventData = await createEventData(eventName, "consent");  
-  console.log( " consent eventData 1 ", eventData);
-
+  console.log('eventData2 : ' + JSON.stringify(eventData2)); 
   cmpEventData = {
       eventName: eventName,
       status: trackStatus, // Set status based on whether all mandatory consents are given
@@ -449,20 +432,9 @@ async function consentPayload(allConsented, allConsentsGiven, cmpId, gdprApplies
       gdprApplies: gdprApplies,
       gdprConsent: gdprConsent,
       userId: userID
-
   };
-eventData = {
-      ...eventData,
-      consent: {
-        ...eventData2
-        // Add the extra properties to the userInfo section
-      }
-    };
-
-  console.log( " consent eventData 2 ", eventData);
-
   return cmpEventData
-
+  console.log(" cmpEventData ", cmpEventData);
 };
 
 // Fetch vendor list function
@@ -654,15 +626,13 @@ const callback = (tcData, success) => {
       // Generated the vendor list from Vendor API 
               var vendorPurposeConsents = tcData.vendor.consents;
              var vendorData= await getVendorList(vendorPurposeConsents); /// result from this function is the new vendor consent array this needs to be passed to consentPayload function
-console.log("vendorData ", vendorData);
-           //   console.log("User Vendor Consented Purposes:", userVendorConsentedPurposes);
+console.log("vendorData ", vendorData);        
 
               // Generate the consented purposes payload, marking true or false based on matching with consent_purposes
 
               consent_purposes.forEach(function (purpose) {
                   // Check if the user has consented to each purpose based on the TCData
                   const purposeConsent = tcData.purpose.consents[purpose._id] || false;
-
                   if (purposeConsent) {
                       console.log('inside if clause');
                       allConsented.push({
@@ -670,20 +640,14 @@ console.log("vendorData ", vendorData);
                           isConsented: purposeConsent,
                           name: purpose.name
                       });
-
                   }
               });
-              console.log(allConsented);
-
-                      
+              console.log(allConsented);                      
               // Check if all required purposes are consented
               var allConsentsGiven = hasAllConsents(allConsented);
-
               var deleteProfile = false; // static flag which can be altered as per client reqt
-
               // var consentTrack = localStorage.getItem("consentTrack");
               var consentTrack = getCookie('consentTrack');
-
               console.log('consentTrack :' + consentTrack);
               console.log('allConsentsGiven :' + allConsentsGiven);
 
@@ -701,6 +665,7 @@ console.log("vendorData ", vendorData);
               // Call consentPayload function to structure the payload if all consents are given
               const payload = await consentPayload(consentedPurposes, allConsentsGiven, cmpId, gdprApplies, gdprConsent, eventName, vendorData);
 
+            console.log(" consent payload ", payload);
               // Store the consent payload in localStorage
               //localStorage.setItem('userConsent', JSON.stringify(payload));
 
@@ -876,7 +841,6 @@ analytics.invoked = true; // Mark that the snippet has been invoked
 // Function to track a "Page View" event asynchronously
 analytics.pageView = async function(pageName = '', properties = {}) {
     console.log("6 ",getCookie('trackConsentStatus'))
-  if(getCookie('trackConsentStatus')){
    console.log("analytics.pageview")
 var eventData = await createEventData("page View", "page", {pageName,...properties})
   // Push the event data into the analytics array for tracking
@@ -889,19 +853,14 @@ var eventData = await createEventData("page View", "page", {pageName,...properti
       properties: eventProperties // Add the additional properties here
     }
   };
-
 analytics.push(['page', eventData]);
  // Send the event data to an API for further processing or storage
 analytics.sendEventToAPI(eventData);
 }
-}
-
-
-
 // Function to track "User Identity" events
 analytics.userIdentity = async function(customerId = '', properties = {}) {
   console.log("1 ",getCookie('trackConsentStatus'))
-    if(getCookie('trackConsentStatus')){
+ 
    console.log("analytics.useridentity")
    var eventData = await createEventData("User Identity", "user", {customerId,...properties}); 
   // Merge any additional properties passed into the function with the userInfo properties
@@ -918,14 +877,12 @@ analytics.userIdentity = async function(customerId = '', properties = {}) {
 analytics.push(['track', eventData]);
 // Send the event data to an API (for server-side tracking or storage)
 analytics.sendEventToAPI(eventData);
-    };
 };
 
 // Function to track a custom event
 analytics.trackCustomEvent = async function(eventName, properties = {}) {
   console.log("2 ",getCookie('trackConsentStatus'))
-    if(getCookie('trackConsentStatus')){
-  console.log("analytics.trackCustomEvent")
+     console.log("analytics.trackCustomEvent")
   var eventData = await createEventData(eventName, "custom event", properties); 
  // Merge any custom properties passed into the function with the event data
  const eventProperties = { ...properties };
@@ -941,7 +898,6 @@ analytics.trackCustomEvent = async function(eventName, properties = {}) {
 analytics.push(['track', eventData]);
 // Send the event data to an API for further processing or storage
 analytics.sendEventToAPI(eventData);
-   };
 };
 
 // Function to send event data to an API
@@ -1014,16 +970,10 @@ console.log("  getCookie('trackConsentStatus') ", getCookie('trackConsentStatus'
 if (automaticTracking === true ) {
 // Function to capture a page view event
 async function trackPageView() {
-  debugger;
   console.log("7 ",getCookie('trackConsentStatus'))
-  if(getCookie('trackConsentStatus')){
-console.log("trackPageView")
 var eventData = await createEventData("Page View", "page"); 
-
 // Send the event data to the dataLayer
 await sendEventToAPI(eventData);
-  }
-
 }
 
 // Object to keep track of scroll percentages
@@ -1031,9 +981,7 @@ let scrollTracked = { 25: false, 50: false, 75: false, 100: false };
 
 // Function to track scroll depth
 function trackScroll() {
-  debugger;
   console.log("3 ", getCookie('trackConsentStatus'))
- if(getCookie('trackConsentStatus')){
 console.log("trackscroll")
 // Add an event listener to the scroll event
 window.addEventListener('scroll', function() {
@@ -1067,12 +1015,11 @@ window.addEventListener('scroll', function() {
     scrollTracked[25] = true;  // Mark that 25% has been tracked
   }
 });
-    };
+
 }
 
 // Function to send scroll data to tracking platforms (e.g., Google Analytics, API)
 async function sendScrollEvent(percentage) {
- if(getCookie('trackConsentStatus')){
 // Get UTM parameters (used for campaign tracking)
 const utmParams = getUTMParams();
 
@@ -1160,12 +1107,10 @@ var eventData = {
 // Send the event data to the API
 await sendEventToAPI(eventData);
 }
-}
 
 // Function to track button clicks
 async function trackButtonClick(event) {
   console.log("4 ",getCookie('trackConsentStatus'))
-  if(getCookie('trackConsentStatus')){
   console.log("trackButtonClick")
 const timestamp = new Date().toISOString();  // Get current timestamp in ISO 8601 format
 const button = event.target;  // The target of the event (i.e., the button clicked)
@@ -1261,13 +1206,11 @@ console.log(" osInfo ", osInfo);
  await sendEventToAPI(eventData);
 
 //}
-  }
 }
 
   function trackIframeVideos() {
     console.log("5 ",getCookie('trackConsentStatus'))
-      if(getCookie('trackConsentStatus')){
-    console.log("trackIframeVideos");
+       console.log("trackIframeVideos");
     // Check for YouTube or Vimeo iframe
     document.querySelectorAll('iframe').forEach(iframe => {
         let src = iframe.src;
@@ -1277,7 +1220,6 @@ console.log(" osInfo ", osInfo);
             setupVimeoTracking(iframe);
         }
     });
-      };
 }
   function setupYouTubeTracking(iframe) {
     console.log("setupYouTubeTracking");
