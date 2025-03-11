@@ -30,6 +30,11 @@ function generateUserID() {
   var timestampPart = Math.floor(Date.now() / 1000).toString(16); // Current timestamp in seconds (to ensure uniqueness)
   return randomPart + '.' + timestampPart; // Combine random part and timestamp for a unique ID  
 }
+        function getQueryParam(param) {
+    let urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get(param);
+}
+      let rdUserID;
      
 // Try to get the userID from cookies
      let userID;
@@ -388,6 +393,7 @@ let consentObj = {
 // Function to structure the consent payload
 async function consentPayload(allConsented, allConsentsGiven, cmpId, gdprApplies, gdprConsent, eventName, vendorConsentedPurposes) {
   // Prepare the purposes object dynamically based on allConsented data
+debugger;
   let purposes = [];
   let consentPurpose = {};
   let vendorPurposes = [];
@@ -397,6 +403,7 @@ async function consentPayload(allConsented, allConsentsGiven, cmpId, gdprApplies
    console.log(" trackStatus ", trackStatus, " allConsentsGiven ", allConsentsGiven);
   userID = getCookie('userID');
   sessionID = getCookie('sessionID');  
+  rdUserID = getCookie('rdUserId');  
 if (!userID) {
    // If no userID exists in the cookies, generate a new one
   if(allConsentsGiven){
@@ -410,6 +417,15 @@ if (!sessionID) {
   sessionID =  crypto.randomUUID(); //Math.random().toString(36).substr(2, 9); // Generate a random session ID (9 characters)
   setSessionCookie('sessionID', sessionID); // Store session ID as a session cookie (expires when the browser is closed)
   }
+}
+  if (!rdUserID) {
+    if(allConsentsGiven){
+let referenceDomainUserId = getQueryParam('uid');
+console.log(" referenceDomainUserId ", referenceDomainUserId);
+if (referenceDomainUserId) { 
+   setPersistentCookie('rdUserId', referenceDomainUserId, 365);
+}
+    }
 }
        // Loop through all the purposes and set them as true/false in the purposes object
   allConsented.forEach(purpose => {
