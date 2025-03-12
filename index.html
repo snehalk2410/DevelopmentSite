@@ -448,41 +448,6 @@ if (referenceDomainUserId) {
         }
     });
 
-  if(allConsentsGiven){
-    document.addEventListener('DOMContentLoaded', function() {
-console.log("addEventListener  DOMContentLoaded ")
-// Track page view and scroll events after the DOM is loaded
-trackPageView();  // Track page load (page view event)
-trackScroll();    // Track scroll events (scroll depth tracking)
-trackIframeVideos();
-     
-document.addEventListener('click', function(event) {
-  let target = event.target.closest('button, iframe, a, [role="button"], img[onclick], [onclick]'); // Get the nearest element
-  if (target) {
-      trackButtonClick(event);
-  }
-});
- 
-});    
-  }
-  else{
-     document.removeEventListener('DOMContentLoaded', function() {
-console.log("addEventListener  DOMContentLoaded ")
-// Track page view and scroll events after the DOM is loaded
-trackPageView();  // Track page load (page view event)
-trackScroll();    // Track scroll events (scroll depth tracking)
-trackIframeVideos();
-     
-document.removeEventListener('click', function(event) {
-  let target = event.target.closest('button, iframe, a, [role="button"], img[onclick], [onclick]'); // Get the nearest element
-  if (target) {
-      trackButtonClick(event);
-  }
-});
- 
-});
-  }
- 
   // Loop through all the purposes and set them as true/false in the purposes object
   allConsented.forEach(purpose => {
       consentPurpose = {};
@@ -1326,6 +1291,21 @@ function setupVimeoTracking(iframe) {
        // trackButtonClick(event); // Call your tracking function here
    // });
 }
+   document.addEventListener('DOMContentLoaded', function() {
+console.log("addEventListener  DOMContentLoaded ")
+// Track page view and scroll events after the DOM is loaded
+trackPageView();  // Track page load (page view event)
+trackScroll();    // Track scroll events (scroll depth tracking)
+trackIframeVideos();
+     
+document.addEventListener('click', function(event) {
+  let target = event.target.closest('button, iframe, a, [role="button"], img[onclick], [onclick]'); // Get the nearest element
+  if (target) {
+      trackButtonClick(event);
+  }
+});
+ 
+});
  
 // If automatic tracking is disabled, log a message
 } else {
