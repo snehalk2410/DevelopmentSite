@@ -891,7 +891,9 @@ analytics.invoked = true; // Mark that the snippet has been invoked
 
 // Function to track a "Page View" event asynchronously
 analytics.pageView = async function(pageName = '', properties = {}) {
-    console.log("6 ",getCookie('trackConsentStatus'))
+
+  console.log(" getCookie('trackConsentStatus') ", getCookie('trackConsentStatus'))
+   if(getCookie('trackConsentStatus')){
    console.log("analytics.pageview")
 var eventData = await createEventData("page View", "page", {pageName,...properties})
   // Push the event data into the analytics array for tracking
@@ -909,9 +911,11 @@ analytics.push(['page', eventData]);
  // Send the event data to an API for further processing or storage
 analytics.sendEventToAPI(eventData);
 }
+}
 // Function to track "User Identity" events
 analytics.userIdentity = async function(customerId = '', properties = {}) {
   console.log("1 ",getCookie('trackConsentStatus'));
+     if(getCookie('trackConsentStatus')){
    console.log("analytics.useridentity")
    var eventData = await createEventData("User Identity", "user", {customerId,...properties}); 
   // Merge any additional properties passed into the function with the userInfo properties
@@ -930,11 +934,13 @@ analytics.push(['track', eventData]);
 // Send the event data to an API (for server-side tracking or storage)
 analytics.sendEventToAPI(eventData);
 };
+}
 
 // Function to track a custom event
 analytics.trackCustomEvent = async function(eventName, properties = {}) {
   console.log("2 ",getCookie('trackConsentStatus'))
      console.log("analytics.trackCustomEvent")
+   if(getCookie('trackConsentStatus')){
   var eventData = await createEventData(eventName, "custom event", properties); 
  // Merge any custom properties passed into the function with the event data
  const eventProperties = { ...properties };
@@ -952,6 +958,7 @@ analytics.push(['track', eventData]);
 // Send the event data to an API for further processing or storage
 analytics.sendEventToAPI(eventData);
 };
+}
 
 // Function to send event data to an API
 analytics.sendEventToAPI = async function(eventData) {
