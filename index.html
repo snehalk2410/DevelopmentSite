@@ -447,6 +447,41 @@ if (referenceDomainUserId) {
           console.log( "userid ", userID, " url.toString ", url.toString())
         }
     });
+
+  if(allConsentsGiven){
+    document.addEventListener('DOMContentLoaded', function() {
+console.log("addEventListener  DOMContentLoaded ")
+// Track page view and scroll events after the DOM is loaded
+trackPageView();  // Track page load (page view event)
+trackScroll();    // Track scroll events (scroll depth tracking)
+trackIframeVideos();
+     
+document.addEventListener('click', function(event) {
+  let target = event.target.closest('button, iframe, a, [role="button"], img[onclick], [onclick]'); // Get the nearest element
+  if (target) {
+      trackButtonClick(event);
+  }
+});
+ 
+});    
+  }
+  else{
+     document.removeEventListener('DOMContentLoaded', function() {
+console.log("addEventListener  DOMContentLoaded ")
+// Track page view and scroll events after the DOM is loaded
+trackPageView();  // Track page load (page view event)
+trackScroll();    // Track scroll events (scroll depth tracking)
+trackIframeVideos();
+     
+document.removeEventListener('click', function(event) {
+  let target = event.target.closest('button, iframe, a, [role="button"], img[onclick], [onclick]'); // Get the nearest element
+  if (target) {
+      trackButtonClick(event);
+  }
+});
+ 
+});
+  }
  
   // Loop through all the purposes and set them as true/false in the purposes object
   allConsented.forEach(purpose => {
@@ -1030,11 +1065,13 @@ console.log("  getCookie('trackConsentStatus') ", getCookie('trackConsentStatus'
 if (automaticTracking === true ) {
 // Function to capture a page view event
 async function trackPageView() {
+   if(getCookie('trackConsentStatus')){
   console.log("7 ",getCookie('trackConsentStatus'))
 var eventData = await createEventData("Page View", "page"); 
    console.log("trackPageView eventData ", eventData);
 // Send the event data to the dataLayer
 await sendEventToAPI(eventData);
+   }
 }
 
 // Object to keep track of scroll percentages
@@ -1043,7 +1080,9 @@ let scrollTracked = { 25: false, 50: false, 75: false, 100: false };
 // Function to track scroll depth
 function trackScroll() {
   console.log("3 ", getCookie('trackConsentStatus'))
+    if(getCookie('trackConsentStatus')){
 console.log("trackscroll")
+  
 // Add an event listener to the scroll event
 window.addEventListener('scroll', function() {
   // Calculate the current scroll position (distance from top) + visible window height
@@ -1076,11 +1115,12 @@ window.addEventListener('scroll', function() {
     scrollTracked[25] = true;  // Mark that 25% has been tracked
   }
 });
-
+    }
 }
 
 // Function to send scroll data to tracking platforms (e.g., Google Analytics, API)
 async function sendScrollEvent(percentage) {
+    if(getCookie('trackConsentStatus')){
 // Get UTM parameters (used for campaign tracking)
 const utmParams = getUTMParams();
 
@@ -1154,12 +1194,13 @@ var eventData = {
 // Send the event data to the API
 
 await sendEventToAPI(eventData);
-  
+    }
 }
 
 // Function to track button clicks
 async function trackButtonClick(event) {
   console.log("4 ",getCookie('trackConsentStatus'))
+    if(getCookie('trackConsentStatus')){
   console.log("trackButtonClick")
 const timestamp = new Date().toISOString();  // Get current timestamp in ISO 8601 format
 const button = event.target;  // The target of the event (i.e., the button clicked)
@@ -1238,11 +1279,12 @@ console.log(" osInfo ", osInfo);
   // Send the button click event data to the dataLayer
  await sendEventToAPI(eventData);
 
-//}
+}
 }
 
   function trackIframeVideos() {
     console.log("5 ",getCookie('trackConsentStatus'))
+      if(getCookie('trackConsentStatus')){
        console.log("trackIframeVideos");
     // Check for YouTube or Vimeo iframe
     document.querySelectorAll('iframe').forEach(iframe => {
@@ -1253,6 +1295,7 @@ console.log(" osInfo ", osInfo);
             setupVimeoTracking(iframe);
         }
     });
+      }
 }
   function setupYouTubeTracking(iframe) {
     console.log("setupYouTubeTracking");
@@ -1283,23 +1326,6 @@ function setupVimeoTracking(iframe) {
        // trackButtonClick(event); // Call your tracking function here
    // });
 }
-
- 
-document.addEventListener('DOMContentLoaded', function() {
-console.log("addEventListener  DOMContentLoaded ")
-// Track page view and scroll events after the DOM is loaded
-trackPageView();  // Track page load (page view event)
-trackScroll();    // Track scroll events (scroll depth tracking)
-trackIframeVideos();
-     
-document.addEventListener('click', function(event) {
-  let target = event.target.closest('button, iframe, a, [role="button"], img[onclick], [onclick]'); // Get the nearest element
-  if (target) {
-      trackButtonClick(event);
-  }
-});
- 
-});    
  
 // If automatic tracking is disabled, log a message
 } else {
