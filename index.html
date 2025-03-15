@@ -1025,74 +1025,9 @@ window.addEventListener('scroll', function() {
 // Function to send scroll data to tracking platforms (e.g., Google Analytics, API)
 async function sendScrollEvent(percentage) {
     if(consentTrack){
-// Get UTM parameters (used for campaign tracking)
-const utmParams = getUTMParams();
-// Get user's location (country, region, city) based on IP address
-const locationData = await getLocation();
-// Generate a random event ID for tracking purposes
-const randomEventId = Math.floor(100000000 + Math.random() * 900000000);
-const deviceInfo= getDeviceType()
-const browserInfo=getBrowser();
-const osInfo =getOS();
-// Define the event data structure for the scroll event
-var eventData = {
-  eventInfo: {
-    eventName: 'Scroll',  // Event name, indicating a scroll event
-    eventId: randomEventId,  // Randomly generated unique event ID
-    eventTimestamp: new Date().toISOString(),  // Event timestamp in ISO 8601 format
-    eventCategory: 'scroll depth',  // Event category indicating this is a scroll depth event
-    scroll_percentage: percentage,  // The scroll depth percentage (25, 50, 75, or 100)
-  },
-  // Information about the page being viewed
-  pageInfo: {
-    pageUrl: window.location.href, // The full URL of the page
-    pageTitle: document.title, // The title of the page
-    pageReferrer: document.referrer, // The referrer URL (if available)
-    pagePath: window.location.pathname, // The path portion of the URL (e.g., "/home")
-    pageHostname: window.location.hostname, // The hostname (e.g., "example.com")
-    pageLanguage: navigator.language || '', // Language setting of the user's browser
-    pageContentType: pageContentType, // The content type (retrieved from dataLayer or cookies)
-    pageName: pageName, // The name of the page (can be passed in as a parameter)
-    environment: pageEnvironment // The environment (e.g., production, staging) from dataLayer
-  },
-  userInfo: {
-    userId: userID, // The unique user ID (retrieved from cookies)
-    customerId: customerId, // The customer ID (retrieved from cookies)
-    gaId: getGAClientId() || '', // Google Analytics client ID (if available)
-    loggedIn: loggedIn || '', // Whether the user is logged in (from dataLayer or cookies)
-    type: type, // Type of user (mobile/desktop, from dataLayer or cookies)
-    segment: segment, // The user's segment (from dataLayer or cookies)
-    device: deviceInfo.deviceType, // The device type (mobile/desktop)
-    screenWidth:deviceInfo.screenWidth,
-    screenHeight:deviceInfo.screenHeight,
-    os: osInfo.os, // The user's operating system (e.g., Windows, macOS)
-    osVersion:osInfo.osVersion,
-    browser: browserInfo.browser, // The browser being used (e.g., Chrome, Firefox)
-    browserversion:browserInfo.browserVersion,
-    location: {
-      country: locationData.country, // Country from location data
-      region: locationData.region, // Region from location data
-      city: locationData.city // City from location data
-    }
-  },
-  sessionInfo: {
-    sessionId: sessionID, // The current session ID (from cookies)
-    startTime: new Date().toISOString(), // Session start time (ISO format)
-    source: utmParams.utm_source || '', // UTM source (from URL query params)
-    medium: utmParams.utm_medium || '', // UTM medium (from URL query params)
-    campaign: utmParams.utm_campaign || '', // UTM campaign (from URL query params)
-    content: utmParams.utm_content || '', // UTM content (from URL query params)
-  },
-   consent: consentObj
-
-};
-
-  if(rdUserID){
-    eventData.userInfo.rdUserId = rdUserID
-  }
+      var eventData = await createEventData("Scroll", "scroll depth"); 
+      eventData.eventInfo.scroll_percentage = percentage;  
    console.log("sendScrollEvent eventData ", eventData);
-// Send the event data to the API
-
 await sendEventToAPI(eventData);
     }
 }
@@ -1101,83 +1036,14 @@ await sendEventToAPI(eventData);
 async function trackButtonClick(event) {
     if(consentTrack){
   console.log("trackButtonClick")
-const timestamp = new Date().toISOString();  // Get current timestamp in ISO 8601 format
 const button = event.target;  // The target of the event (i.e., the button clicked)
 console.log(" trackButtonClick button ", button)
-// Get UTM parameters for campaign tracking
-const utmParams = getUTMParams();
-
-// Fetch location data asynchronously (e.g., from an API or IP-based service)
-const locationData = await getLocation();
-
-// Generate a random event ID for tracking purposes
-const randomEventId = Math.floor(100000000 + Math.random() * 900000000);
-const deviceInfo= getDeviceType()
-const browserInfo=getBrowser();
-console.log(" browserInfo ", browserInfo);
-const osInfo =getOS();
-console.log(" osInfo ", osInfo);
-// Check if the clicked element is a button or a button-styled link (anchor tag with `w3-button` class)
-// if ((button.tagName === 'BUTTON' || /w3-button/i.test(button.className))) {
-  // Define the event data structure for button click tracking
-  var eventData = {
-    eventInfo: {
-      eventName: "Button Click",  // Event name (button click)
-      eventId: randomEventId,  // Generate a random unique event ID
-      eventTimestamp: timestamp,  // Timestamp of the click
-      eventCategory: "interaction",  // Category of the event
-      buttonId: button.id || "",  // Button ID or " " if not available
-      buttonText: button.innerText || button.value || "",  // Button text or value
-    },
-    // Information about the page the button was clicked on
-    pageInfo: {
-      pageUrl: window.location.href, // The full URL of the page
-      pageTitle: document.title, // The title of the page
-      pageReferrer: document.referrer, // The referrer URL (if available)
-      pagePath: window.location.pathname, // The path portion of the URL (e.g., "/home")
-      pageHostname: window.location.hostname, // The hostname (e.g., "example.com")
-      pageLanguage: navigator.language || '', // Language setting of the user's browser
-      pageContentType: pageContentType, // The content type (retrieved from dataLayer or cookies)
-      pageName: pageName, // The name of the page (can be passed in as a parameter)
-      environment: pageEnvironment // The environment (e.g., production, staging) from dataLayer
-    },
-    userInfo: {
-      userId: userID, // The unique user ID (retrieved from cookies)
-      customerId: customerId, // The customer ID (retrieved from cookies)
-      gaId: getGAClientId() || '', // Google Analytics client ID (if available)
-      loggedIn: loggedIn || '', // Whether the user is logged in (from dataLayer or cookies)
-      type: type, // Type of user (mobile/desktop, from dataLayer or cookies)
-      segment: segment, // The user's segment (from dataLayer or cookies)
-      device: deviceInfo.deviceType, // The device type (mobile/desktop)
-      screenWidth:deviceInfo.screenWidth,
-      screenHeight:deviceInfo.screenHeight,
-      os: osInfo.os, // The user's operating system (e.g., Windows, macOS)
-      osVersion:osInfo.osVersion,
-      browser: browserInfo.browser, // The browser being used (e.g., Chrome, Firefox)
-      browserversion:browserInfo.browserVersion,
-      location: {
-        country: locationData.country, // Country from location data
-        region: locationData.region, // Region from location data
-        city: locationData.city // City from location data
-      }
-    },
-    sessionInfo: {
-      sessionId: sessionID, // The current session ID (from cookies)
-      startTime: new Date().toISOString(), // Session start time (ISO format)
-      source: utmParams.utm_source || '', // UTM source (from URL query params)
-      medium: utmParams.utm_medium || '', // UTM medium (from URL query params)
-      campaign: utmParams.utm_campaign || '', // UTM campaign (from URL query params)
-      content: utmParams.utm_content || '', // UTM content (from URL query params)
-    },
-     consent: consentObj
-  };
-  if(rdUserID){
-    eventData.userInfo.rdUserId = rdUserID
-  }
+    var eventData = await createEventData("Button Click", "interaction"); 
+      eventData.eventInfo.buttonId = button.id || "",  // Button ID or " " if not available;  
+      eventData.eventInfo.buttonText= button.innerText || button.value || "",  // Button text or value
  console.log("trackbuttonclick eventData ", eventData);
   // Send the button click event data to the dataLayer
  await sendEventToAPI(eventData);
-
 }
 }
 
