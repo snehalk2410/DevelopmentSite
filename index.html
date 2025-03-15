@@ -36,16 +36,10 @@ function OptanonWrapper() { }
 }
       let rdUserID;
       let userID;
+      let sessionID;
       let consentObj = {};
      let consentTrack;
-// Try to get the userID from cookies
-//let userID = getCookie('userID');
-  //  console.log("userID cookie ", userID);
-//if (!userID) {
-   // If no userID exists in the cookies, generate a new one
-//  userID = generateUserID();
- // setPersistentCookie('userID', userID, 365); // Set userID as a persistent cookie for 365 days
-//}
+
 // Function to get a cookie by name
 function getCookie(name) {
   // Match the cookie by name and return its value if found
@@ -133,18 +127,6 @@ const sameSite = "SameSite=Lax"; // Allow cross-origin requests to a certain ext
   //  document.cookie = cookieString;
 document.cookie = name + "=" + value + ";" + expires + ";path=/;" + secure + ";" + sameSite;
 }
-
-
-// Get sessionID from cookies (if available)
-     let sessionID;
-//let sessionID = getCookie('sessionID');
-
-// If no sessionID exists (e.g., it's a new session), create a new session ID
-//if (!sessionID) {
-  //  console.log("if not sessionId")
-  //sessionID =  crypto.randomUUID(); //Math.random().toString(36).substr(2, 9); // Generate a random session ID (9 characters)
-  //setSessionCookie('sessionID', sessionID); // Store session ID as a session cookie (expires when the browser is closed)
-//}
 
 // Function to extract UTM parameters (such as source, medium, campaign) from the URL query string
 function getUTMParams() {
@@ -772,7 +754,6 @@ waitForTCFAPI(() => {
 });
 
 async function createEventData(eventname,eventCategory, additionalData = {}) {
-  console.log("createEventData")
 const utmParams = getUTMParams();
 
 // Fetch the user's location asynchronously (country, region, city)
@@ -781,12 +762,8 @@ const locationData = await getLocation();
 // Generate a random event ID for tracking purposes
 const randomEventId = Math.floor(100000000 + Math.random() * 900000000);
 const deviceInfo= getDeviceType();
-console.log(" deviceInfo ", deviceInfo);
 const browserInfo=getBrowser();
-console.log(" browserInfo ", browserInfo);
 const osInfo =getOS();
-console.log(" osInfo ", osInfo);
-
 var eventData = {
   eventInfo: {
     eventName: eventname, // Event name
@@ -835,7 +812,6 @@ var eventData = {
   },
    consent: consentObj
 }
-   console.log(" rdUserID ", rdUserID, " if(rdUserID) ")
 if(rdUserID){
     eventData.userInfo.rdUserId = rdUserID
   }
@@ -851,7 +827,6 @@ var analytics = window[globalAnalyticsKey] = window[globalAnalyticsKey] || [];
 
 // Check if the analytics snippet has already been invoked to avoid duplication
 if (analytics.invoked) {
-  console.log("analytics.invoked")
   if (window.console && console.error) {
     console.error("Analytics snippet included twice.");
   }
@@ -1052,17 +1027,13 @@ async function sendScrollEvent(percentage) {
     if(consentTrack){
 // Get UTM parameters (used for campaign tracking)
 const utmParams = getUTMParams();
-
 // Get user's location (country, region, city) based on IP address
 const locationData = await getLocation();
-
 // Generate a random event ID for tracking purposes
 const randomEventId = Math.floor(100000000 + Math.random() * 900000000);
 const deviceInfo= getDeviceType()
 const browserInfo=getBrowser();
-console.log(" browserInfo ", browserInfo);
 const osInfo =getOS();
-console.log(" osInfo ", osInfo);
 // Define the event data structure for the scroll event
 var eventData = {
   eventInfo: {
