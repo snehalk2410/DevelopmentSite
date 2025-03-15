@@ -35,7 +35,9 @@ function OptanonWrapper() { }
     return urlParams.get(param);
 }
       let rdUserID;
-         let userID;
+      let userID;
+      let consentObj = {};
+     let consentTrack;
 // Try to get the userID from cookies
 //let userID = getCookie('userID');
   //  console.log("userID cookie ", userID);
@@ -83,9 +85,6 @@ const sameSite = "SameSite=Lax"; // Allow cross-origin requests to a certain ext
     //domain=." + domain + ";
 document.cookie = name + "=" + value + ";" + expires + ";path=/;" + secure + ";" + sameSite;
 }
-
-
-
 // Function to check if the session should reset at midnight
 function checkMidnightSessionReset() {
     const currentTime = new Date(); // Get the current date and time
@@ -368,26 +367,7 @@ try {
   return locationObj;
 }
 }
-     let consentObj = {
-  status: "opted_in", // Consent status (opted-in to data tracking)
-  timestamp: new Date().toISOString(), // Timestamp when consent was given
-  version: consentVersion, // Consent version (from dataLayer)
-  purposes: {
-    essential: true, // Essential purposes (always true)
-    analytics: true, // Analytics purposes (set to true here)
-    marketing: true, // Marketing purposes (set to true here)
-    personalization: false // Personalization purposes (false in this case)
-  },
-  vendors: {
-    googleAnalytics: true, // Google Analytics consent (set to true here)
-    googleAdsWords: true, // Google Ads consent (set to true here)
-    facebookAds: true, // Facebook Ads consent (set to true here)
-    adobeTarget: false // Adobe Target consent (set to false here)
-  },
-  customPreferences: {
-    newsletterSignup: true, // Custom user preferences (e.g., newsletter signup preference)
-  }
-}
+  
 
   function checkCookie(cookieName) {
     // Get all cookies as a single string
@@ -405,34 +385,29 @@ async function consentPayload(allConsented, allConsentsGiven, cmpId, gdprApplies
   let vendorPurposes = [];
   let vendorPurpose = {};
   let trackStatus = allConsentsGiven ? 'optedIn' : 'optedOut';
-  setPersistentCookie('trackConsentStatus', allConsentsGiven, 365);
    console.log(" trackStatus ", trackStatus, " allConsentsGiven ", allConsentsGiven);
   userID = getCookie('userID');
   sessionID = getCookie('sessionID');  
-  rdUserID = getCookie('rdUserId');  
+  rdUserID = getCookie('rdUserId'); 
+    if(allConsentsGiven){
 if (!userID) {
    // If no userID exists in the cookies, generate a new one
-  if(allConsentsGiven){
   userID = generateUserID();
   setPersistentCookie('userID', userID, 365);
-  }// Set userID as a persistent cookie for 365 days
-}
+ }
 // If no sessionID exists (e.g., it's a new session), create a new session ID
-if (!sessionID) {
-    if(allConsentsGiven){
+if (!sessionID) {  
   sessionID =  crypto.randomUUID(); //Math.random().toString(36).substr(2, 9); // Generate a random session ID (9 characters)
-  setSessionCookie('sessionID', sessionID); // Store session ID as a session cookie (expires when the browser is closed)
-  }
+  setSessionCookie('sessionID', sessionID); // Store session ID as a session cookie (expires when the browser is closed)  
 }
-  if (!rdUserID) {
-    if(allConsentsGiven){
+  if (!rdUserID) {   
 let referenceDomainUserId = getQueryParam('uid');
 console.log(" referenceDomainUserId ", referenceDomainUserId);
 if (referenceDomainUserId) { 
    setPersistentCookie('rdUserId', referenceDomainUserId, 365);
+}    
 }
     }
-}
     document.querySelectorAll('a').forEach(link => {
         let url = new URL(link.href);
             let domain = url.hostname.split('.').slice(-2).join('.');
@@ -705,7 +680,7 @@ console.log("vendorData ", vendorData);
               var allConsentsGiven = hasAllConsents(allConsented);
               var deleteProfile = true; // static flag which can be altered as per client reqt
               // var consentTrack = localStorage.getItem("consentTrack");
-              var consentTrack = getCookie('consentTrack');
+              consentTrack = getCookie('consentTrack');
               console.log('consentTrack :' + consentTrack);
               console.log('allConsentsGiven :' + allConsentsGiven);
 
@@ -752,7 +727,6 @@ console.log("vendorData ", vendorData);
                   // localStorage.removeItem('consentTrack');
                   // localStorage.removeItem('userConsentedPurposes');
                   cookieStore.delete("consentTrack");
-                  cookieStore.delete("trackConsentStatus");
                   cookieStore.delete("userConsentedPurposes");
                   cookieStore.delete("userID");
                   cookieStore.delete("sessionID");
@@ -760,9 +734,6 @@ console.log("vendorData ", vendorData);
                 if(checkRdCookie){
                    cookieStore.delete("rdUserId");
                 }
-                 rdUserID = "";
-                  userID = "";
-                 sessionID = "";
 
               }
 
@@ -891,9 +862,7 @@ analytics.invoked = true; // Mark that the snippet has been invoked
 
 // Function to track a "Page View" event asynchronously
 analytics.pageView = async function(pageName = '', properties = {}) {
-
-  console.log(" getCookie('trackConsentStatus') ", getCookie('trackConsentStatus'))
-   if(getCookie('trackConsentStatus')){
+   if(consentTrack){
    console.log("analytics.pageview")
 var eventData = await createEventData("page View", "page", {pageName,...properties})
   // Push the event data into the analytics array for tracking
@@ -914,8 +883,7 @@ analytics.sendEventToAPI(eventData);
 }
 // Function to track "User Identity" events
 analytics.userIdentity = async function(customerId = '', properties = {}) {
-  console.log("1 ",getCookie('trackConsentStatus'));
-     if(getCookie('trackConsentStatus')){
+     if(consentTrack){
    console.log("analytics.useridentity")
    var eventData = await createEventData("User Identity", "user", {customerId,...properties}); 
   // Merge any additional properties passed into the function with the userInfo properties
@@ -938,9 +906,8 @@ analytics.sendEventToAPI(eventData);
 
 // Function to track a custom event
 analytics.trackCustomEvent = async function(eventName, properties = {}) {
-  console.log("2 ",getCookie('trackConsentStatus'))
      console.log("analytics.trackCustomEvent")
-   if(getCookie('trackConsentStatus')){
+   if(consentTrack){
   var eventData = await createEventData(eventName, "custom event", properties); 
  // Merge any custom properties passed into the function with the event data
  const eventProperties = { ...properties };
@@ -1025,13 +992,11 @@ try {
   console.error('Error tracking event:', error);
 }
 }
-console.log("  getCookie('trackConsentStatus') ", getCookie('trackConsentStatus'));
    //  if (automaticTracking === true && consentanalytics === true) {
 if (automaticTracking === true ) {
 // Function to capture a page view event
 async function trackPageView() {
-   if(getCookie('trackConsentStatus')){
-  console.log("7 ",getCookie('trackConsentStatus'))
+   if(consentTrack){
 var eventData = await createEventData("Page View", "page"); 
    console.log("trackPageView eventData ", eventData);
 // Send the event data to the dataLayer
@@ -1044,8 +1009,7 @@ let scrollTracked = { 25: false, 50: false, 75: false, 100: false };
 
 // Function to track scroll depth
 function trackScroll() {
-  console.log("3 ", getCookie('trackConsentStatus'))
-    if(getCookie('trackConsentStatus')){
+    if(consentTrack){
 console.log("trackscroll")
   
 // Add an event listener to the scroll event
@@ -1085,7 +1049,7 @@ window.addEventListener('scroll', function() {
 
 // Function to send scroll data to tracking platforms (e.g., Google Analytics, API)
 async function sendScrollEvent(percentage) {
-    if(getCookie('trackConsentStatus')){
+    if(consentTrack){
 // Get UTM parameters (used for campaign tracking)
 const utmParams = getUTMParams();
 
@@ -1164,8 +1128,7 @@ await sendEventToAPI(eventData);
 
 // Function to track button clicks
 async function trackButtonClick(event) {
-  console.log("4 ",getCookie('trackConsentStatus'))
-    if(getCookie('trackConsentStatus')){
+    if(consentTrack){
   console.log("trackButtonClick")
 const timestamp = new Date().toISOString();  // Get current timestamp in ISO 8601 format
 const button = event.target;  // The target of the event (i.e., the button clicked)
@@ -1248,8 +1211,7 @@ console.log(" osInfo ", osInfo);
 }
 
   function trackIframeVideos() {
-    console.log("5 ",getCookie('trackConsentStatus'))
-      if(getCookie('trackConsentStatus')){
+      if(consentTrack){
        console.log("trackIframeVideos");
     // Check for YouTube or Vimeo iframe
     document.querySelectorAll('iframe').forEach(iframe => {
