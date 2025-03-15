@@ -115,7 +115,6 @@ function setPersistentCookie(name, value, days = 365) {
   const date = new Date();
 date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000)); // Calculate the expiration date
 const expires = "expires=" + date.toUTCString(); // Convert to UTC string format
-
 const secure = window.location.protocol === 'https:' ? "Secure" : ""; // Only secure if HTTPS
 const sameSite = "SameSite=Lax"; // Allow cross-origin requests to a certain extent -- Lax
  let tmpDomain = window.location.hostname.split('.').slice(-2).join('.'); // Get root domain
@@ -123,7 +122,6 @@ const sameSite = "SameSite=Lax"; // Allow cross-origin requests to a certain ext
   console.log(" highest-level domain ", domain);
  //  const cookieString = `${name}=${value}; ${expires}; path=/; ${secure}; ${sameSite}`;
   //  console.log("Setting cookie: ", cookieString);
-
   //  document.cookie = cookieString;
 document.cookie = name + "=" + value + ";" + expires + ";path=/;" + secure + ";" + sameSite;
 }
@@ -146,7 +144,6 @@ return params;  // Return the UTM parameters object
 
 // Function to detect the device type (mobile or desktop)
 function getDeviceType() {
-
    console.log("getdevicetype " )
 // Use a regular expression to check if the user agent matches a mobile device
 // return /Mobi|Android|iPhone|iPad|iPod|iOS/i.test(navigator.userAgent) ? 'mobile' : 'desktop';
@@ -155,7 +152,6 @@ const screenWidth = window.innerWidth;
 const screenHeight = window.innerHeight;
 var deviceType= "desktop";
 console.log( " userAgent ", userAgent , " screenWidth ", screenWidth, screenHeight );
-
 if (/mobile|android|iphone|ipod/i.test(userAgent)) {
   deviceType= "mobile";
 } else if (/tablet|ipad/i.test(userAgent) || (screenWidth > 600 && screenWidth < 1024)) {
@@ -211,8 +207,7 @@ function getBrowser() {
     return{
       browser:browser,
       browserVersion:browserVersion
-    }
-    
+    }    
 } 
 if (ua.includes("opr") || ua.includes("opera")) {
     browser = "Opera";
@@ -323,8 +318,7 @@ async function getLocation() {
   if(locationFlag){     
     return JSON.parse(sessionStorage.getItem("locationObj"))
   }
-  
-try {
+  try {
   // Fetch location data from the IPInfo API
   const response = await fetch('https://ipinfo.io/json?token=18ac67736ea79a');
   const data = await response.json();  // Parse the JSON response
@@ -348,8 +342,7 @@ try {
   sessionStorage.setItem("locationObj", JSON.stringify(locationObj) );
   return locationObj;
 }
-}
-  
+} 
 
   function checkCookie(cookieName) {
     // Get all cookies as a single string
@@ -839,6 +832,7 @@ analytics.invoked = true; // Mark that the snippet has been invoked
 
 // Function to track a "Page View" event asynchronously
 analytics.pageView = async function(pageName = '', properties = {}) {
+  console.log(" analytics.pageView consentTrack ", consentTrack)
    if(consentTrack){
    console.log("analytics.pageview")
 var eventData = await createEventData("page View", "page", {pageName,...properties})
@@ -860,6 +854,7 @@ analytics.sendEventToAPI(eventData);
 }
 // Function to track "User Identity" events
 analytics.userIdentity = async function(customerId = '', properties = {}) {
+    console.log(" analytics.userIdentity consentTrack ", consentTrack)
      if(consentTrack){
    console.log("analytics.useridentity")
    var eventData = await createEventData("User Identity", "user", {customerId,...properties}); 
@@ -884,6 +879,7 @@ analytics.sendEventToAPI(eventData);
 // Function to track a custom event
 analytics.trackCustomEvent = async function(eventName, properties = {}) {
      console.log("analytics.trackCustomEvent")
+   console.log(" analytics.trackCustomEvent consentTrack ", consentTrack)
    if(consentTrack){
   var eventData = await createEventData(eventName, "custom event", properties); 
  // Merge any custom properties passed into the function with the event data
@@ -973,6 +969,7 @@ try {
 if (automaticTracking === true ) {
 // Function to capture a page view event
 async function trackPageView() {
+    console.log(" trackPageView consentTrack ", consentTrack)
    if(consentTrack){
 var eventData = await createEventData("Page View", "page"); 
    console.log("trackPageView eventData ", eventData);
@@ -986,6 +983,7 @@ let scrollTracked = { 25: false, 50: false, 75: false, 100: false };
 
 // Function to track scroll depth
 function trackScroll() {
+      console.log(" trackScroll consentTrack ", consentTrack)
     if(consentTrack){
 console.log("trackscroll")
   
@@ -1026,6 +1024,7 @@ window.addEventListener('scroll', function() {
 
 // Function to send scroll data to tracking platforms (e.g., Google Analytics, API)
 async function sendScrollEvent(percentage) {
+    console.log(" sendScrollEvent consentTrack ", consentTrack)
     if(consentTrack){
       var eventData = await createEventData("Scroll", "scroll depth"); 
       eventData.eventInfo.scroll_percentage = percentage;  
@@ -1036,6 +1035,7 @@ await sendEventToAPI(eventData);
 
 // Function to track button clicks
 async function trackButtonClick(event) {
+    console.log(" trackButtonClick consentTrack ", consentTrack)
     if(consentTrack){
   console.log("trackButtonClick")
 const button = event.target;  // The target of the event (i.e., the button clicked)
@@ -1050,6 +1050,7 @@ console.log(" trackButtonClick button ", button)
 }
 
   function trackIframeVideos() {
+      console.log(" trackIframeVideos consentTrack ", consentTrack)
       if(consentTrack){
        console.log("trackIframeVideos");
     // Check for YouTube or Vimeo iframe
