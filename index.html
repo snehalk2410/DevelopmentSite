@@ -985,8 +985,7 @@ let scrollTracked = { 25: false, 50: false, 75: false, 100: false };
 // Function to track scroll depth
 function trackScroll() {
       console.log(" trackScroll consentTrack ", consentTrack)
-    if(consentTrack){
-console.log("trackscroll")
+  console.log("trackscroll")
   
 // Add an event listener to the scroll event
 window.addEventListener('scroll', function() {
@@ -1020,7 +1019,6 @@ window.addEventListener('scroll', function() {
     scrollTracked[25] = true;  // Mark that 25% has been tracked
   }
 });
-    }
 }
 
 // Function to send scroll data to tracking platforms (e.g., Google Analytics, API)
