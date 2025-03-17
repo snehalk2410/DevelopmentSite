@@ -34,11 +34,11 @@ function OptanonWrapper() { }
     let urlParams = new URLSearchParams(window.location.search);
     return urlParams.get(param);
 }
-      let rdUserID;
-      let userID;
-      let sessionID;
+      let rdUserID = getCookie('rdUserId');
+      let userID = getCookie('userID');
+      let sessionID = getCookie('sessionID');  
       let consentObj = {};
-     let consentTrack;
+     let consentTrack= getCookie('consentTrack');
 
 // Function to get a cookie by name
 function getCookie(name) {
