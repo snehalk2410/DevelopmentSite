@@ -37,7 +37,7 @@ function OptanonWrapper() { }
       let rdUserID = getCookie('rdUserId');
       let userID = getCookie('userID');
       let sessionID = getCookie('sessionID');  
-      let consentObj = {};
+      let consentObj = getCookie('consentObject');
      let consentTrack= getCookie('consentTrack');
 
 // Function to get a cookie by name
@@ -425,7 +425,7 @@ if (referenceDomainUserId) {
           vendorPurposes
       }
   };
-
+ setPersistentCookie('consentObject', consentObj);
   console.log('consentObj : ' + JSON.stringify(consentObj)); 
   cmpEventData = {
       eventName: eventName,
@@ -707,6 +707,8 @@ console.log("vendorData ", vendorData);
                   cookieStore.delete("userConsentedPurposes");
                   cookieStore.delete("userID");
                   cookieStore.delete("sessionID");
+                 cookieStore.delete("consentObject");
+                
                  const checkRdCookie = checkCookie('rdUserId');
                 if(checkRdCookie){
                    cookieStore.delete("rdUserId");
