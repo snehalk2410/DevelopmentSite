@@ -34,10 +34,12 @@ function OptanonWrapper() { }
     let urlParams = new URLSearchParams(window.location.search);
     return urlParams.get(param);
 }
+     console.log(" JSON.stringify ", JSON.stringify(getCookie('consentObject')))
+       console.log("   JSON.parse ",   JSON.parse(getCookie('consentObject')))
       let rdUserID = getCookie('rdUserId');
       let userID = getCookie('userID');
       let sessionID = getCookie('sessionID');  
-      let consentObj = getCookie('consentObject');
+      let consentObj =  JSON.stringify(getCookie('consentObject'));
      let consentTrack= getCookie('consentTrack');
 
 // Function to get a cookie by name
