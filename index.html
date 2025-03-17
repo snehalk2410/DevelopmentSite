@@ -38,7 +38,7 @@ function OptanonWrapper() { }
       let rdUserID = getCookie('rdUserId');
       let userID = getCookie('userID');
       let sessionID = getCookie('sessionID');  
-      let consentObj =  {};
+      let consentObj = {};
      let consentTrack= getCookie('consentTrack');
 
 // Function to get a cookie by name
@@ -132,6 +132,7 @@ function getUTMParams() {
   console.log("getUTMParams")
 const params = {};  // Object to store UTM parameters
 const urlParams = new URLSearchParams(window.location.search);  // Parse the query string of the URL
+  console.log(" urlParams ", urlParams);
 // List of UTM parameters to check in the URL
 ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'].forEach(param => {
   const value = urlParams.get(param);  // Get the value of each UTM parameter
@@ -634,7 +635,7 @@ const callback = (tcData, success) => {
       // Generated the vendor list from Vendor API 
               var vendorPurposeConsents = tcData.vendor.consents;
              var vendorData= await getVendorList(vendorPurposeConsents); /// result from this function is the new vendor consent array this needs to be passed to consentPayload function
-console.log("vendorData ", vendorData);        
+             console.log("vendorData ", vendorData);        
 
               // Generate the consented purposes payload, marking true or false based on matching with consent_purposes
 
@@ -651,7 +652,6 @@ console.log("vendorData ", vendorData);
                   }
               });
               console.log(allConsented);  
-            debugger;
               // Check if all required purposes are consented
             var eventName;
               var allConsentsGiven = hasAllConsents(allConsented);
@@ -708,6 +708,10 @@ console.log("vendorData ", vendorData);
                   cookieStore.delete("userID");
                   cookieStore.delete("sessionID");
                  cookieStore.delete("consentObject");
+                ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'].forEach(param => { 
+               cookieStore.delete(param);  // Set the UTM parameter as a persistent cookie
+  }
+});
                 
                  const checkRdCookie = checkCookie('rdUserId');
                 if(checkRdCookie){
@@ -777,7 +781,7 @@ var eventData = {
     pageHostname: window.location.hostname, // The hostname (e.g., "example.com")
     pageLanguage: navigator.language || '', // Language setting of the user's browser
     pageContentType: pageContentType, // The content type (retrieved from dataLayer or cookies)
-    pageName: additionalData.pageName || '', // The name of the page (can be passed in as a parameter)
+    pageName: additionalData.pageName || pageName || '', // The name of the page (can be passed in as a parameter)
     environment: pageEnvironment // The environment (e.g., production, staging) from dataLayer
   },
   userInfo: {
