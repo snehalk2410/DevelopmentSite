@@ -34,6 +34,7 @@ function OptanonWrapper() { }
     let urlParams = new URLSearchParams(window.location.search);
     return urlParams.get(param);
 }
+     console.log(" getCookie('consentObject') ", getCookie('consentObject'));
      console.log(" JSON.stringify ", JSON.stringify(getCookie('consentObject')))
        console.log("   JSON.parse ",   JSON.parse(getCookie('consentObject')))
       let rdUserID = getCookie('rdUserId');
