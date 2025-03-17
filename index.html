@@ -686,6 +686,7 @@ const callback = (tcData, success) => {
                   //localStorage.setItem('consentTrack', allConsentsGiven);
                   //localStorage.setItem('userConsentedPurposes', JSON.stringify(userConsentedPurposes));
                   setPersistentCookie('consentTrack', allConsentsGiven);
+                consentTrack=allConsentsGiven;
                   setPersistentCookie('userConsentedPurposes', JSON.stringify(userConsentedPurposes));
 
               } else if ((consentTrack === 'true' && allConsentsGiven === true) || (allConsentsGiven === false && deleteProfile === false)) {
@@ -696,6 +697,7 @@ const callback = (tcData, success) => {
                   //localStorage.setItem('userConsentedPurposes', JSON.stringify(userConsentedPurposes));
                   setPersistentCookie('userConsentedPurposes', JSON.stringify(userConsentedPurposes));
                   setPersistentCookie('consentTrack', allConsentsGiven);
+                consentTrack=allConsentsGiven;
                   // Update local variable consentTrack if deleteProfile flag is false
 
               } else if (allConsentsGiven === false && deleteProfile === true) {
@@ -708,6 +710,7 @@ const callback = (tcData, success) => {
                   cookieStore.delete("userID");
                   cookieStore.delete("sessionID");
                  cookieStore.delete("consentObject");
+                consentTrack="";
                 ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'].forEach(param => { 
                cookieStore.delete(param);  // Set the UTM parameter as a persistent cookie  
 });
@@ -718,8 +721,8 @@ const callback = (tcData, success) => {
                 }
 
               }
-               consentTrack = getCookie('consentTrack');
-            console.log(" consentTrack ", consentTrack);
+
+            console.log("consentTrack 1 ", consentTrack;)
 
           } else {
               console.log('Failed to retrieve consent data. Success flag is false.');
