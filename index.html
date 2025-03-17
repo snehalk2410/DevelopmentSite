@@ -710,7 +710,7 @@ const callback = (tcData, success) => {
                   cookieStore.delete("userID");
                   cookieStore.delete("sessionID");
                  cookieStore.delete("consentObject");
-                consentTrack="";
+                consentTrack=false;
                 ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'].forEach(param => { 
                cookieStore.delete(param);  // Set the UTM parameter as a persistent cookie  
 });
