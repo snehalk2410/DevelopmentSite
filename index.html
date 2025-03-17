@@ -427,7 +427,7 @@ if (referenceDomainUserId) {
           vendorPurposes
       }
   };
- setPersistentCookie('consentObject', consentObj);
+ setPersistentCookie('consentObject', JSON.stringify(consentObj));
   console.log('consentObj : ' + JSON.stringify(consentObj)); 
   cmpEventData = {
       eventName: eventName,
