@@ -38,7 +38,13 @@ function OptanonWrapper() { }
       let rdUserID = getCookie('rdUserId');
       let userID = getCookie('userID');
       let sessionID = getCookie('sessionID');  
+      let consentFlag=localStorage.getItem("consentObject");
       let consentObj = {};
+  console.log("consentFlag ", consentFlag);
+  if(consentFlag){     
+    consentObj= JSON.parse(localStorage.getItem("consentObject"))
+  }
+     
      let consentTrack= getCookie('consentTrack');
 
 // Function to get a cookie by name
@@ -428,6 +434,7 @@ if (referenceDomainUserId) {
       }
   };
   console.log('consentObj : ' + JSON.stringify(consentObj)); 
+  localStorage.setItem("consentObject", JSON.stringify(consentObj) );
   cmpEventData = {
       eventName: eventName,
       status: trackStatus, // Set status based on whether all mandatory consents are given
