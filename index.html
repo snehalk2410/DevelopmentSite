@@ -997,7 +997,7 @@ window.addEventListener('scroll', function() {
   
   // Calculate the percentage of the page that has been scrolled
   const scrollPercent = (scrollPosition / documentHeight) * 100;
-
+    if(consentTrack){
   // If the user has scrolled past 99.9% and the 100% event hasn't been tracked yet
   if (scrollPercent >= 99.9 && !scrollTracked[100]) {
     sendScrollEvent(100);  // Send event for 100% scroll depth
@@ -1018,6 +1018,7 @@ window.addEventListener('scroll', function() {
     sendScrollEvent(25);  // Send event for 25% scroll depth
     scrollTracked[25] = true;  // Mark that 25% has been tracked
   }
+    };
 });
 }
 
