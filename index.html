@@ -387,6 +387,7 @@ if (!sessionID) {
 let referenceDomainUserId = getQueryParam('uid');
 console.log(" referenceDomainUserId ", referenceDomainUserId);
 if (referenceDomainUserId) { 
+    rdUserID=referenceDomainUserId;
    setPersistentCookie('rdUserId', referenceDomainUserId, 365);
 }    
 }
