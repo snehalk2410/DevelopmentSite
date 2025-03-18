@@ -133,7 +133,7 @@ const sameSite = "SameSite=Lax"; // Allow cross-origin requests to a certain ext
   const cookieValue = value + 
     ';' + expires + 
     '; path=/'+
-    (domain ? '; domain=' + domain : '') +
+    (domain ? '; domain=.' + domain : '') +
     (secure ? '; ' + secure : '') +
     '; ' + sameSite;
 
