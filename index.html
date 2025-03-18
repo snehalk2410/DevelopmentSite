@@ -710,14 +710,13 @@ const callback = (tcData, success) => {
               } else if (allConsentsGiven === false && deleteProfile === true) {
 
                  await sendEventToAPI(payload);
-                  // localStorage.removeItem('consentTrack');
-                  // localStorage.removeItem('userConsentedPurposes');
+                  localStorage.clear();
+                  sessionStorage.clear();
                   cookieStore.delete("consentTrack");
                   cookieStore.delete("userConsentedPurposes");
                   cookieStore.delete("userID");
                   cookieStore.delete("sessionID");
-                 cookieStore.delete("consentObject");
-                consentTrack=false;
+                  consentTrack=false;
                 ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'].forEach(param => { 
                cookieStore.delete(param);  // Set the UTM parameter as a persistent cookie  
 });
