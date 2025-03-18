@@ -124,27 +124,13 @@ date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000)); // Calculate the ex
 const expires = "expires=" + date.toUTCString(); // Convert to UTC string format
 const secure = window.location.protocol === 'https:' ? "Secure" : ""; // Only secure if HTTPS
 const sameSite = "SameSite=Lax"; // Allow cross-origin requests to a certain extent -- Lax
- let tmpDomain = window.location.hostname.split('.').slice(-2).join('.'); // Get root domain
-    const domain =  window.location.hostname.split('.').slice(-2).join('.'); // Get root domain     // "domain=.vercel.app"; // Set the highest-level domain
+const domain =  window.location.hostname.split('.').slice(-2).join('.'); // Get root domain     // "domain=.vercel.app"; // Set the highest-level domain
   console.log(" highest-level domain ", domain);
  //  const cookieString = `${name}=${value}; ${expires}; path=/; ${secure}; ${sameSite}`;
   //  console.log("Setting cookie: ", cookieString);
   //  document.cookie = cookieString;
-  const cookieValue = value + 
-    ';' + expires + 
-    '; path=/'+
-    (domain ? '; domain=.' + domain : '') +
-    (secure ? '; ' + secure : '') +
-    '; ' + sameSite;
 
-     console.log(" cookieValue ", cookieValue);
-  console.log(" cookieValue 1 ", name + "=" + value + ";" + expires + ";path=/;" + secure + ";" + sameSite);
-   console.log(" cookieValue 2 ", name + '=' + cookieValue);
-  // Set the cookie
-
-  document.cookie = name + '=' + cookieValue;
-  
-//document.cookie = name + "=" + value + ";" + expires + ";path=/;" + secure + ";" + sameSite;
+document.cookie = name + "=" + value + ";" + expires + ";path=/;" + secure + ";" + sameSite;
 }
 
 // Function to extract UTM parameters (such as source, medium, campaign) from the URL query string
@@ -744,6 +730,11 @@ const callback = (tcData, success) => {
               }
 
             console.log("consentTrack 1 ", consentTrack)
+
+            let temcookie=document.cookies;
+            console.log(" temcookie ", temcookie);
+            let cookiesizeinbytes= new Blob([temcookie]).size;
+              console.log(" cookiesizeinbytes ", cookiesizeinbytes);
 
           } else {
               console.log('Failed to retrieve consent data. Success flag is false.');
