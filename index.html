@@ -132,13 +132,16 @@ const sameSite = "SameSite=Lax"; // Allow cross-origin requests to a certain ext
   //  document.cookie = cookieString;
   const cookieValue = value + 
     ';' + expires + 
-    '; path=/;'+
+    '; path=/'+
     (domain ? '; domain=' + domain : '') +
     (secure ? '; ' + secure : '') +
     '; ' + sameSite;
 
-  console.log(" cookieValue ", cookieValue);
+     console.log(" cookieValue ", cookieValue);
+  console.log(" cookieValue 1 ", name + "=" + value + ";" + expires + ";path=/;" + secure + ";" + sameSite);
+   console.log(" cookieValue 2 ", name + '=' + cookieValue);
   // Set the cookie
+
   document.cookie = name + '=' + cookieValue;
   
 //document.cookie = name + "=" + value + ";" + expires + ";path=/;" + secure + ";" + sameSite;
