@@ -125,12 +125,23 @@ const expires = "expires=" + date.toUTCString(); // Convert to UTC string format
 const secure = window.location.protocol === 'https:' ? "Secure" : ""; // Only secure if HTTPS
 const sameSite = "SameSite=Lax"; // Allow cross-origin requests to a certain extent -- Lax
  let tmpDomain = window.location.hostname.split('.').slice(-2).join('.'); // Get root domain
-    const domain = "domain=.vercel.app"; // Set the highest-level domain
+    const domain =  window.location.hostname.split('.').slice(-2).join('.'); // Get root domain     // "domain=.vercel.app"; // Set the highest-level domain
   console.log(" highest-level domain ", domain);
  //  const cookieString = `${name}=${value}; ${expires}; path=/; ${secure}; ${sameSite}`;
   //  console.log("Setting cookie: ", cookieString);
   //  document.cookie = cookieString;
-document.cookie = name + "=" + value + ";" + expires + ";path=/;" + secure + ";" + sameSite;
+  const cookieValue = value + 
+    ';' + expires + 
+    '; path=/;'+
+    (domain ? '; domain=' + domain : '') +
+    (secure ? '; ' + secure : '') +
+    '; ' + sameSite;
+
+  console.log(" cookieValue ", cookieValue);
+  // Set the cookie
+  document.cookie = name + '=' + cookieValue;
+  
+//document.cookie = name + "=" + value + ";" + expires + ";path=/;" + secure + ";" + sameSite;
 }
 
 // Function to extract UTM parameters (such as source, medium, campaign) from the URL query string
