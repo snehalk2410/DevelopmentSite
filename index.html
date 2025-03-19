@@ -358,7 +358,7 @@ async function getLocation() {
 }
 } 
 
-       function getUserInfo(additionalData={}) {
+      async function getUserInfo(additionalData={}) {
          const locationData = await getLocation();
          const deviceInfo= getDeviceType();
           const browserInfo=getBrowser();
@@ -446,7 +446,7 @@ if (referenceDomainUserId) {
     userObj = JSON.parse(localStorage.getItem("userObject"))
   }
   else{
-    getUserInfo();
+   await getUserInfo();
   }
 
   // Loop through all the purposes and set them as true/false in the purposes object
