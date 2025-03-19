@@ -904,7 +904,7 @@ analytics.userIdentity = async function(customerId = '', properties = {}) {
   debugger;
     console.log(" analytics.userIdentity consentTrack ", consentTrack)
      if(consentTrack){
-   userObj=  await  getUserInfo({customerId,...properties})
+   await  getUserInfo({customerId,...properties})
    console.log("analytics.useridentity userObj ", userObj);
    var eventData = await createEventData("User Identity", "user", {customerId,...properties}); 
   // Merge any additional properties passed into the function with the userInfo properties
