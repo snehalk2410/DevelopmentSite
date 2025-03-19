@@ -20,10 +20,10 @@ function OptanonWrapper() { }
 </script>
 <!-- OneTrust Cookies Consent Notice end for testinovation-cdp.vercel.app -->
     
- <script type="text/javascript" src="https://web-analytics-dot-uxlwqzc-cdip-sandbox-test.uc.r.appspot.com/ajhnjdnskjnvcksbc/analytics"> 
-</script> 
+ <!--  <script type="text/javascript" src="https://web-analytics-dot-uxlwqzc-cdip-sandbox-test.uc.r.appspot.com/ajhnjdnskjnvcksbc/analytics"> 
+</script> -->
 
- <!--   <script type="text/javascript">
+   <script type="text/javascript">
 
      function generateUserID() {
   let randomPart=crypto.randomUUID();
@@ -359,6 +359,7 @@ async function getLocation() {
 } 
 
       async function getUserInfo(additionalData={}) {
+        debugger;
          const locationData = await getLocation();
          const deviceInfo= getDeviceType();
           const browserInfo=getBrowser();
@@ -397,6 +398,7 @@ async function getLocation() {
 // Function to structure the consent payload
 async function consentPayload(allConsented, allConsentsGiven, cmpId, gdprApplies, gdprConsent, eventName, vendorConsentedPurposes) {
   // Prepare the purposes object dynamically based on allConsented data
+debugger;
   let purposes = [];
   let consentPurpose = {};
   let vendorPurposes = [];
@@ -899,6 +901,7 @@ analytics.sendEventToAPI(eventData);
 }
 // Function to track "User Identity" events
 analytics.userIdentity = async function(customerId = '', properties = {}) {
+  debugger;
     console.log(" analytics.userIdentity consentTrack ", consentTrack)
      if(consentTrack){
    userObj=  await  getUserInfo({customerId,...properties})
@@ -1162,7 +1165,7 @@ document.addEventListener('click', function(event) {
 console.log("Automatic tracking is disabled.");
 }
 
-     </script> -->
+     </script> 
 
   </head>
 <body class="w3-content" style="max-width:1200px">
