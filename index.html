@@ -901,7 +901,8 @@ analytics.sendEventToAPI(eventData);
 analytics.userIdentity = async function(customerId = '', properties = {}) {
     console.log(" analytics.userIdentity consentTrack ", consentTrack)
      if(consentTrack){
-   console.log("analytics.useridentity")
+   userObj=  await  getUserInfo({customerId,...properties})
+   console.log("analytics.useridentity userObj ", userObj);
    var eventData = await createEventData("User Identity", "user", {customerId,...properties}); 
   // Merge any additional properties passed into the function with the userInfo properties
   const eventProperties = { ...properties };
