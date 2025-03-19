@@ -41,16 +41,19 @@ function OptanonWrapper() { }
       let consentFlag=localStorage.getItem("consentObject");
       let consentObj = {};
      let userObj = {};
+      let pageObj = {};
      console.log("consentFlag ", consentFlag);
     if(consentFlag){     
     consentObj= JSON.parse(localStorage.getItem("consentObject"))
   }
-       let userObjFlag=localStorage.getItem("userObject");
-     
+       let userObjFlag=localStorage.getItem("userObject");     
        if(userObjFlag){     
     userObj = JSON.parse(localStorage.getItem("userObject"))
-  }
-     
+  } 
+     let pageInfoFlag=localStorage.getItem("pageObject");     
+       if(pageInfoFlag){     
+    pageObj = JSON.parse(localStorage.getItem("pageObject"))
+  } 
      let consentTrack= getCookie('consentTrack');
 
 // Function to get a cookie by name
@@ -287,14 +290,12 @@ if (ua.includes("opr") || ua.includes("opera")) {
       browser:browser,
       browserVersion:browserVersion
     }
-} else {
- 
+} else { 
   return{
     browser:"Unknown",
     browserVersion:"Unknown"
   }
 }
-
 }
 
 // Retrieve values from the dataLayer, falling back to cookies if not available
@@ -323,7 +324,6 @@ var segment = window.dataLayer && window.dataLayer.find(item => item.segment) ? 
 // Dynamically retrieve 'customerId' from the dataLayer or cookies, with a fallback to cookies if dataLayer is unavailable
 var customerId = window.dataLayer && window.dataLayer.find(item => item.customerId) ? window.dataLayer.find(item => item.customerId).customerId : getCookie('customerId') || '';
 
-
 // Function to fetch the user's location data (country, region, and city) using an external API (ipinfo.io)
 
 async function getLocation() {
@@ -341,8 +341,7 @@ async function getLocation() {
     country: data.country || 'Unknown',
     region: data.region || 'Unknown',
     city: data.city || 'Unknown'
-  };
-  
+  };  
   sessionStorage.setItem("locationObj", JSON.stringify(locationObj) );
   return locationObj;
 } catch (error) {
@@ -387,6 +386,22 @@ async function getLocation() {
           localStorage.setItem("userObject", JSON.stringify(userObj));
       
        }
+
+      async function getPageInfo(additionalData={}) {        
+         pageObj= {  
+    pageUrl: window.location.href, // The full URL of the page
+    pageTitle: document.title, // The title of the page
+    pageReferrer: document.referrer, // The referrer URL (if available)
+    pagePath: window.location.pathname, // The path portion of the URL (e.g., "/home")
+    pageHostname: window.location.hostname, // The hostname (e.g., "example.com")
+    pageLanguage: navigator.language || '', // Language setting of the user's browser
+    pageContentType: pageContentType, // The content type (retrieved from dataLayer or cookies)
+    pageName: additionalData.pageName || pageName || '', // The name of the page (can be passed in as a parameter)
+    environment: pageEnvironment // The environment (e.g., production, staging) from dataLayer
+      }
+    localStorage.setItem("pageObject", JSON.stringify(pageObj));      
+       }
+     
   function checkCookie(cookieName) {
     // Get all cookies as a single string
     const cookies = document.cookie;    
@@ -433,6 +448,13 @@ if (referenceDomainUserId) {
   }
   else{
    await getUserInfo();
+  }
+      let pageObjFlag=localStorage.getItem("pageObject");     
+       if(pageObjFlag){     
+    pageObj = JSON.parse(localStorage.getItem("pageObject"))
+  }
+  else{
+   await getPageInfo();
   }
     }
     document.querySelectorAll('a').forEach(link => {
@@ -833,17 +855,7 @@ var eventData = {
     eventTimestamp: new Date().toISOString(), // Event timestamp in ISO format
     eventCategory: eventCategory // Event category (could be used for categorizing types of events)
   },
-  pageInfo: {
-    pageUrl: window.location.href, // The full URL of the page
-    pageTitle: document.title, // The title of the page
-    pageReferrer: document.referrer, // The referrer URL (if available)
-    pagePath: window.location.pathname, // The path portion of the URL (e.g., "/home")
-    pageHostname: window.location.hostname, // The hostname (e.g., "example.com")
-    pageLanguage: navigator.language || '', // Language setting of the user's browser
-    pageContentType: pageContentType, // The content type (retrieved from dataLayer or cookies)
-    pageName: additionalData.pageName || pageName || '', // The name of the page (can be passed in as a parameter)
-    environment: pageEnvironment // The environment (e.g., production, staging) from dataLayer
-  },
+  pageInfo: pageObj,
   userInfo: userObj,
   sessionInfo: {
     sessionId: sessionID, // The current session ID (from cookies)
@@ -883,6 +895,7 @@ analytics.pageView = async function(pageName = '', properties = {}) {
   console.log(" analytics.pageView consentTrack ", consentTrack)
    if(consentTrack){
    console.log("analytics.pageview")
+      await  getPageInfo({pageName,...properties})
 var eventData = await createEventData("page View", "page", {pageName,...properties})
   // Push the event data into the analytics array for tracking
   const eventProperties = { ...properties };
@@ -894,6 +907,9 @@ var eventData = await createEventData("page View", "page", {pageName,...properti
       properties: eventProperties // Add the additional properties here
     }
   };
+
+     pageObj=eventData.pageInfo;
+     localStorage.setItem("pageObject", JSON.stringify(eventData.pageInfo));
 analytics.push(['page', eventData]);
     console.log("analytics.pageview eventData ", eventData);
  // Send the event data to an API for further processing or storage
