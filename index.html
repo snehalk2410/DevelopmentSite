@@ -427,6 +427,13 @@ if (referenceDomainUserId) {
    setPersistentCookie('rdUserId', referenceDomainUserId, 365);
 }    
 }
+      let userObjFlag=localStorage.getItem("userObject");     
+       if(userObjFlag){     
+    userObj = JSON.parse(localStorage.getItem("userObject"))
+  }
+  else{
+   await getUserInfo();
+  }
     }
     document.querySelectorAll('a').forEach(link => {
         let url = new URL(link.href);
@@ -443,13 +450,7 @@ if (referenceDomainUserId) {
         }
     });
 
-   let userObjFlag=localStorage.getItem("userObject");     
-       if(userObjFlag){     
-    userObj = JSON.parse(localStorage.getItem("userObject"))
-  }
-  else{
-   await getUserInfo();
-  }
+   
 
   // Loop through all the purposes and set them as true/false in the purposes object
   allConsented.forEach(purpose => {
