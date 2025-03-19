@@ -917,9 +917,9 @@ analytics.userIdentity = async function(customerId = '', properties = {}) {
       properties: eventProperties // Add the extra properties to the userInfo section
     }
   };
-
+      userObj=eventData.userInfo;
        localStorage.setItem("userObject", JSON.stringify(eventData.userInfo) );
-       userObj=eventData.userInfo;
+   
 // Push the event data to the analytics array for tracking (this will be processed by analytics services)
 analytics.push(['track', eventData]);
   console.log("analytics.userIdentity eventData ", eventData);
