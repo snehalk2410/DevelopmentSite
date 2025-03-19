@@ -363,7 +363,7 @@ async function getLocation() {
          const deviceInfo= getDeviceType();
           const browserInfo=getBrowser();
           const osInfo =getOS();
-         userObj: {
+         userObj= {
     userId: userID, // The unique user ID (retrieved from cookies)
     customerId:  additionalData.customerId || customerId, // The customer ID (retrieved from cookies)
     gaId: getGAClientId() || '', // Google Analytics client ID (if available)
