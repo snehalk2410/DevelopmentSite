@@ -384,7 +384,7 @@ async function getLocation() {
       city: locationData.city // City from location data
     }
   }
-          localStorage.setItem("userObject", userObj);
+          localStorage.setItem("userObject", JSON.stringify(userObj));
       
        }
   function checkCookie(cookieName) {
