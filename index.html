@@ -40,9 +40,15 @@ function OptanonWrapper() { }
       let sessionID = getCookie('sessionID');  
       let consentFlag=localStorage.getItem("consentObject");
       let consentObj = {};
-  console.log("consentFlag ", consentFlag);
-  if(consentFlag){     
+     let userObj = {};
+     console.log("consentFlag ", consentFlag);
+    if(consentFlag){     
     consentObj= JSON.parse(localStorage.getItem("consentObject"))
+  }
+       let userObjFlag=localStorage.getItem("userObject");
+     
+       if(userObjFlag){     
+    userObj = JSON.parse(localStorage.getItem("userObject"))
   }
      
      let consentTrack= getCookie('consentTrack');
@@ -352,6 +358,34 @@ async function getLocation() {
 }
 } 
 
+       function getUserInfo(additionalData={}) {
+         const locationData = await getLocation();
+         const deviceInfo= getDeviceType();
+          const browserInfo=getBrowser();
+          const osInfo =getOS();
+         userObj: {
+    userId: userID, // The unique user ID (retrieved from cookies)
+    customerId:  additionalData.customerId || customerId, // The customer ID (retrieved from cookies)
+    gaId: getGAClientId() || '', // Google Analytics client ID (if available)
+    loggedIn: loggedIn || '', // Whether the user is logged in (from dataLayer or cookies)
+    type: type, // Type of user (mobile/desktop, from dataLayer or cookies)
+    segment: segment, // The user's segment (from dataLayer or cookies)
+    device: deviceInfo.deviceType, // The device type (mobile/desktop)
+    screenWidth:deviceInfo.screenWidth,
+    screenHeight:deviceInfo.screenHeight,
+    os: osInfo.os, // The user's operating system (e.g., Windows, macOS)
+    osVersion:osInfo.osVersion,
+    browser: browserInfo.browser, // The browser being used (e.g., Chrome, Firefox)
+    browserversion:browserInfo.browserVersion,
+    location: {
+      country: locationData.country, // Country from location data
+      region: locationData.region, // Region from location data
+      city: locationData.city // City from location data
+    }
+  }
+          localStorage.setItem("userObject", userObj);
+      
+       }
   function checkCookie(cookieName) {
     // Get all cookies as a single string
     const cookies = document.cookie;    
@@ -406,6 +440,14 @@ if (referenceDomainUserId) {
           console.log( "userid ", userID, " url.toString ", url.toString())
         }
     });
+
+   let userObjFlag=localStorage.getItem("userObject");     
+       if(userObjFlag){     
+    userObj = JSON.parse(localStorage.getItem("userObject"))
+  }
+  else{
+    getUserInfo();
+  }
 
   // Loop through all the purposes and set them as true/false in the purposes object
   allConsented.forEach(purpose => {
@@ -799,26 +841,7 @@ var eventData = {
     pageName: additionalData.pageName || pageName || '', // The name of the page (can be passed in as a parameter)
     environment: pageEnvironment // The environment (e.g., production, staging) from dataLayer
   },
-  userInfo: {
-    userId: userID, // The unique user ID (retrieved from cookies)
-    customerId:  additionalData.customerId || customerId, // The customer ID (retrieved from cookies)
-    gaId: getGAClientId() || '', // Google Analytics client ID (if available)
-    loggedIn: loggedIn || '', // Whether the user is logged in (from dataLayer or cookies)
-    type: type, // Type of user (mobile/desktop, from dataLayer or cookies)
-    segment: segment, // The user's segment (from dataLayer or cookies)
-    device: deviceInfo.deviceType, // The device type (mobile/desktop)
-    screenWidth:deviceInfo.screenWidth,
-    screenHeight:deviceInfo.screenHeight,
-    os: osInfo.os, // The user's operating system (e.g., Windows, macOS)
-    osVersion:osInfo.osVersion,
-    browser: browserInfo.browser, // The browser being used (e.g., Chrome, Firefox)
-    browserversion:browserInfo.browserVersion,
-    location: {
-      country: locationData.country, // Country from location data
-      region: locationData.region, // Region from location data
-      city: locationData.city // City from location data
-    }
-  },
+  userInfo: userObj,
   sessionInfo: {
     sessionId: sessionID, // The current session ID (from cookies)
     startTime: new Date().toISOString(), // Session start time (ISO format)
@@ -890,6 +913,9 @@ analytics.userIdentity = async function(customerId = '', properties = {}) {
       properties: eventProperties // Add the extra properties to the userInfo section
     }
   };
+
+       localStorage.setItem("userObject", JSON.stringify(eventData.userInfo) );
+       userObj=eventData.userInfo;
 // Push the event data to the analytics array for tracking (this will be processed by analytics services)
 analytics.push(['track', eventData]);
   console.log("analytics.userIdentity eventData ", eventData);
