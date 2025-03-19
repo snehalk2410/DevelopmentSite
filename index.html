@@ -708,7 +708,7 @@ const callback = (tcData, success) => {
               // Check if all required purposes are consented
             var eventName;
               var allConsentsGiven = hasAllConsents(allConsented);
-              var deleteProfile = true; // static flag which can be altered as per client reqt
+              var deleteProfile = false; // static flag which can be altered as per client reqt
               // var consentTrack = localStorage.getItem("consentTrack");
               consentTrack = getCookie('consentTrack');
               console.log('consentTrack :' + consentTrack);
