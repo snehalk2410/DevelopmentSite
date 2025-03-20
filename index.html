@@ -357,6 +357,28 @@ async function getLocation() {
 }
 } 
 
+    async function appendUTMParamsToLinks() {
+    const utmParams = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'];
+    const links = document.querySelectorAll('a');
+
+    links.forEach(link => {
+        let url = new URL(link.href);
+        let params = new URLSearchParams();
+
+        utmParams.forEach(param => {
+            const cookieValue = getCookie(param);
+            if (cookieValue) {
+                params.append(param, cookieValue);
+            }
+        });
+
+        if (params.toString()) {
+            url.search += (url.search ? '&' : '?') + params.toString();
+            link.href = url.toString();
+        }
+    });
+}
+
       async function getUserInfo(additionalData={}) {
          const locationData = await getLocation();
          const deviceInfo= getDeviceType();
@@ -832,15 +854,8 @@ waitForTCFAPI(() => {
 
 async function createEventData(eventname,eventCategory, additionalData = {}) {
 const utmParams = getUTMParams();
-
-// Fetch the user's location asynchronously (country, region, city)
-const locationData = await getLocation();
-
 // Generate a random event ID for tracking purposes
 const randomEventId = Math.floor(100000000 + Math.random() * 900000000);
-const deviceInfo= getDeviceType();
-const browserInfo=getBrowser();
-const osInfo =getOS();
 var eventData = {
   eventInfo: {
     eventName: eventname, // Event name
@@ -888,6 +903,7 @@ analytics.pageView = async function(pageName = '', properties = {}) {
   console.log(" analytics.pageView consentTrack ", consentTrack)
    if(consentTrack){
    console.log("analytics.pageview")
+     await appendUTMParamsToLinks();
       await  getPageInfo({pageName,...properties})
 var eventData = await createEventData("page View", "page", {pageName,...properties})
   // Push the event data into the analytics array for tracking
@@ -1032,6 +1048,7 @@ if (automaticTracking === true ) {
 async function trackPageView() {
     console.log(" trackPageView consentTrack ", consentTrack)
    if(consentTrack){
+     appendUTMParamsToLinks();
 var eventData = await createEventData("Page View", "page"); 
    console.log("trackPageView eventData ", eventData);
 // Send the event data to the dataLayer
