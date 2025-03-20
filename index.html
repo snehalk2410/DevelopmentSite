@@ -356,29 +356,6 @@ async function getLocation() {
   return locationObj;
 }
 } 
-
-    async function appendUTMParamsToLinks() {
-    const utmParams = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'];
-    const links = document.querySelectorAll('a');
-
-    links.forEach(link => {
-        let url = new URL(link.href);
-        let params = new URLSearchParams();
-
-        utmParams.forEach(param => {
-            const cookieValue = getCookie(param);
-            if (cookieValue) {
-                params.append(param, cookieValue);
-            }
-        });
-
-        if (params.toString()) {
-            url.search += (url.search ? '&' : '?') + params.toString();
-            link.href = url.toString();
-        }
-    });
-}
-
       async function getUserInfo(additionalData={}) {
          const locationData = await getLocation();
          const deviceInfo= getDeviceType();
@@ -868,10 +845,10 @@ var eventData = {
   sessionInfo: {
     sessionId: sessionID, // The current session ID (from cookies)
     startTime: new Date().toISOString(), // Session start time (ISO format)
-    source: utmParams.utm_source || '', // UTM source (from URL query params)
-    medium: utmParams.utm_medium || '', // UTM medium (from URL query params)
-    campaign: utmParams.utm_campaign || '', // UTM campaign (from URL query params)
-    content: utmParams.utm_content || '', // UTM content (from URL query params)
+    source: utmParams.utm_source || getcookie('utm_source') || '', // UTM source (from URL query params)
+    medium: utmParams.utm_medium || getcookie('utm_medium') || '', // UTM medium (from URL query params)
+    campaign: utmParams.utm_campaign || getcookie('utm_campaign') || '', // UTM campaign (from URL query params)
+    content: utmParams.utm_content || getcookie('utm_content') || '', // UTM content (from URL query params)
   },
    consent: consentObj
 }
@@ -903,7 +880,6 @@ analytics.pageView = async function(pageName = '', properties = {}) {
   console.log(" analytics.pageView consentTrack ", consentTrack)
    if(consentTrack){
    console.log("analytics.pageview")
-     await appendUTMParamsToLinks();
       await  getPageInfo({pageName,...properties})
 var eventData = await createEventData("page View", "page", {pageName,...properties})
   // Push the event data into the analytics array for tracking
