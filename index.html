@@ -931,8 +931,7 @@ analytics.sendEventToAPI(eventData);
 
 // Function to track a custom event
 analytics.trackCustomEvent = async function(eventName, properties = {}) {
-     console.log("analytics.trackCustomEvent")
-   console.log(" analytics.trackCustomEvent consentTrack ", consentTrack)
+     console.log(" analytics.trackCustomEvent consentTrack ", consentTrack)
    if(consentTrack){
   var eventData = await createEventData(eventName, "custom event", properties); 
  // Merge any custom properties passed into the function with the event data
@@ -952,7 +951,19 @@ analytics.push(['track', eventData]);
 analytics.sendEventToAPI(eventData);
 };
 }
-
+  
+analytics.errorEvent = async function(eventName, eventCategory, properties = {}) {
+if(consentTrack){
+var eventData = await createEventData(eventName, eventCategory, {...properties})
+// Push the event data into the analytics array for tracking
+const eventProperties = { ...properties };
+// Include the additional properties in the event data under pageInfo
+analytics.push(['error', eventData]);
+console.log("analytics.errorEvent eventData ", eventData);
+// Send the event data to an API for further processing or storage
+analytics.sendEventToAPI(eventData);
+}
+}
 // Function to send event data to an API
 analytics.sendEventToAPI = async function(eventData) {
 try {
