@@ -1024,7 +1024,6 @@ if (automaticTracking === true ) {
 async function trackPageView() {
     console.log(" trackPageView consentTrack ", consentTrack)
    if(consentTrack){
-     appendUTMParamsToLinks();
 var eventData = await createEventData("Page View", "page"); 
    console.log("trackPageView eventData ", eventData);
 // Send the event data to the dataLayer
