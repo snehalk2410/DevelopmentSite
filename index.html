@@ -358,7 +358,6 @@ async function getLocation() {
 } 
 
       async function getUserInfo(additionalData={}) {
-        debugger;
          const locationData = await getLocation();
          const deviceInfo= getDeviceType();
           const browserInfo=getBrowser();
@@ -413,7 +412,6 @@ async function getLocation() {
 // Function to structure the consent payload
 async function consentPayload(allConsented, allConsentsGiven, cmpId, gdprApplies, gdprConsent, eventName, vendorConsentedPurposes) {
   // Prepare the purposes object dynamically based on allConsented data
-debugger;
   let purposes = [];
   let consentPurpose = {};
   let vendorPurposes = [];
@@ -798,11 +796,6 @@ const callback = (tcData, success) => {
 
             console.log("consentTrack 1 ", consentTrack)
 
-            let temcookie=document.cookie;
-            console.log(" temcookie ", temcookie);
-            let cookiesizeinbytes= new Blob([temcookie]).size;
-              console.log(" cookiesizeinbytes ", cookiesizeinbytes);
-
           } else {
               console.log('Failed to retrieve consent data. Success flag is false.');
 
@@ -918,7 +911,6 @@ analytics.sendEventToAPI(eventData);
 }
 // Function to track "User Identity" events
 analytics.userIdentity = async function(customerId = '', properties = {}) {
-  debugger;
     console.log(" analytics.userIdentity consentTrack ", consentTrack)
      if(consentTrack){
    await  getUserInfo({customerId,...properties})
@@ -1346,7 +1338,7 @@ console.log("Automatic tracking is disabled.");
         <p><a href="#">Shipment</a></p>
         <p><a href="#">Payment</a></p>
         <p><a href="#">Gift card</a></p>
-        <p><a href="#">Return</a></p>
+        <p><a href="testpage.html">test page</a></p>
         <p><a href="https://www.test.anotherdomain.com">Help</a></p>
         <p><a href="https://www.youtube.com/watch?v=EerdGm-ehJQ">play video</a></p>
       </div>
