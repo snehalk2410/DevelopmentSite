@@ -857,19 +857,7 @@ if(rdUserID){
   }
   return eventData;
 };
-
-     // Measure page load performance
-window.addEventListener('load', () => {
-    const loadTime = performance.now(); // Get the load time in milliseconds
-    console.log(" loadTime ", loadTime)
-    const threshold = 2000; // Set threshold to 2000 milliseconds (2 seconds)
-    if (loadTime > threshold) {
-        // Trigger errorEvent if load time exceeds threshold
-        errorEvent('Low Page speed');
-    }
-});
-
-     
+       
 ///////////////////////////////////////////////// Tracking Using Function///////////////////////////////////////////
 
 (function() {
@@ -988,7 +976,6 @@ try {
 } catch (error) {
   // Log any errors that occur during the API request
   console.error('Error tracking event:', error);
-    await errorEvent(error.message)
 }
 };
 }());
@@ -1047,6 +1034,7 @@ console.log("errorEvent eventData ", eventData);
 await sendEventToAPI(eventData);
 }
 }
+
    //  if (automaticTracking === true && consentanalytics === true) {
 if (automaticTracking === true ) {
 // Function to capture a page view event
@@ -1188,6 +1176,16 @@ document.addEventListener('click', function(event) {
   }
 });
  
+});
+    // Measure page load performance
+window.addEventListener('load', () => {
+    const loadTime = performance.now(); // Get the load time in milliseconds
+    console.log(" loadTime ", loadTime)
+    const threshold = 2000; // Set threshold to 2000 milliseconds (2 seconds)
+    if (loadTime > threshold) {
+        // Trigger errorEvent if load time exceeds threshold
+        errorEvent('Low Page speed');
+    }
 });
  
 // If automatic tracking is disabled, log a message
