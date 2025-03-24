@@ -857,37 +857,15 @@ if(rdUserID){
   }
   return eventData;
 };
-// Global error handler
 
-window.addEventListener('error', function(event) {
-
-    console.error('Global error caught:', event);
-
-    // Call the errorEvent function with the error message and category
-
-    errorEvent(event.message);
-
-});
-// Optionally, you can also capture unhandled promise rejections
-
-window.addEventListener('unhandledrejection', function(event) {
-
-    console.error('Unhandled promise rejection:', event);
-
-    // Call the errorEvent function with the error message and category
-
-    errorEvent(event.reason.message);
-
-});
      // Measure page load performance
 window.addEventListener('load', () => {
     const loadTime = performance.now(); // Get the load time in milliseconds
-  console.log(" loadTime ", loadTime)
+    console.log(" loadTime ", loadTime)
     const threshold = 2000; // Set threshold to 2000 milliseconds (2 seconds)
-
     if (loadTime > threshold) {
         // Trigger errorEvent if load time exceeds threshold
-        errorEvent('Page Load Performance');
+        errorEvent('Low Page speed');
     }
 });
 
@@ -1057,6 +1035,17 @@ try {
   await errorEvent(error.message)
 }
 }
+     async function errorEvent(eventCategory) {
+if(consentTrack){
+  let eventName="Error Event"
+  if(eventCategory== "Low Page speed"){
+    eventName= "Page Permormance Issue"
+  }
+var eventData = await createEventData("Event Error", eventCategory)
+console.log("errorEvent eventData ", eventData);
+await sendEventToAPI(eventData);
+}
+}
    //  if (automaticTracking === true && consentanalytics === true) {
 if (automaticTracking === true ) {
 // Function to capture a page view event
@@ -1069,13 +1058,7 @@ var eventData = await createEventData("Page View", "page");
 await sendEventToAPI(eventData);
    }
 }
-async function errorEvent(eventCategory) {
-if(consentTrack){
-var eventData = await createEventData("Event Error", eventCategory)
-console.log("errorEvent eventData ", eventData);
-await sendEventToAPI(eventData);
-}
-}
+
 // Object to keep track of scroll percentages
 let scrollTracked = { 25: false, 50: false, 75: false, 100: false };
 
