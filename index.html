@@ -1035,7 +1035,8 @@ try {
   await errorEvent(error.message)
 }
 }
-     async function errorEvent(eventCategory) {
+async function errorEvent(eventCategory) {
+  debugger;
 if(consentTrack){
   let eventName="Error Event"
   if(eventCategory== "Low Page speed"){
