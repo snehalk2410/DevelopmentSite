@@ -1244,27 +1244,22 @@ await sendEventToAPI(eventData);
  document.addEventListener('click', async function (event) {
    debugger;
       let target = event.target.closest('button, iframe, a, [role="button"], img[onclick], [onclick]'); // Get the nearest element
-   //  if (!target) return;
-   //   let url = target.dataset.href || target.href;
-   // if (!url) {
-     //   console.log("No URL found for the clicked element.");
-     //   return;
-   // }
+     if (!target) return;
+      let url = target.dataset.href || target.href;
+    if (url) {
+           await fetch(url, { method: "HEAD" }) // Use HEAD request to check if the URL exists
+       .then(async response => {
+           if (!response.ok) {
+               console.log(`Broken link detected: ${url} (Status: ${response.status})`);
+              await errorEvent(response.status);       
+            }
+        })
+      .catch(error => {
+            console.log(`Network error checking: ${url}`, error);          
+          });
+    }
  //  event.preventDefault(); // Prevent default navigation
-  //   await fetch(url, { method: "HEAD" }) // Use HEAD request to check if the URL exists
-     //   .then(async response => {
-       //     if (!response.ok) {
-         //      console.log(`Broken link detected: ${url} (Status: ${response.status})`);
-          //    await errorEvent(response.status);       
-          //  }
-        //  else{
-           //  trackButtonClick(event);
-           // window.location.href=url;
-       //   }
-        // })
-      //  .catch(error => {
-        //    console.log(`Network error checking: ${url}`, error);          
-         // });
+
        if(target){
       trackButtonClick(event);
    }
