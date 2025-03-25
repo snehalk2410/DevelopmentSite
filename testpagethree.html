@@ -319,7 +319,6 @@ var customerId = window.dataLayer && window.dataLayer.find(item => item.customer
 // Function to fetch the user's location data (country, region, and city) using an external API (ipinfo.io)
 
 async function getLocation() {
-  debugger;
   try {
     let locationFlag = sessionStorage.getItem("locationObj");
     console.log("locationFlag ", locationFlag);
@@ -585,7 +584,6 @@ function hasAllConsents(allConsented) {
 }
 
 const callback = (tcData, success) => {
-  debugger;
   try {
     if (success && tcData.eventStatus === 'useractioncomplete') {
 
@@ -761,7 +759,6 @@ const callback = (tcData, success) => {
           console.log('before consentPayload function call ');
           // Call consentPayload function to structure the payload if all consents are given
           const payload = await consentPayload(consentedPurposes, allConsentsGiven, cmpId, gdprApplies, gdprConsent, eventName, vendorData);
-debugger;
           console.log(" consent payload ", payload);
           // Store the consent payload in localStorage
           //localStorage.setItem('userConsent', JSON.stringify(payload));
@@ -1064,12 +1061,13 @@ async function sendEventToAPI(eventData) {
   }
 }
 async function errorEvent(eventCategory) {
+  debugger;
   if (consentTrack) {
     let eventName = "Error Event"
     if (eventCategory == "Low Page speed") {
       eventName = "Page Permormance Issue"
     }
-    var eventData = await createEventData("Event Error", eventCategory)
+    var eventData = await createEventData(eventName, eventCategory)
     console.log("errorEvent eventData ", eventData);
     await sendEventToAPI(eventData);
   }
@@ -1081,7 +1079,7 @@ if (automaticTracking === true) {
   async function trackPageView() {
     try {
       console.log(" trackPageView consentTrack ", consentTrack)
-      if(consentTrack){
+     if(consentTrack){
     await  getPageInfo();
 var eventData = await createEventData("Page View", "page"); 
    console.log("trackPageView eventData ", eventData);
@@ -1245,7 +1243,7 @@ await sendEventToAPI(eventData);
     const threshold = 2000; // Set threshold to 2000 milliseconds (2 seconds)
     if (loadTime > threshold) {
       // Trigger errorEvent if load time exceeds threshold
-      errorEvent('Low Page speed');
+      errorEvent("Low Page speed");
     }
   });
 
@@ -1267,7 +1265,6 @@ await sendEventToAPI(eventData);
 } else {
   console.log("Automatic tracking is disabled.");
 }
-
      </script> 
 
   </head>
