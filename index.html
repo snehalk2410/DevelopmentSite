@@ -353,7 +353,7 @@ async function getLocation() {
     region: 'Unknown',
     city: 'Unknown'
   };
-  console.error('Error fetching location data', error);
+  console.log('Error fetching location data', error);
   sessionStorage.setItem("locationObj", JSON.stringify(locationObj) );
   await errorEvent(error.message)
   return locationObj;
