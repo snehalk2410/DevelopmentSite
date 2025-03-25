@@ -1088,12 +1088,17 @@ if (automaticTracking === true) {
   async function trackPageView() {
     try {
       console.log(" trackPageView consentTrack ", consentTrack)
-      if (consentTrack) {
-        var eventData = await createEventData("Page View", "page");
-        console.log("trackPageView eventData ", eventData);
-        // Send the event data to the dataLayer
-        await sendEventToAPI(eventData);
-      }
+     if(consentTrack){
+    await  getPageInfo();
+var eventData = await createEventData("Page View", "page"); 
+   console.log("trackPageView eventData ", eventData);
+   console.log("trackPageView eventData.pageInfo ", JSON.stringify(eventData.pageInfo));
+   pageObj=eventData.pageInfo;
+   localStorage.setItem("pageObject", JSON.stringify(eventData.pageInfo));
+
+// Send the event data to the dataLayer
+await sendEventToAPI(eventData);
+   }
     }
     catch (error) {
       console.log("Error trackPageView:", error);
