@@ -1242,6 +1242,7 @@ await sendEventToAPI(eventData);
     trackIframeVideos();
 
  document.addEventListener('click', async function (event) {
+   debugger;
       let target = event.target.closest('button, iframe, a, [role="button"], img[onclick], [onclick]'); // Get the nearest element
      if (!target) return;
       let url = target.dataset.href || target.href;
@@ -1249,7 +1250,7 @@ await sendEventToAPI(eventData);
         console.error("No URL found for the clicked element.");
         return;
     }
-        event.preventDefault(); // Prevent default navigation
+        //event.preventDefault(); // Prevent default navigation
      await fetch(url, { method: "HEAD" }) // Use HEAD request to check if the URL exists
         .then(async response => {
             if (!response.ok) {
@@ -1268,32 +1269,7 @@ await sendEventToAPI(eventData);
 
   });
 
-  document.addEventListener('click', function (event) {
-    debugger;
-      let target = event.target.closest('button, iframe, a, [role="button"], img[onclick], [onclick]'); // Get the nearest element
-     if (!target) return;
-    let url = target.dataset.href || target.href;
-    if (!url) {
-        console.error("No URL found for the clicked element.");
-        return;
-    }
-    event.preventDefault(); // Prevent default navigation
-    fetch(url, { method: "HEAD" }) // Use HEAD request to check if the URL exists
-        .then(response => {
-            if (!response.ok) {
-                console.log(`Broken link detected: ${url} (Status: ${response.status})`);
-                
-            } else {
-                console.log(`Valid link: ${url} (Status: ${response.status})`);
-                window.location.href = url; // Navigate only if valid
-            }
-        })
-        .catch(error => {
-            console.log(`Network error checking: ${url}`, error);
-           
-        });
-    });
-
+  
   // Measure page load performance
   window.addEventListener('load', () => {
     const loadTime = performance.now(); // Get the load time in milliseconds
