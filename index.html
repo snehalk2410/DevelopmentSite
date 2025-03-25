@@ -336,11 +336,11 @@ async function getLocation() {
   }
  
   // Fetch location data from the IPInfo API
-  const response = await fetch('https://ipinf.io/json?token=18ac67736ea79a').then(response => {
+await fetch('https://ipinf.io/json?token=18ac67736ea79a').then(response => {
         if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
-       const data = await response.json();  // Parse the JSON response
+       const data = response.json();  // Parse the JSON response
   // Return location data (country, region, city) or 'Unknown' if any data is missing
  let locationObj= {
     country: data.country || 'Unknown',
