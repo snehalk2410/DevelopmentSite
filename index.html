@@ -781,7 +781,7 @@ const callback = async (tcData, success) => {
           console.log('before consentPayload function call ');
           // Call consentPayload function to structure the payload if all consents are given
           const payload = await consentPayload(consentedPurposes, allConsentsGiven, cmpId, gdprApplies, gdprConsent, eventName, vendorData);
-
+debugger;
           console.log(" consent payload ", payload);
           // Store the consent payload in localStorage
           //localStorage.setItem('userConsent', JSON.stringify(payload));
