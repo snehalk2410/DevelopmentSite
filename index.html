@@ -336,8 +336,8 @@ async function getLocation() {
   }
  
   // Fetch location data from the IPInfo API
-
-    const response = await fetch('https://ipinfo.io/json?token=18ac67736ea79');
+// const response = await fetch('https://ipinfo.io/json?token=18ac67736ea79a');
+    const response = await fetch('https://ipinf.io/json?token=18ac67736ea79a');
      if (response.ok) {
     const data = await response.json();  // Parse the JSON response
   // Return location data (country, region, city) or 'Unknown' if any data is missing
@@ -361,10 +361,8 @@ async function getLocation() {
  await errorEvent(response.status);
   return locationObj;
         }
-    console.error('Error sending data:', response.statusText, " response.status ", response.status );  // Log an error if the request failed
-  }
-
-  
+     }
+ 
 } catch (error) {
   // Handle any errors that occur during the fetch
   let locationObj= {
