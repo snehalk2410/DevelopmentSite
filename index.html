@@ -1075,9 +1075,9 @@ async function sendEventToAPI(eventData) {
 async function errorEvent(eventCategory) {
   debugger;
   if (consentTrack) {
-    let eventName = "Error Event"
+    let eventName = "Errors"
     if (eventCategory == "Low Page speed") {
-      eventName = "Page Permormance Issue"
+      eventName = "Page Performance Issue"
     }
     var eventData = await createEventData(eventName, eventCategory)
     console.log("errorEvent eventData ", eventData);
@@ -1249,6 +1249,11 @@ await sendEventToAPI(eventData);
     });
 
   });
+  window.onload = function () {
+    debugger;
+    console.log("document.title ", document.title);
+    console.log("document.body.innerText ", document.body.innerText);   
+};
   // Measure page load performance
   window.addEventListener('load', () => {
     debugger;
@@ -1272,6 +1277,7 @@ await sendEventToAPI(eventData);
 
   // Global error handler
   window.addEventListener('error', function (event) {
+    debugger;
     console.error(event, ' Global error caught: ', event.message);
     // Call the errorEvent function with the error message and category
     errorEvent(event.message);
