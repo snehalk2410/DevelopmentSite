@@ -1252,7 +1252,15 @@ await sendEventToAPI(eventData);
   // Measure page load performance
   window.addEventListener('load', () => {
     debugger;
-    console.log("window.location.href ", window.location.href)
+    fetch(window.location.href, { method: "HEAD" })
+        .then(response => {
+            if (!response.ok) {
+               console.log(" response ", response)
+            }
+        })
+        .catch(error => {
+          console.log(" error ", error)
+        });
     const loadTime = performance.now(); // Get the load time in milliseconds
     console.log(" loadTime ", loadTime)
     const threshold = 1000; // Set threshold to 1000 milliseconds (1 seconds)
