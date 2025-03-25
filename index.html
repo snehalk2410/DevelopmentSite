@@ -419,6 +419,7 @@ async function consentPayload(allConsented, allConsentsGiven, cmpId, gdprApplies
   let vendorPurposes = [];
   let vendorPurpose = {};
   let trackStatus = allConsentsGiven ? 'optedIn' : 'optedOut';
+  consentTrack=allConsentsGiven;
    console.log(" trackStatus ", trackStatus, " allConsentsGiven ", allConsentsGiven);
   userID = getCookie('userID');
   sessionID = getCookie('sessionID');  
