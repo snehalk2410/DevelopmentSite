@@ -17,8 +17,7 @@
 </script> -->
 
    <script type="text/javascript">
-
-     function generateUserID() {
+   function generateUserID() {
   let randomPart = crypto.randomUUID();
   var timestampPart = Math.floor(Date.now() / 1000).toString(16); // Current timestamp in seconds (to ensure uniqueness)
   return randomPart + '.' + timestampPart; // Combine random part and timestamp for a unique ID  
