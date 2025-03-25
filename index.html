@@ -1250,7 +1250,7 @@ await sendEventToAPI(eventData);
       }
       let url = target.dataset.href || target.href;
       if (url) {
-        event.preventDefault();
+      //  event.preventDefault();
         await fetch(url, { method: "HEAD" }) // Use HEAD request to check if the URL exists
           .then(async response => {
             if (!response.ok) {
