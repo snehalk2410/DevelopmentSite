@@ -1241,8 +1241,25 @@ await sendEventToAPI(eventData);
     trackScroll();    // Track scroll events (scroll depth tracking)
     trackIframeVideos();
 
-    document.addEventListener('click', function (event) {
+ document.addEventListener('click', async function (event) {
       let target = event.target.closest('button, iframe, a, [role="button"], img[onclick], [onclick]'); // Get the nearest element
+     if (!target) return;
+      let url = target.dataset.href || target.href;
+    if (!url) {
+        console.error("No URL found for the clicked element.");
+        return;
+    }
+        event.preventDefault(); // Prevent default navigation
+     await fetch(url, { method: "HEAD" }) // Use HEAD request to check if the URL exists
+        .then(async response => {
+            if (!response.ok) {
+               console.log(`Broken link detected: ${url} (Status: ${response.status})`);
+              await errorEvent(response.status);       
+            } 
+        })
+        .catch(error => {
+            console.log(`Network error checking: ${url}`, error);          
+        });
       if (target) {
         trackButtonClick(event);
       }
@@ -1275,23 +1292,9 @@ await sendEventToAPI(eventData);
            
         });
     });
-  window.onload = function () {
-    debugger;
-    console.log("document.title ", document.title);
-    console.log("document.body.innerText ", document.body.innerText);   
-};
+
   // Measure page load performance
   window.addEventListener('load', () => {
-    debugger;
-    fetch(window.location.href, { method: "HEAD" })
-        .then(response => {
-            if (!response.ok) {
-               console.log(" response ", response)
-            }
-        })
-        .catch(error => {
-          console.log(" error ", error)
-        });
     const loadTime = performance.now(); // Get the load time in milliseconds
     console.log(" loadTime ", loadTime)
     const threshold = 1000; // Set threshold to 1000 milliseconds (1 seconds)
@@ -1299,21 +1302,6 @@ await sendEventToAPI(eventData);
       // Trigger errorEvent if load time exceeds threshold
       errorEvent("Low Page speed");
     }
-  });
-
-  // Global error handler
-  window.addEventListener('error', function (event) {
-    debugger;
-    console.error(event, ' Global error caught: ', event.message);
-    // Call the errorEvent function with the error message and category
-    errorEvent(event.message);
-  });
-  // Optionally, you can also capture unhandled promise rejections
-
-  window.addEventListener('unhandledrejection', function (event) {
-    console.error(event, ' Unhandled promise rejection:', event.reason);
-    // Call the errorEvent function with the error message and category
-    errorEvent(event.reason.message);
   });
 
   // If automatic tracking is disabled, log a message
