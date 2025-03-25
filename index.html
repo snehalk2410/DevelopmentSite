@@ -326,6 +326,7 @@ var customerId = window.dataLayer && window.dataLayer.find(item => item.customer
 // Function to fetch the user's location data (country, region, and city) using an external API (ipinfo.io)
 
 async function getLocation() {
+  debugger;
   try {
     let locationFlag = sessionStorage.getItem("locationObj");
     console.log("locationFlag ", locationFlag);
