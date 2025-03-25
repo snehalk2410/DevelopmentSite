@@ -604,7 +604,7 @@ function hasAllConsents(allConsented) {
     allConsented.some(p => p.Id === purposeId));
 }
 
-const callback = async (tcData, success) => {
+const callback = (tcData, success) => {
   debugger;
   try {
     if (success && tcData.eventStatus === 'useractioncomplete') {
@@ -847,17 +847,15 @@ debugger;
   }
   catch (error) {
     console.log("Error create event dara:", error);
-    await errorEvent(error.message)
-    return null;
   }
 };
 
 function waitForTCFAPI(callback, retries = 10, interval = 500) {
   let attempts = 0;
-  let check = setInterval(async () => {
+  let check = setInterval(() => {
     if (typeof window.__tcfapi === "function") {
       clearInterval(check);
-      await callback();
+       callback();
     } else if (attempts >= retries) {
       clearInterval(check);
       console.error("_tcfapi did not become available.");
