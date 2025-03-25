@@ -405,7 +405,7 @@ async function getUserInfo(additionalData = {}) {
 }
 
 async function getPageInfo(additionalData = {}) {
-  console.log(" getPageInfo ", )
+  console.log(" getPageInfo ", window.location);
   pageObj = {
     pageUrl: window.location.href, // The full URL of the page
     pageTitle: document.title, // The title of the page
@@ -1267,6 +1267,7 @@ if (automaticTracking === true) {
 } else {
   console.log("Automatic tracking is disabled.");
 }
+
      </script> 
 
   </head>
