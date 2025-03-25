@@ -17,7 +17,7 @@
 </script> -->
 
    <script type="text/javascript">
-   function generateUserID() {
+function generateUserID() {
   let randomPart = crypto.randomUUID();
   var timestampPart = Math.floor(Date.now() / 1000).toString(16); // Current timestamp in seconds (to ensure uniqueness)
   return randomPart + '.' + timestampPart; // Combine random part and timestamp for a unique ID  
@@ -430,7 +430,8 @@ async function consentPayload(allConsented, allConsentsGiven, cmpId, gdprApplies
     let vendorPurposes = [];
     let vendorPurpose = {};
     let trackStatus = allConsentsGiven ? 'optedIn' : 'optedOut';
-    consentTrack = allConsentsGiven;
+    //consentTrack = allConsentsGiven;
+      //setPersistentCookie('consentTrack', allConsentsGiven);
     console.log(" trackStatus ", trackStatus, " allConsentsGiven ", allConsentsGiven);
     userID = getCookie('userID');
     sessionID = getCookie('sessionID');
@@ -454,20 +455,7 @@ async function consentPayload(allConsented, allConsentsGiven, cmpId, gdprApplies
           setPersistentCookie('rdUserId', referenceDomainUserId, 365);
         }
       }
-      let userObjFlag = localStorage.getItem("userObject");
-      if (userObjFlag) {
-        userObj = JSON.parse(localStorage.getItem("userObject"))
-      }
-      else {
-        await getUserInfo();
-      }
-      let pageObjFlag = localStorage.getItem("pageObject");
-      if (pageObjFlag) {
-        pageObj = JSON.parse(localStorage.getItem("pageObject"))
-      }
-      else {
-        await getPageInfo();
-      }
+     
     }
     document.querySelectorAll('a').forEach(link => {
       let url = new URL(link.href);
@@ -596,7 +584,8 @@ function hasAllConsents(allConsented) {
     allConsented.some(p => p.Id === purposeId));
 }
 
-const callback = async (tcData, success) => {
+const callback = (tcData, success) => {
+  debugger;
   try {
     if (success && tcData.eventStatus === 'useractioncomplete') {
 
@@ -772,7 +761,7 @@ const callback = async (tcData, success) => {
           console.log('before consentPayload function call ');
           // Call consentPayload function to structure the payload if all consents are given
           const payload = await consentPayload(consentedPurposes, allConsentsGiven, cmpId, gdprApplies, gdprConsent, eventName, vendorData);
-
+debugger;
           console.log(" consent payload ", payload);
           // Store the consent payload in localStorage
           //localStorage.setItem('userConsent', JSON.stringify(payload));
@@ -820,7 +809,22 @@ const callback = async (tcData, success) => {
           }
 
           console.log("consentTrack 1 ", consentTrack)
-
+          if(allConsentsGiven){
+           let userObjFlag = localStorage.getItem("userObject");
+      if (userObjFlag) {
+        userObj = JSON.parse(localStorage.getItem("userObject"))
+      }
+      else {
+        await getUserInfo();
+      }
+      let pageObjFlag = localStorage.getItem("pageObject");
+      if (pageObjFlag) {
+        pageObj = JSON.parse(localStorage.getItem("pageObject"))
+      }
+      else {
+        await getPageInfo();
+      }
+}
         } else {
           console.log('Failed to retrieve consent data. Success flag is false.');
 
@@ -838,17 +842,15 @@ const callback = async (tcData, success) => {
   }
   catch (error) {
     console.log("Error create event dara:", error);
-    await errorEvent(error.message)
-    return null;
   }
 };
 
 function waitForTCFAPI(callback, retries = 10, interval = 500) {
   let attempts = 0;
-  let check = setInterval(async () => {
+  let check = setInterval(() => {
     if (typeof window.__tcfapi === "function") {
       clearInterval(check);
-      await callback();
+       callback();
     } else if (attempts >= retries) {
       clearInterval(check);
       console.error("_tcfapi did not become available.");
