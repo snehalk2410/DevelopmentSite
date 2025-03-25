@@ -326,7 +326,6 @@ var customerId = window.dataLayer && window.dataLayer.find(item => item.customer
 // Function to fetch the user's location data (country, region, and city) using an external API (ipinfo.io)
 
 async function getLocation() {
-  debugger;
   try {
     let locationFlag = sessionStorage.getItem("locationObj");
     console.log("locationFlag ", locationFlag);
@@ -592,7 +591,6 @@ function hasAllConsents(allConsented) {
 }
 
 const callback = (tcData, success) => {
-  debugger;
   try {
     if (success && tcData.eventStatus === 'useractioncomplete') {
 
@@ -768,7 +766,6 @@ const callback = (tcData, success) => {
           console.log('before consentPayload function call ');
           // Call consentPayload function to structure the payload if all consents are given
           const payload = await consentPayload(consentedPurposes, allConsentsGiven, cmpId, gdprApplies, gdprConsent, eventName, vendorData);
-debugger;
           console.log(" consent payload ", payload);
           // Store the consent payload in localStorage
           //localStorage.setItem('userConsent', JSON.stringify(payload));
@@ -1071,6 +1068,7 @@ async function sendEventToAPI(eventData) {
   }
 }
 async function errorEvent(eventCategory) {
+  debugger;
   if (consentTrack) {
     let eventName = "Error Event"
     if (eventCategory == "Low Page speed") {
