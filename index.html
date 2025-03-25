@@ -359,7 +359,7 @@ await fetch('https://ipinf.io/json?token=18ac67736ea79a').then(response => {
   };
   console.log('Error fetching location data', error);
   sessionStorage.setItem("locationObj", JSON.stringify(locationObj) );
-  await errorEvent(error.message)
+  errorEvent(error.message)
   return locationObj;
     });    
    
