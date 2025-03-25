@@ -1255,14 +1255,15 @@ await sendEventToAPI(eventData);
             if (!response.ok) {
                console.log(`Broken link detected: ${url} (Status: ${response.status})`);
               await errorEvent(response.status);       
-            } 
+            }
+          else{
+             trackButtonClick(event);
+          }
         })
         .catch(error => {
             console.log(`Network error checking: ${url}`, error);          
         });
-      if (target) {
-        trackButtonClick(event);
-      }
+     
     });
 
   });
