@@ -1256,12 +1256,12 @@ await sendEventToAPI(eventData);
             if (!response.ok) {
               console.log(`Broken link detected: ${url} (Status: ${response.status})`);
               await errorEvent(response.status);
-              window.location.href = url;
+            ////  window.location.href = url;
             }
-            else {
-              console.log("url ", url)
-              window.location.href = url;
-            }
+            //else {
+              //console.log("url ", url)
+              //window.location.href = url;
+            //}
           })
           .catch(error => {
             console.log(`Network error checking: ${url}`, error);
