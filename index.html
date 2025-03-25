@@ -462,20 +462,7 @@ async function consentPayload(allConsented, allConsentsGiven, cmpId, gdprApplies
           setPersistentCookie('rdUserId', referenceDomainUserId, 365);
         }
       }
-      let userObjFlag = localStorage.getItem("userObject");
-      if (userObjFlag) {
-        userObj = JSON.parse(localStorage.getItem("userObject"))
-      }
-      else {
-        await getUserInfo();
-      }
-      let pageObjFlag = localStorage.getItem("pageObject");
-      if (pageObjFlag) {
-        pageObj = JSON.parse(localStorage.getItem("pageObject"))
-      }
-      else {
-        await getPageInfo();
-      }
+     
     }
     document.querySelectorAll('a').forEach(link => {
       let url = new URL(link.href);
@@ -829,7 +816,22 @@ debugger;
           }
 
           console.log("consentTrack 1 ", consentTrack)
-
+          if(allConsentsGiven){
+           let userObjFlag = localStorage.getItem("userObject");
+      if (userObjFlag) {
+        userObj = JSON.parse(localStorage.getItem("userObject"))
+      }
+      else {
+        await getUserInfo();
+      }
+      let pageObjFlag = localStorage.getItem("pageObject");
+      if (pageObjFlag) {
+        pageObj = JSON.parse(localStorage.getItem("pageObject"))
+      }
+      else {
+        await getPageInfo();
+      }
+}
         } else {
           console.log('Failed to retrieve consent data. Success flag is false.');
 
