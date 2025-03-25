@@ -414,6 +414,7 @@ async function getPageInfo(additionalData = {}) {
     pageLanguage: navigator.language || '', // Language setting of the user's browser
     pageContentType: pageContentType, // The content type (retrieved from dataLayer or cookies)
     pageName: additionalData.pageName || pageName || '', // The name of the page (can be passed in as a parameter)
+    pageLoadTime: performance.now() || '',
     environment: pageEnvironment // The environment (e.g., production, staging) from dataLayer
   }
   localStorage.setItem("pageObject", JSON.stringify(pageObj));
@@ -894,6 +895,9 @@ async function createEventData(eventname, eventCategory, additionalData = {}) {
     if (rdUserID) {
       eventData.userInfo.rdUserId = rdUserID
     }
+    if(eventCategory == "Low Page speed"){
+      eventData.eventInfo.pageLoadTime = performance.now() || '',
+    }
     return eventData;
   }
   catch (error) {
@@ -1247,7 +1251,7 @@ await sendEventToAPI(eventData);
   window.addEventListener('load', () => {
     const loadTime = performance.now(); // Get the load time in milliseconds
     console.log(" loadTime ", loadTime)
-    const threshold = 2000; // Set threshold to 2000 milliseconds (2 seconds)
+    const threshold = 1000; // Set threshold to 1000 milliseconds (1 seconds)
     if (loadTime > threshold) {
       // Trigger errorEvent if load time exceeds threshold
       errorEvent("Low Page speed");
