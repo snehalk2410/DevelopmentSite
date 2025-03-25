@@ -1074,7 +1074,7 @@ async function errorEvent(eventCategory) {
     if (eventCategory == "Low Page speed") {
       eventName = "Page Permormance Issue"
     }
-    var eventData = await createEventData("Event Error", eventCategory)
+    var eventData = await createEventData(eventName, eventCategory)
     console.log("errorEvent eventData ", eventData);
     await sendEventToAPI(eventData);
   }
