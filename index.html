@@ -896,7 +896,7 @@ async function createEventData(eventname, eventCategory, additionalData = {}) {
       eventData.userInfo.rdUserId = rdUserID
     }
     if(eventCategory == "Low Page speed"){
-      eventData.eventInfo.pageLoadTime = performance.now() || '',
+      eventData.eventInfo.pageLoadTime = performance.now() || ''
     }
     return eventData;
   }
