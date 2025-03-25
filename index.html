@@ -1242,35 +1242,32 @@ await sendEventToAPI(eventData);
     trackIframeVideos();
 
  document.addEventListener('click', async function (event) {
-   debugger;
+      debugger;
       let target = event.target.closest('button, iframe, a, [role="button"], img[onclick], [onclick]'); // Get the nearest element
-     if (!target) return;
+      if (!target) return;
+      if (target) {
+        trackButtonClick(event);
+      }
       let url = target.dataset.href || target.href;
-    if (url) {
-      event.preventDefault();
-           await fetch(url, { method: "HEAD" }) // Use HEAD request to check if the URL exists
-       .then(async response => {
-           if (!response.ok) {
-               console.log(`Broken link detected: ${url} (Status: ${response.status})`);
-              await errorEvent(response.status);       
+      if (url) {
+        event.preventDefault();
+        await fetch(url, { method: "HEAD" }) // Use HEAD request to check if the URL exists
+          .then(async response => {
+            if (!response.ok) {
+              console.log(`Broken link detected: ${url} (Status: ${response.status})`);
+              await errorEvent(response.status);
+              window.location.href = url;
             }
-         else{
-            trackButtonClick(event);
-           console.log("url ", url)
-           window.location.href = url;
-           return;
-         }
-        })
-      .catch(error => {
-            console.log(`Network error checking: ${url}`, error);          
+            else {
+              console.log("url ", url)
+              window.location.href = url;
+            }
+          })
+          .catch(error => {
+            console.log(`Network error checking: ${url}`, error);
           });
-    }
-   
-
-       if(target){
-      trackButtonClick(event);
-   }
- });
+      }
+    });
   });
 
   
