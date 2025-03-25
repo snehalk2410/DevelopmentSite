@@ -438,6 +438,7 @@ async function consentPayload(allConsented, allConsentsGiven, cmpId, gdprApplies
     let vendorPurpose = {};
     let trackStatus = allConsentsGiven ? 'optedIn' : 'optedOut';
     consentTrack = allConsentsGiven;
+      //setPersistentCookie('consentTrack', allConsentsGiven);
     console.log(" trackStatus ", trackStatus, " allConsentsGiven ", allConsentsGiven);
     userID = getCookie('userID');
     sessionID = getCookie('sessionID');
@@ -604,6 +605,7 @@ function hasAllConsents(allConsented) {
 }
 
 const callback = async (tcData, success) => {
+  debugger;
   try {
     if (success && tcData.eventStatus === 'useractioncomplete') {
 
