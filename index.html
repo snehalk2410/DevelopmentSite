@@ -1247,18 +1247,25 @@ await sendEventToAPI(eventData);
      if (!target) return;
       let url = target.dataset.href || target.href;
     if (url) {
+      event.preventDefault();
            await fetch(url, { method: "HEAD" }) // Use HEAD request to check if the URL exists
        .then(async response => {
            if (!response.ok) {
                console.log(`Broken link detected: ${url} (Status: ${response.status})`);
               await errorEvent(response.status);       
             }
+         else{
+            trackButtonClick(event);
+           console.log("url ", url)
+           window.location.href = url;
+           return;
+         }
         })
       .catch(error => {
             console.log(`Network error checking: ${url}`, error);          
           });
     }
- //  event.preventDefault(); // Prevent default navigation
+   
 
        if(target){
       trackButtonClick(event);
