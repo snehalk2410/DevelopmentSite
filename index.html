@@ -1304,6 +1304,7 @@ if (automaticTracking === true) {
       trackIframeVideos();
 
       document.addEventListener('click', async function (event) {
+        debugger;
         let target = event.target.closest('button, iframe, a, [role="button"], img[onclick], [onclick]'); // Get the nearest element
         if (!target) return;
         if (target) {
@@ -1507,7 +1508,7 @@ if (automaticTracking === true) {
           <p><input class="w3-input w3-border" type="text" placeholder="Email" name="Email" required></p>
           <p><input class="w3-input w3-border" type="text" placeholder="Subject" name="Subject" required></p>
           <p><input class="w3-input w3-border" type="text" placeholder="Message" name="Message" required></p>
-          <button type="submit" class="w3-button w3-block w3-black">Send</button>
+          <button type="submit" class="w3-button w3-block w3-black" onclick="close()">Send</button>
         </form>
       </div>
 
