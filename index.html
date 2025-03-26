@@ -1295,6 +1295,49 @@ if (automaticTracking === true) {
       console.log("Error : ", error);
     }
   }
+
+  function handleError(status, message) {
+    debugger;
+    console.log(`Error ${status}: ${message}`);
+    // You can also send this error information to your server for logging
+}
+
+// Intercept Fetch API calls
+const originalFetch = window.fetch;
+window.fetch = async function(...args) {
+  debugger;
+    const response = await originalFetch(...args);
+    console.log(" response originalFetch ", response)
+    // Check if the response status is 4xx or 5xx
+    if (response.status >= 400 && response.status < 600) {
+        const errorMessage = await response.text(); // Get the error message from the response
+        handleError(response.status, errorMessage);
+    }
+    
+    return response; // Return the original response
+};
+
+// Optionally, you can also capture XMLHttpRequest errors
+const originalXhrOpen = XMLHttpRequest.prototype.open;
+XMLHttpRequest.prototype.open = function(...args) {
+  debugger;
+    const xhr = this;
+    xhr.addEventListener('load', function() {
+        if (xhr.status >= 400 && xhr.status < 600) {
+            handleError(xhr.status, xhr.statusText);
+        }
+    });
+    return originalXhrOpen.apply(this, args);
+};
+
+// Global error handler for uncaught errors
+window.onerror = function(message, source, lineno, colno, error) {
+  debugger;
+    console.log(`Global Error: ${message} at ${source}:${lineno}:${colno}`);
+    // You can also send this error information to your server for logging
+};
+
+
   document.addEventListener('DOMContentLoaded', function () {
     try {
       console.log("addEventListener  DOMContentLoaded ")
