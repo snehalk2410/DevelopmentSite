@@ -1307,9 +1307,14 @@ if (automaticTracking === true) {
         debugger;
         let target = event.target.closest('button, iframe, a, [role="button"], img[onclick], [onclick]'); // Get the nearest element
         if (!target) return;
+        try{
         if (target) {
           trackButtonClick(event);
         }
+          }catch(error){
+     console.log("Error addEventListener trackButtonClick : ", error);
+  }
+
         let url = target.dataset.href || target.href;
         if (url) {
           //  event.preventDefault();
