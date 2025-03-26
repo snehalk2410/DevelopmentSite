@@ -1301,7 +1301,8 @@ if (automaticTracking === true) {
     if (!url) return;
     try {
         let response = await fetch(url, { method: "HEAD" });
-        console.log(`${url} response:`, response);
+        
+      
         if (!response.ok && response.status >= 400 &&  response.status < 600) {            
             await errorEvent(response.status);
         }
@@ -1314,10 +1315,13 @@ if (automaticTracking === true) {
 async function handleFormSubmission(form) {
     let formData = new FormData(form);
    let actionUrl = form.action;
-    if (!actionUrl) {
-        console.log("Error: Form action is missing.");
-        await errorEvent("Missing form action");
-        return;
+    if (actionUrl) {
+          const actionResponse = await fetch(actionUrl, { method: "HEAD" }); // Check if the page exists
+      console.log(`${actionUrl} response:`, actionResponse);
+      if (!actionResponse.ok && actionResponse.status >= 400 &&  actionResponse.status < 600) {            
+            await errorEvent(actionResponse.status);
+           return;
+        }
     }
     try {
         let response = await fetch(form.action, {
@@ -1363,12 +1367,6 @@ async function handleFormSubmission(form) {
         debugger;
         try{
     let form = event.target.closest("form");
-    let actionUrl = form.action;
-    if (!actionUrl) {
-        console.error("Error: Form action is missing.");
-        await errorEvent(403);
-        return;
-    }
     if (!form) return;
     event.preventDefault(); // Stop default form submission
     await handleFormSubmission(form);
