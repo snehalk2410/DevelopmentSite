@@ -1253,6 +1253,7 @@ await sendEventToAPI(eventData);
       //  event.preventDefault();
         await fetch(url, { method: "HEAD" }) // Use HEAD request to check if the URL exists
           .then(async response => {
+            console.log( url, " url response ", response)
             if (!response.ok) {
               console.log(`Broken link detected: ${url} (Status: ${response.status})`);
               await errorEvent(response.status);
