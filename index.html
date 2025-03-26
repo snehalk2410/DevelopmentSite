@@ -1313,6 +1313,12 @@ if (automaticTracking === true) {
   // Function to handle form submissions
 async function handleFormSubmission(form) {
     let formData = new FormData(form);
+   let actionUrl = form.action;
+    if (!actionUrl) {
+        console.log("Error: Form action is missing.");
+        await errorEvent("Missing form action");
+        return;
+    }
     try {
         let response = await fetch(form.action, {
             method: form.method || "POST",
@@ -1357,6 +1363,12 @@ async function handleFormSubmission(form) {
         debugger;
         try{
     let form = event.target.closest("form");
+    let actionUrl = form.action;
+    if (!actionUrl) {
+        console.error("Error: Form action is missing.");
+        await errorEvent(403);
+        return;
+    }
     if (!form) return;
     event.preventDefault(); // Stop default form submission
     await handleFormSubmission(form);
