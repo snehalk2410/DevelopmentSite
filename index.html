@@ -1368,7 +1368,7 @@ async function handleFormSubmission(form) {
         try{
     let form = event.target.closest("form");
     if (!form) return;
-    event.preventDefault(); // Stop default form submission
+   // event.preventDefault(); // Stop default form submission
     await handleFormSubmission(form);
           } catch(error){
      console.log("Error : ", error);
