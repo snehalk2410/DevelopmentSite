@@ -17,14 +17,23 @@
 </script> -->
 
    <script type="text/javascript">
+
 function generateUserID() {
-  let randomPart = crypto.randomUUID();
-  var timestampPart = Math.floor(Date.now() / 1000).toString(16); // Current timestamp in seconds (to ensure uniqueness)
-  return randomPart + '.' + timestampPart; // Combine random part and timestamp for a unique ID  
+  try {
+    let randomPart = crypto.randomUUID();
+    var timestampPart = Math.floor(Date.now() / 1000).toString(16); // Current timestamp in seconds (to ensure uniqueness)
+    return randomPart + '.' + timestampPart; // Combine random part and timestamp for a unique ID  
+  } catch (error) {
+    console.log("Error : ", error);
+  }
 }
 function getQueryParam(param) {
-  let urlParams = new URLSearchParams(window.location.search);
-  return urlParams.get(param);
+  try {
+    let urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get(param);
+  } catch (error) {
+    console.log("Error : ", error);
+  }
 }
 
 let rdUserID = getCookie('rdUserId');
@@ -50,243 +59,290 @@ let consentTrack = getCookie('consentTrack');
 
 // Function to get a cookie by name
 function getCookie(name) {
-  // Match the cookie by name and return its value if found
-  //const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
-  //console.log(" getCookie match ", match);
-  // return match ? match[2] : null; // Return the cookie value or null if not found
-  const cookies = document.cookie.split(';');
-  for (let cookie of cookies) {
-    const [key, value] = cookie.split('=');
-    if (key.trim() === name.trim()) {
-      return decodeURIComponent(value);
-      // return value;
+  try {
+    const cookies = document.cookie.split(';');
+    for (let cookie of cookies) {
+      const [key, value] = cookie.split('=');
+      if (key.trim() === name.trim()) {
+        return decodeURIComponent(value);
+        // return value;
+      }
     }
+    return null; // Return null if the cookie is not found
+  } catch (error) {
+    console.log("Error : ", error);
+
   }
-  return null; // Return null if the cookie is not found
 }
 
 // Function to extract Google Analytics client ID from the _ga cookie
 function getGAClientId() {
-  let gaCookie = getCookie('_ga'); // Get the _ga cookie value
-  if (gaCookie) {
-    // The _ga cookie value looks like: GA1.2.121232456.3445434334
-    let gaParts = gaCookie.split('.'); // Split it into parts
-    if (gaParts.length === 4) {
-      return gaParts[2] + '.' + gaParts[3]; // Return the client ID (e.g., 121232456.3445434334)
+  try {
+    let gaCookie = getCookie('_ga'); // Get the _ga cookie value
+    if (gaCookie) {
+      // The _ga cookie value looks like: GA1.2.121232456.3445434334
+      let gaParts = gaCookie.split('.'); // Split it into parts
+      if (gaParts.length === 4) {
+        return gaParts[2] + '.' + gaParts[3]; // Return the client ID (e.g., 121232456.3445434334)
+      }
     }
+    return null; // Return null if the cookie is not found or can't be parsed
+  } catch (error) {
+    console.log("Error : ", error);
+
   }
-  return null; // Return null if the cookie is not found or can't be parsed
 }
 
 // Function to set a session cookie with security measures
 function setSessionCookie(name, value) {
-  const expires = "expires=Session"; // Session cookie expires when the browser is closed
-  const secure = window.location.protocol === 'https:' ? "Secure" : ""; // Only secure if HTTPS
-  const sameSite = "SameSite=Lax"; // Allow cross-origin requests to a certain extent
-  let domain = window.location.hostname.split('.').slice(-2).join('.'); // Get root domain
-  //domain=." + domain + ";
-  document.cookie = name + "=" + value + ";" + expires + ";path=/;" + secure + ";" + sameSite;
+  try {
+    const expires = "expires=Session"; // Session cookie expires when the browser is closed
+    const secure = window.location.protocol === 'https:' ? "Secure" : ""; // Only secure if HTTPS
+    const sameSite = "SameSite=Lax"; // Allow cross-origin requests to a certain extent
+    let domain = window.location.hostname.split('.').slice(-2).join('.'); // Get root domain
+    //domain=." + domain + ";
+    document.cookie = name + "=" + value + ";" + expires + ";path=/;" + secure + ";" + sameSite;
+  } catch (error) {
+    console.log("Error : ", error);
+
+  }
 }
 // Function to check if the session should reset at midnight
 function checkMidnightSessionReset() {
-  const currentTime = new Date(); // Get the current date and time
-  const midnight = new Date(currentTime); // Create a new Date object for midnight today
-  midnight.setHours(0, 0, 0, 0); // Set time to midnight (00:00:00)
-  const nextMidnight = new Date(midnight.getTime() + 24 * 60 * 60 * 1000); // Calculate the next midnight
+  try {
+    const currentTime = new Date(); // Get the current date and time
+    const midnight = new Date(currentTime); // Create a new Date object for midnight today
+    midnight.setHours(0, 0, 0, 0); // Set time to midnight (00:00:00)
+    const nextMidnight = new Date(midnight.getTime() + 24 * 60 * 60 * 1000); // Calculate the next midnight
 
-  if (currentTime >= nextMidnight) {
-    // If the current time is after next midnight, reset the sessionID
-    setSessionCookie('sessionID', ''); // Clear the session cookie
+    if (currentTime >= nextMidnight) {
+      // If the current time is after next midnight, reset the sessionID
+      setSessionCookie('sessionID', ''); // Clear the session cookie
+    }
+  } catch (error) {
+    console.log("Error : ", error);
+
   }
 }
 
 // Function to track user inactivity and reset the session if the user is inactive for more than 30 minutes
 function trackInactivity() {
-  let inactivityTimeout;
-  const resetInactivityTimer = () => {
-    clearTimeout(inactivityTimeout); // Clear any previous inactivity timeout
-    inactivityTimeout = setTimeout(() => {
-      setSessionCookie('sessionID', ''); // Reset session after inactivity
-      console.log("Session expired due to inactivity.");
-    }, 30 * 60 * 1000); // Set timeout for 30 minutes of inactivity
-  };
+  try {
+    let inactivityTimeout;
+    const resetInactivityTimer = () => {
+      clearTimeout(inactivityTimeout); // Clear any previous inactivity timeout
+      inactivityTimeout = setTimeout(() => {
+        setSessionCookie('sessionID', ''); // Reset session after inactivity
+        console.log("Session expired due to inactivity.");
+      }, 30 * 60 * 1000); // Set timeout for 30 minutes of inactivity
+    };
 
-  // Event listeners for mouse movement, keypress, or scroll reset the inactivity timer
-  window.addEventListener('mousemove', resetInactivityTimer);
-  window.addEventListener('keydown', resetInactivityTimer);
-  window.addEventListener('scroll', resetInactivityTimer);
-  resetInactivityTimer(); // Initialize the inactivity timer
+    // Event listeners for mouse movement, keypress, or scroll reset the inactivity timer
+    window.addEventListener('mousemove', resetInactivityTimer);
+    window.addEventListener('keydown', resetInactivityTimer);
+    window.addEventListener('scroll', resetInactivityTimer);
+    resetInactivityTimer(); // Initialize the inactivity timer
+  } catch (error) {
+    console.log("Error : ", error);
+
+  }
 }
 
 // Function to set a persistent cookie with security measures
 function setPersistentCookie(name, value, days = 365) {
-  const date = new Date();
-  date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000)); // Calculate the expiration date
-  const expires = "expires=" + date.toUTCString(); // Convert to UTC string format
-  const secure = window.location.protocol === 'https:' ? "Secure" : ""; // Only secure if HTTPS
-  const sameSite = "SameSite=Lax"; // Allow cross-origin requests to a certain extent -- Lax
-  const domain = window.location.hostname.split('.').slice(-2).join('.'); // Get root domain     // "domain=.vercel.app"; // Set the highest-level domain
-  console.log(" highest-level domain ", domain);
-  //  const cookieString = `${name}=${value}; ${expires}; path=/; ${secure}; ${sameSite}`;
-  //  console.log("Setting cookie: ", cookieString);
-  //  document.cookie = cookieString;
+  try {
+    const date = new Date();
+    date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000)); // Calculate the expiration date
+    const expires = "expires=" + date.toUTCString(); // Convert to UTC string format
+    const secure = window.location.protocol === 'https:' ? "Secure" : ""; // Only secure if HTTPS
+    const sameSite = "SameSite=Lax"; // Allow cross-origin requests to a certain extent -- Lax
+    const domain = window.location.hostname.split('.').slice(-2).join('.'); // Get root domain     // "domain=.vercel.app"; // Set the highest-level domain
+    console.log(" highest-level domain ", domain);
+    //  const cookieString = `${name}=${value}; ${expires}; path=/; ${secure}; ${sameSite}`;
+    //  console.log("Setting cookie: ", cookieString);
+    //  document.cookie = cookieString;
 
-  document.cookie = name + "=" + value + ";" + expires + ";path=/;" + secure + ";" + sameSite;
+    document.cookie = name + "=" + value + ";" + expires + ";path=/;" + secure + ";" + sameSite;
+  } catch (error) {
+    console.log("Error : ", error);
+
+  }
 }
 
 // Function to extract UTM parameters (such as source, medium, campaign) from the URL query string
 function getUTMParams() {
-  console.log("getUTMParams")
-  const params = {};  // Object to store UTM parameters
-  const urlParams = new URLSearchParams(window.location.search);  // Parse the query string of the URL
-  console.log(" urlParams ", urlParams);
-  // List of UTM parameters to check in the URL
-  ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'].forEach(param => {
-    const value = urlParams.get(param);  // Get the value of each UTM parameter
-    if (value) {  // If the parameter exists in the URL
-      params[param] = value;  // Store the value in the params object
-      setPersistentCookie(param, value);  // Set the UTM parameter as a persistent cookie
-    }
-  });
-  return params;  // Return the UTM parameters object
+  try {
+    console.log("getUTMParams")
+    const params = {};  // Object to store UTM parameters
+    const urlParams = new URLSearchParams(window.location.search);  // Parse the query string of the URL
+    console.log(" urlParams ", urlParams);
+    // List of UTM parameters to check in the URL
+    ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'].forEach(param => {
+      const value = urlParams.get(param);  // Get the value of each UTM parameter
+      if (value) {  // If the parameter exists in the URL
+        params[param] = value;  // Store the value in the params object
+        setPersistentCookie(param, value);  // Set the UTM parameter as a persistent cookie
+      }
+    });
+    return params;  // Return the UTM parameters object
+  } catch (error) {
+    console.log("Error : ", error);
+
+  }
 }
 
 // Function to detect the device type (mobile or desktop)
 function getDeviceType() {
-  console.log("getdevicetype ")
-  // Use a regular expression to check if the user agent matches a mobile device
-  // return /Mobi|Android|iPhone|iPad|iPod|iOS/i.test(navigator.userAgent) ? 'mobile' : 'desktop';
-  const userAgent = navigator.userAgent.toLowerCase();
-  const screenWidth = window.innerWidth;
-  const screenHeight = window.innerHeight;
-  var deviceType = "desktop";
-  console.log(" userAgent ", userAgent, " screenWidth ", screenWidth, screenHeight);
-  if (/mobile|android|iphone|ipod/i.test(userAgent)) {
-    deviceType = "mobile";
-  } else if (/tablet|ipad/i.test(userAgent) || (screenWidth > 600 && screenWidth < 1024)) {
-    deviceType = "tablet";
+  try {
+    console.log("getdevicetype ")
+    // Use a regular expression to check if the user agent matches a mobile device
+    // return /Mobi|Android|iPhone|iPad|iPod|iOS/i.test(navigator.userAgent) ? 'mobile' : 'desktop';
+    const userAgent = navigator.userAgent.toLowerCase();
+    const screenWidth = window.innerWidth;
+    const screenHeight = window.innerHeight;
+    var deviceType = "desktop";
+    console.log(" userAgent ", userAgent, " screenWidth ", screenWidth, screenHeight);
+    if (/mobile|android|iphone|ipod/i.test(userAgent)) {
+      deviceType = "mobile";
+    } else if (/tablet|ipad/i.test(userAgent) || (screenWidth > 600 && screenWidth < 1024)) {
+      deviceType = "tablet";
+    }
+    return { deviceType: deviceType, screenWidth: screenWidth, screenHeight: screenHeight }
+  } catch (error) {
+    console.log("Error : ", error);
+
   }
-  return { deviceType: deviceType, screenWidth: screenWidth, screenHeight: screenHeight }
 }
 
 // Function to detect the operating system of the user
 function getOS() {
-  console.log("getos")
-  const userAgent = navigator.userAgent;
-  const platform = navigator.platform || navigator.userAgentData?.platform || "Unknown";
-  console.log(" getOS userAgent ", userAgent, " platform ", platform);
-  const osMap = [
-    { name: "Windows", regex: /Win/i, versionRegex: /Windows NT (\d+\.\d+)/ },
-    { name: "MacOS", regex: /Mac/i, versionRegex: /Mac OS X (\d+[_\.\d]+)/ },
-    { name: "Linux", regex: /Linux/i, versionRegex: null },  // Linux versions are hard to detect reliably
-    { name: "Android", regex: /Android/i, versionRegex: /Android (\d+\.\d+)/ },
-    { name: "iOS", regex: /iPhone|iPad|iPod/i, versionRegex: /OS (\d+[_\.\d]+)/ },
-    { name: "ChromeOS", regex: /CrOS/i, versionRegex: /CrOS [^\s]+ (\d+\.\d+\.\d+)/ },
-    { name: "Unix", regex: /X11/i, versionRegex: null },
-    { name: "FreeBSD", regex: /FreeBSD/i, versionRegex: null },
-    { name: "OpenBSD", regex: /OpenBSD/i, versionRegex: null },
-    { name: "NetBSD", regex: /NetBSD/i, versionRegex: null }
-  ];
+  try {
+    console.log("getos")
+    const userAgent = navigator.userAgent;
+    const platform = navigator.platform || navigator.userAgentData?.platform || "Unknown";
+    console.log(" getOS userAgent ", userAgent, " platform ", platform);
+    const osMap = [
+      { name: "Windows", regex: /Win/i, versionRegex: /Windows NT (\d+\.\d+)/ },
+      { name: "MacOS", regex: /Mac/i, versionRegex: /Mac OS X (\d+[_\.\d]+)/ },
+      { name: "Linux", regex: /Linux/i, versionRegex: null },  // Linux versions are hard to detect reliably
+      { name: "Android", regex: /Android/i, versionRegex: /Android (\d+\.\d+)/ },
+      { name: "iOS", regex: /iPhone|iPad|iPod/i, versionRegex: /OS (\d+[_\.\d]+)/ },
+      { name: "ChromeOS", regex: /CrOS/i, versionRegex: /CrOS [^\s]+ (\d+\.\d+\.\d+)/ },
+      { name: "Unix", regex: /X11/i, versionRegex: null },
+      { name: "FreeBSD", regex: /FreeBSD/i, versionRegex: null },
+      { name: "OpenBSD", regex: /OpenBSD/i, versionRegex: null },
+      { name: "NetBSD", regex: /NetBSD/i, versionRegex: null }
 
-  for (const { name, regex, versionRegex } of osMap) {
-    if (regex.test(userAgent) || regex.test(platform)) {
-      let version = "Unknown";
-      if (versionRegex) {
-        const match = userAgent.match(versionRegex);
-        if (match) {
-          version = match[1].replace(/_/g, ".");  // Replace underscores with dots for consistency
+    ];
+
+    for (const { name, regex, versionRegex } of osMap) {
+      if (regex.test(userAgent) || regex.test(platform)) {
+        let version = "Unknown";
+        if (versionRegex) {
+          const match = userAgent.match(versionRegex);
+          if (match) {
+            version = match[1].replace(/_/g, ".");  // Replace underscores with dots for consistency
+          }
         }
+        return { os: name, osVersion: version };
       }
-      return { os: name, osVersion: version };
     }
-  }
 
-  return { os: "Unknown", osVersion: "Unknown" }; // If the platform is not recognized, return 'Unknown'
+    return { os: "Unknown", osVersion: "Unknown" }; // If the platform is not recognized, return 'Unknown'
+  } catch (error) {
+    console.log("Error : ", error);
+
+  }
 }
 
 // Function to detect the user's browser
 function getBrowser() {
-  console.log("getbrowser");
-  const ua = navigator.userAgent.toLowerCase();
-  let browser, versionMatch, browserVersion;
-  if (ua.includes("edg")) {
-    browser = "Edge";
-    versionMatch = ua.match(/edg[\/\s](\d+(\.\d+)?)/);
-    browserVersion = versionMatch ? versionMatch[1] : "Unknown";
-    return {
-      browser: browser,
-      browserVersion: browserVersion
+  try {
+    console.log("getbrowser");
+    const ua = navigator.userAgent.toLowerCase();
+    let browser, versionMatch, browserVersion;
+    if (ua.includes("edg")) {
+      browser = "Edge";
+      versionMatch = ua.match(/edg[\/\s](\d+(\.\d+)?)/);
+      browserVersion = versionMatch ? versionMatch[1] : "Unknown";
+      return {
+        browser: browser,
+        browserVersion: browserVersion
+      }
     }
-  }
-  if (ua.includes("opr") || ua.includes("opera")) {
-    browser = "Opera";
-    versionMatch = ua.match(/(?:opera|opr)[\/\s](\d+(\.\d+)?)/);
-    browserVersion = versionMatch ? versionMatch[1] : "Unknown";
-    return {
-      browser: browser,
-      browserVersion: browserVersion
+    if (ua.includes("opr") || ua.includes("opera")) {
+      browser = "Opera";
+      versionMatch = ua.match(/(?:opera|opr)[\/\s](\d+(\.\d+)?)/);
+      browserVersion = versionMatch ? versionMatch[1] : "Unknown";
+      return {
+        browser: browser,
+        browserVersion: browserVersion
+      }
+    } if (ua.includes("vivaldi")) {
+      browser = "Vivaldi";
+      versionMatch = ua.match(/vivaldi[\/\s](\d+(\.\d+)?)/);
+      browserVersion = versionMatch ? versionMatch[1] : "Unknown";
+      return {
+        browser: browser,
+        browserVersion: browserVersion
+      }
+    } if (ua.includes("brave")) {
+      browser = "Brave";
+      versionMatch = ua.match(/chrome[\/\s](\d+(\.\d+)?)/); // Brave uses Chromium
+      browserVersion = versionMatch ? versionMatch[1] : "Unknown";
+      return {
+        browser: browser,
+        browserVersion: browserVersion
+      }
+    } if (ua.includes("samsung")) {
+      browser = "Samsung Internet";
+      versionMatch = ua.match(/samsungbrowser[\/\s](\d+(\.\d+)?)/);
+      browserVersion = versionMatch ? versionMatch[1] : "Unknown";
+      return {
+        browser: browser,
+        browserVersion: browserVersion
+      }
+    } if (ua.includes("firefox")) {
+      browser = "Firefox";
+      versionMatch = ua.match(/firefox[\/\s](\d+(\.\d+)?)/);
+      browserVersion = versionMatch ? versionMatch[1] : "Unknown";
+      return {
+        browser: browser,
+        browserVersion: browserVersion
+      }
+    } if (ua.includes("chrome")) {
+      browser = "Chrome";
+      versionMatch = ua.match(/chrome[\/\s](\d+(\.\d+)?)/);
+      browserVersion = versionMatch ? versionMatch[1] : "Unknown";
+      return {
+        browser: browser,
+        browserVersion: browserVersion
+      }
+    } if (ua.includes("safari")) {
+      browser = "Safari";
+      versionMatch = ua.match(/version[\/\s](\d+(\.\d+)?)/);
+      browserVersion = versionMatch ? versionMatch[1] : "Unknown";
+      return {
+        browser: browser,
+        browserVersion: browserVersion
+      }
+    } if (ua.includes("msie") || ua.includes("trident")) {
+      browser = "IE";
+      versionMatch = ua.match(/(?:msie |rv:)(\d+(\.\d+)?)/);
+      browserVersion = versionMatch ? versionMatch[1] : "Unknown";
+      return {
+        browser: browser,
+        browserVersion: browserVersion
+      }
+    } else {
+      return {
+        browser: "Unknown",
+        browserVersion: "Unknown"
+      }
     }
-  } if (ua.includes("vivaldi")) {
-    browser = "Vivaldi";
-    versionMatch = ua.match(/vivaldi[\/\s](\d+(\.\d+)?)/);
-    browserVersion = versionMatch ? versionMatch[1] : "Unknown";
-    return {
-      browser: browser,
-      browserVersion: browserVersion
-    }
-  } if (ua.includes("brave")) {
-    browser = "Brave";
-    versionMatch = ua.match(/chrome[\/\s](\d+(\.\d+)?)/); // Brave uses Chromium
-    browserVersion = versionMatch ? versionMatch[1] : "Unknown";
-    return {
-      browser: browser,
-      browserVersion: browserVersion
-    }
-  } if (ua.includes("samsung")) {
-    browser = "Samsung Internet";
-    versionMatch = ua.match(/samsungbrowser[\/\s](\d+(\.\d+)?)/);
-    browserVersion = versionMatch ? versionMatch[1] : "Unknown";
-    return {
-      browser: browser,
-      browserVersion: browserVersion
-    }
-  } if (ua.includes("firefox")) {
-    browser = "Firefox";
-    versionMatch = ua.match(/firefox[\/\s](\d+(\.\d+)?)/);
-    browserVersion = versionMatch ? versionMatch[1] : "Unknown";
-    return {
-      browser: browser,
-      browserVersion: browserVersion
-    }
-  } if (ua.includes("chrome")) {
-    browser = "Chrome";
-    versionMatch = ua.match(/chrome[\/\s](\d+(\.\d+)?)/);
-    browserVersion = versionMatch ? versionMatch[1] : "Unknown";
-    return {
-      browser: browser,
-      browserVersion: browserVersion
-    }
-  } if (ua.includes("safari")) {
-    browser = "Safari";
-    versionMatch = ua.match(/version[\/\s](\d+(\.\d+)?)/);
-    browserVersion = versionMatch ? versionMatch[1] : "Unknown";
-    return {
-      browser: browser,
-      browserVersion: browserVersion
-    }
-  } if (ua.includes("msie") || ua.includes("trident")) {
-    browser = "IE";
-    versionMatch = ua.match(/(?:msie |rv:)(\d+(\.\d+)?)/);
-    browserVersion = versionMatch ? versionMatch[1] : "Unknown";
-    return {
-      browser: browser,
-      browserVersion: browserVersion
-    }
-  } else {
-    return {
-      browser: "Unknown",
-      browserVersion: "Unknown"
-    }
+  } catch (error) {
+    console.log("Error : ", error);
+
   }
 }
 
@@ -325,35 +381,17 @@ async function getLocation() {
     if (locationFlag) {
       return JSON.parse(sessionStorage.getItem("locationObj"))
     }
-
     // Fetch location data from the IPInfo API
-    // const response = await fetch('https://ipinfo.io/json?token=18ac67736ea79a');
     const response = await fetch('https://ipinfo.io/json?token=18ac67736ea79a');
-    if (response.ok) {
-      const data = await response.json();  // Parse the JSON response
-      // Return location data (country, region, city) or 'Unknown' if any data is missing
-      let locationObj = {
-        country: data.country || 'Unknown',
-        region: data.region || 'Unknown',
-        city: data.city || 'Unknown'
-      };
-      sessionStorage.setItem("locationObj", JSON.stringify(locationObj));
-      return locationObj;
-    } else {
-      let locationObj = {
-        country: 'Unknown',
-        region: 'Unknown',
-        city: 'Unknown'
-      };
-      sessionStorage.setItem("locationObj", JSON.stringify(locationObj));
-      if (response.status >= 400 && response.status < 600) {
-
-        await errorEvent(response.status);
-
-      }
-      return locationObj;
-    }
-
+    const data = await response.json();  // Parse the JSON response
+    // Return location data (country, region, city) or 'Unknown' if any data is missing
+    let locationObj = {
+      country: data.country || 'Unknown',
+      region: data.region || 'Unknown',
+      city: data.city || 'Unknown'
+    };
+    sessionStorage.setItem("locationObj", JSON.stringify(locationObj));
+    return locationObj;
   } catch (error) {
     // Handle any errors that occur during the fetch
     let locationObj = {
@@ -363,61 +401,75 @@ async function getLocation() {
     };
     console.log('Error fetching location data', error);
     sessionStorage.setItem("locationObj", JSON.stringify(locationObj));
-    await errorEvent(error.message)
     return locationObj;
   }
 }
 async function getUserInfo(additionalData = {}) {
-  const locationData = await getLocation();
-  const deviceInfo = getDeviceType();
-  const browserInfo = getBrowser();
-  const osInfo = getOS();
-  userObj = {
-    userId: userID, // The unique user ID (retrieved from cookies)
-    customerId: additionalData.customerId || customerId, // The customer ID (retrieved from cookies)
-    gaId: getGAClientId() || '', // Google Analytics client ID (if available)
-    loggedIn: loggedIn || '', // Whether the user is logged in (from dataLayer or cookies)
-    type: type, // Type of user (mobile/desktop, from dataLayer or cookies)
-    segment: segment, // The user's segment (from dataLayer or cookies)
-    device: deviceInfo.deviceType, // The device type (mobile/desktop)
-    screenWidth: deviceInfo.screenWidth,
-    screenHeight: deviceInfo.screenHeight,
-    os: osInfo.os, // The user's operating system (e.g., Windows, macOS)
-    osVersion: osInfo.osVersion,
-    browser: browserInfo.browser, // The browser being used (e.g., Chrome, Firefox)
-    browserversion: browserInfo.browserVersion,
-    location: {
-      country: locationData.country, // Country from location data
-      region: locationData.region, // Region from location data
-      city: locationData.city // City from location data
+  try {
+    const locationData = await getLocation();
+    const deviceInfo = getDeviceType();
+    const browserInfo = getBrowser();
+    const osInfo = getOS();
+    userObj = {
+      userId: userID, // The unique user ID (retrieved from cookies)
+      customerId: additionalData.customerId || customerId, // The customer ID (retrieved from cookies)
+      gaId: getGAClientId() || '', // Google Analytics client ID (if available)
+      loggedIn: loggedIn || '', // Whether the user is logged in (from dataLayer or cookies)
+      type: type, // Type of user (mobile/desktop, from dataLayer or cookies)
+      segment: segment, // The user's segment (from dataLayer or cookies)
+      device: deviceInfo.deviceType, // The device type (mobile/desktop)
+      screenWidth: deviceInfo.screenWidth,
+      screenHeight: deviceInfo.screenHeight,
+      os: osInfo.os, // The user's operating system (e.g., Windows, macOS)
+      osVersion: osInfo.osVersion,
+      browser: browserInfo.browser, // The browser being used (e.g., Chrome, Firefox)
+      browserversion: browserInfo.browserVersion,
+      location: {
+        country: locationData.country, // Country from location data
+        region: locationData.region, // Region from location data
+        city: locationData.city // City from location data
+      }
     }
-  }
-  localStorage.setItem("userObject", JSON.stringify(userObj));
+    localStorage.setItem("userObject", JSON.stringify(userObj));
+  } catch (error) {
+    console.log("Error : ", error);
 
+  }
 }
 
 async function getPageInfo(additionalData = {}) {
-  console.log(" getPageInfo ", window.location);
-  pageObj = {
-    pageUrl: window.location.href, // The full URL of the page
-    pageTitle: document.title, // The title of the page
-    pageReferrer: document.referrer, // The referrer URL (if available)
-    pagePath: window.location.pathname, // The path portion of the URL (e.g., "/home")
-    pageHostname: window.location.hostname, // The hostname (e.g., "example.com")
-    pageLanguage: navigator.language || '', // Language setting of the user's browser
-    pageContentType: pageContentType, // The content type (retrieved from dataLayer or cookies)
-    pageName: additionalData.pageName || pageName || '', // The name of the page (can be passed in as a parameter)
-    environment: pageEnvironment // The environment (e.g., production, staging) from dataLayer
+  try {
+    console.log(" getPageInfo ", window.location);
+    pageObj = {
+      pageUrl: window.location.href, // The full URL of the page
+      pageTitle: document.title, // The title of the page
+      pageReferrer: document.referrer, // The referrer URL (if available)
+      pagePath: window.location.pathname, // The path portion of the URL (e.g., "/home")
+      pageHostname: window.location.hostname, // The hostname (e.g., "example.com")
+      pageLanguage: navigator.language || '', // Language setting of the user's browser
+      pageContentType: pageContentType, // The content type (retrieved from dataLayer or cookies)
+      pageName: additionalData.pageName || pageName || '', // The name of the page (can be passed in as a parameter)
+      pageLoadTime: performance.now() || '',
+      environment: pageEnvironment // The environment (e.g., production, staging) from dataLayer
+    }
+    localStorage.setItem("pageObject", JSON.stringify(pageObj));
+  } catch (error) {
+    console.log("Error : ", error);
+
   }
-  localStorage.setItem("pageObject", JSON.stringify(pageObj));
 }
 
 function checkCookie(cookieName) {
-  // Get all cookies as a single string
-  const cookies = document.cookie;
-  // Check if the cookie name exists in the cookies string
-  const cookieExists = cookies.split(';').some(cookie => cookie.trim().startsWith(`${cookieName}=`));
-  return cookieExists;
+  try {
+    // Get all cookies as a single string
+    const cookies = document.cookie;
+    // Check if the cookie name exists in the cookies string
+    const cookieExists = cookies.split(';').some(cookie => cookie.trim().startsWith(`${cookieName}=`));
+    return cookieExists;
+  } catch (error) {
+    console.log("Error : ", error);
+
+  }
 }
 let domainArray = ['example.com', 'vercel.app', 'anotherdomain.com']
 // Function to structure the consent payload
@@ -429,8 +481,6 @@ async function consentPayload(allConsented, allConsentsGiven, cmpId, gdprApplies
     let vendorPurposes = [];
     let vendorPurpose = {};
     let trackStatus = allConsentsGiven ? 'optedIn' : 'optedOut';
-    //consentTrack = allConsentsGiven;
-      //setPersistentCookie('consentTrack', allConsentsGiven);
     console.log(" trackStatus ", trackStatus, " allConsentsGiven ", allConsentsGiven);
     userID = getCookie('userID');
     sessionID = getCookie('sessionID');
@@ -454,7 +504,7 @@ async function consentPayload(allConsented, allConsentsGiven, cmpId, gdprApplies
           setPersistentCookie('rdUserId', referenceDomainUserId, 365);
         }
       }
-     
+
     }
     document.querySelectorAll('a').forEach(link => {
       let url = new URL(link.href);
@@ -517,12 +567,9 @@ async function consentPayload(allConsented, allConsentsGiven, cmpId, gdprApplies
       userId: userID
     };
     return cmpEventData
-    console.log(" cmpEventData ", cmpEventData);
-  }
-  catch (error) {
-    console.log("Error list:", error);
-    await errorEvent(error.message)
-    return null;
+  } catch (error) {
+    console.log("Error : ", error);
+
   }
 };
 
@@ -531,9 +578,6 @@ async function getVendorList(vendorPurposeConsents) {
   try {
     const response = await fetch('https://cdn.cookielaw.org/vendorlist/iab2Data.json');
     if (!response.ok) {
-      if (response.status >= 400 && response.status < 600) {
-        await errorEvent(response.status);
-      }
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
     var data = await response.json();
@@ -559,28 +603,31 @@ async function getVendorList(vendorPurposeConsents) {
     console.log(userVendorConsentedPurposes)
     return userVendorConsentedPurposes;
   } catch (error) {
-    console.log("Error fetching vendor list:", error);
-    await errorEvent(error.message)
-    return null;
+    console.log("Error : ", error);
   }
 };
 
 // Function to check if all required consents are given
 function hasAllConsents(allConsented) {
-  // Mandatory purposes
-  const requiredPurposeIds = [
-    "1", // Store and/or access information on a device
-    "3", // Create profiles for personalised advertising
-    "4" //,  // Use profiles to select personalised advertising
-    //"5",  // Create profiles to personalise content
-    //"6",  // Use profiles to select personalised content
-    //"9",  // Understand audiences through statistics
-    //"10"   // Develop and improve services
-  ];
+  try {
+    // Mandatory purposes
+    const requiredPurposeIds = [
+      "1", // Store and/or access information on a device
+      "3", // Create profiles for personalised advertising
+      "4" //,  // Use profiles to select personalised advertising
+      //"5",  // Create profiles to personalise content
+      //"6",  // Use profiles to select personalised content
+      //"9",  // Understand audiences through statistics
+      //"10"   // Develop and improve services
+    ];
 
-  // Check if each required purpose ID is present in the allConsented array
-  return requiredPurposeIds.every(purposeId =>
-    allConsented.some(p => p.Id === purposeId));
+    // Check if each required purpose ID is present in the allConsented array
+    return requiredPurposeIds.every(purposeId =>
+      allConsented.some(p => p.Id === purposeId));
+  } catch (error) {
+    console.log("Error : ", error);
+
+  }
 }
 
 const callback = (tcData, success) => {
@@ -806,22 +853,22 @@ const callback = (tcData, success) => {
           }
 
           console.log("consentTrack 1 ", consentTrack)
-          if(allConsentsGiven){
-           let userObjFlag = localStorage.getItem("userObject");
-      if (userObjFlag) {
-        userObj = JSON.parse(localStorage.getItem("userObject"))
-      }
-      else {
-        await getUserInfo();
-      }
-      let pageObjFlag = localStorage.getItem("pageObject");
-      if (pageObjFlag) {
-        pageObj = JSON.parse(localStorage.getItem("pageObject"))
-      }
-      else {
-        await getPageInfo();
-      }
-}
+          if (allConsentsGiven) {
+            let userObjFlag = localStorage.getItem("userObject");
+            if (userObjFlag) {
+              userObj = JSON.parse(localStorage.getItem("userObject"))
+            }
+            else {
+              await getUserInfo();
+            }
+            let pageObjFlag = localStorage.getItem("pageObject");
+            if (pageObjFlag) {
+              pageObj = JSON.parse(localStorage.getItem("pageObject"))
+            }
+            else {
+              await getPageInfo();
+            }
+          }
         } else {
           console.log('Failed to retrieve consent data. Success flag is false.');
 
@@ -836,24 +883,29 @@ const callback = (tcData, success) => {
 
       })
     }
-  }
-  catch (error) {
-    console.log("Error create event dara:", error);
+  } catch (error) {
+    console.log("Error : ", error);
+
   }
 };
 
 function waitForTCFAPI(callback, retries = 10, interval = 500) {
-  let attempts = 0;
-  let check = setInterval(() => {
-    if (typeof window.__tcfapi === "function") {
-      clearInterval(check);
-       callback();
-    } else if (attempts >= retries) {
-      clearInterval(check);
-      console.error("_tcfapi did not become available.");
-    }
-    attempts++;
-  }, interval);
+  try {
+    let attempts = 0;
+    let check = setInterval(() => {
+      if (typeof window.__tcfapi === "function") {
+        clearInterval(check);
+        callback();
+      } else if (attempts >= retries) {
+        clearInterval(check);
+        console.error("_tcfapi did not become available.");
+      }
+      attempts++;
+    }, interval);
+  } catch (error) {
+    console.log("Error : ", error);
+
+  }
 }
 waitForTCFAPI(() => {
   console.log("_tcfapi is ready!");
@@ -887,12 +939,13 @@ async function createEventData(eventname, eventCategory, additionalData = {}) {
     if (rdUserID) {
       eventData.userInfo.rdUserId = rdUserID
     }
+    if (eventCategory == "Low Page speed") {
+      eventData.eventInfo.pageLoadTime = performance.now() || ''
+    }
     return eventData;
-  }
-  catch (error) {
-    console.log("Error create event dara:", error);
-    await errorEvent(error.message)
-    return null;
+  } catch (error) {
+    console.log("Error : ", error);
+
   }
 };
 
@@ -915,81 +968,92 @@ async function createEventData(eventname, eventCategory, additionalData = {}) {
 
   // Function to track a "Page View" event asynchronously
   analytics.pageView = async function (pageName = '', properties = {}) {
-    console.log(" analytics.pageView consentTrack ", consentTrack)
-    if (consentTrack) {
-      console.log("analytics.pageview")
-      await getPageInfo({ pageName, ...properties })
-      var eventData = await createEventData("page View", "page", { pageName, ...properties })
-      // Push the event data into the analytics array for tracking
-      const eventProperties = { ...properties };
-      // Include the additional properties in the event data under pageInfo
-      eventData = {
-        ...eventData,
-        pageInfo: {
-          ...eventData.pageInfo,
-          properties: eventProperties // Add the additional properties here
-        }
-      };
+    try {
+      console.log(" analytics.pageView consentTrack ", consentTrack)
+      if (consentTrack) {
+        console.log("analytics.pageview")
+        await getPageInfo({ pageName, ...properties })
+        var eventData = await createEventData("page View", "page", { pageName, ...properties })
+        // Push the event data into the analytics array for tracking
+        const eventProperties = { ...properties };
+        // Include the additional properties in the event data under pageInfo
+        eventData = {
+          ...eventData,
+          pageInfo: {
+            ...eventData.pageInfo,
+            properties: eventProperties // Add the additional properties here
+          }
+        };
 
-      pageObj = eventData.pageInfo;
-      localStorage.setItem("pageObject", JSON.stringify(eventData.pageInfo));
-      analytics.push(['page', eventData]);
-      console.log("analytics.pageview eventData ", eventData);
-      // Send the event data to an API for further processing or storage
-      analytics.sendEventToAPI(eventData);
+        pageObj = eventData.pageInfo;
+        localStorage.setItem("pageObject", JSON.stringify(eventData.pageInfo));
+        analytics.push(['page', eventData]);
+        console.log("analytics.pageview eventData ", eventData);
+        // Send the event data to an API for further processing or storage
+        analytics.sendEventToAPI(eventData);
+      }
+    } catch (error) {
+      console.log("Error : ", error);
     }
   }
   // Function to track "User Identity" events
   analytics.userIdentity = async function (customerId = '', properties = {}) {
-    console.log(" analytics.userIdentity consentTrack ", consentTrack)
-    if (consentTrack) {
-      await getUserInfo({ customerId, ...properties })
-      console.log("analytics.useridentity userObj ", userObj);
-      var eventData = await createEventData("User Identity", "user", { customerId, ...properties });
-      // Merge any additional properties passed into the function with the userInfo properties
-      const eventProperties = { ...properties };
-      // Include the additional properties in the event data under userInfo
-      eventData = {
-        ...eventData,
-        userInfo: {
-          ...eventData.userInfo,
-          properties: eventProperties // Add the extra properties to the userInfo section
-        }
-      };
-      userObj = eventData.userInfo;
-      localStorage.setItem("userObject", JSON.stringify(eventData.userInfo));
+    try {
+      console.log(" analytics.userIdentity consentTrack ", consentTrack)
+      if (consentTrack) {
+        await getUserInfo({ customerId, ...properties })
+        console.log("analytics.useridentity userObj ", userObj);
+        var eventData = await createEventData("User Identity", "user", { customerId, ...properties });
+        // Merge any additional properties passed into the function with the userInfo properties
+        const eventProperties = { ...properties };
+        // Include the additional properties in the event data under userInfo
+        eventData = {
+          ...eventData,
+          userInfo: {
+            ...eventData.userInfo,
+            properties: eventProperties // Add the extra properties to the userInfo section
+          }
+        };
+        userObj = eventData.userInfo;
+        localStorage.setItem("userObject", JSON.stringify(eventData.userInfo));
 
-      // Push the event data to the analytics array for tracking (this will be processed by analytics services)
-      analytics.push(['track', eventData]);
-      console.log("analytics.userIdentity eventData ", eventData);
-      // Send the event data to an API (for server-side tracking or storage)
-      analytics.sendEventToAPI(eventData);
-    };
+        // Push the event data to the analytics array for tracking (this will be processed by analytics services)
+        analytics.push(['track', eventData]);
+        console.log("analytics.userIdentity eventData ", eventData);
+        // Send the event data to an API (for server-side tracking or storage)
+        analytics.sendEventToAPI(eventData);
+      };
+    } catch (error) {
+      console.log("Error : ", error);
+    }
   }
 
   // Function to track a custom event
   analytics.trackCustomEvent = async function (eventName, properties = {}) {
-    console.log(" analytics.trackCustomEvent consentTrack ", consentTrack)
-    if (consentTrack) {
-      var eventData = await createEventData(eventName, "custom event", properties);
-      // Merge any custom properties passed into the function with the event data
-      const eventProperties = { ...properties };
-      // Add the custom properties to the event data (specifically to eventInfo)
-      eventData = {
-        ...eventData,
-        eventInfo: {
-          ...eventData.eventInfo,
-          properties: eventProperties // Add custom properties to the eventInfo object
-        }
+    try {
+      console.log(" analytics.trackCustomEvent consentTrack ", consentTrack)
+      if (consentTrack) {
+        var eventData = await createEventData(eventName, "custom event", properties);
+        // Merge any custom properties passed into the function with the event data
+        const eventProperties = { ...properties };
+        // Add the custom properties to the event data (specifically to eventInfo)
+        eventData = {
+          ...eventData,
+          eventInfo: {
+            ...eventData.eventInfo,
+            properties: eventProperties // Add custom properties to the eventInfo object
+          }
+        };
+        // Push the event data to the analytics array for tracking purposes
+        analytics.push(['track', eventData]);
+        console.log("analytics.trackCustomEvent eventData ", eventData);
+        // Send the event data to an API for further processing or storage
+        analytics.sendEventToAPI(eventData);
       };
-      // Push the event data to the analytics array for tracking purposes
-      analytics.push(['track', eventData]);
-      console.log("analytics.trackCustomEvent eventData ", eventData);
-      // Send the event data to an API for further processing or storage
-      analytics.sendEventToAPI(eventData);
-    };
+    } catch (error) {
+      console.log("Error : ", error);
+    }
   }
-
   // Function to send event data to an API
   analytics.sendEventToAPI = async function (eventData) {
     try {
@@ -1012,8 +1076,7 @@ async function createEventData(eventname, eventCategory, additionalData = {}) {
       // Log success message with the API response
       console.log('Event tracked successfully', result);
     } catch (error) {
-      // Log any errors that occur during the API request
-      console.error('Error tracking event:', error);
+      console.log(" Error : ", error);
     }
   };
 }());
@@ -1027,12 +1090,6 @@ let automaticTracking = true;
 async function sendEventToAPI(eventData) {
   console.log("sendEventToAPI 1")
   try {
-    // Check if the event is in the allowed list
-    // if (!allowedEvents.includes(eventData?.eventInfo?.eventName)) {
-    //   console.log('Event not allowed:', eventData?.eventInfo?.eventName); // Log if event is not allowed
-    //   return;  // Do not send the event if it's not in the allowed list
-    // }
-
     // Send the event data to the API using a POST request
     const response = await fetch('https://web-analytics-dot-uxlwqzc-cdip-sandbox-test.uc.r.appspot.com/sendevent', {
       method: 'POST',
@@ -1048,29 +1105,28 @@ async function sendEventToAPI(eventData) {
       const result = await response.json();  // Parse the JSON response
       console.log('Event tracked successfully:', result);  // Log the success
     } else {
-      if (response.status >= 400 && response.status < 600) {
-        // Trigger errorEvent for 4xx and 5xx status codes
-        await errorEvent(response.status);
-      }
-      throw new Error(`HTTP error! Status: ${response.status}`);
+      console.error('Error sending data:', response.statusText);  // Log an error if the request failed
     }
   } catch (error) {
-    // Handle any errors that occur during the fetch
-    console.error('Error tracking event:', error);
-    await errorEvent(error.message)
+    console.log("Error : ", error);
   }
+
 }
 async function errorEvent(eventCategory) {
-  debugger;
-  if (consentTrack) {
-    let eventName = "Error Event"
-    if (eventCategory == "Low Page speed") {
-      eventName = "Page Permormance Issue"
+  try {
+    if (consentTrack) {
+      let eventName = "Errors"
+      if (eventCategory == "Low Page speed") {
+        eventName = "Page Performance Issue"
+      }
+      var eventData = await createEventData(eventName, eventCategory)
+      console.log("errorEvent eventData ", eventData);
+      await sendEventToAPI(eventData);
     }
-    var eventData = await createEventData(eventName, eventCategory)
-    console.log("errorEvent eventData ", eventData);
-    await sendEventToAPI(eventData);
+  } catch (error) {
+    console.log("Error : ", error);
   }
+
 }
 
 //  if (automaticTracking === true && consentanalytics === true) {
@@ -1079,21 +1135,18 @@ if (automaticTracking === true) {
   async function trackPageView() {
     try {
       console.log(" trackPageView consentTrack ", consentTrack)
-     if(consentTrack){
-    await  getPageInfo();
-var eventData = await createEventData("Page View", "page"); 
-   console.log("trackPageView eventData ", eventData);
-   console.log("trackPageView eventData.pageInfo ", JSON.stringify(eventData.pageInfo));
-   pageObj=eventData.pageInfo;
-   localStorage.setItem("pageObject", JSON.stringify(eventData.pageInfo));
-
-// Send the event data to the dataLayer
-await sendEventToAPI(eventData);
-   }
-    }
-    catch (error) {
-      console.log("Error trackPageView:", error);
-      await errorEvent(error.message)
+      if (consentTrack) {
+        await getPageInfo();
+        var eventData = await createEventData("Page View", "page");
+        console.log("trackPageView eventData ", eventData);
+        console.log("trackPageView eventData.pageInfo ", JSON.stringify(eventData.pageInfo));
+        pageObj = eventData.pageInfo;
+        localStorage.setItem("pageObject", JSON.stringify(eventData.pageInfo));
+        // Send the event data to the dataLayer
+        await sendEventToAPI(eventData);
+      }
+    } catch (error) {
+      console.log("Error : ", error);
     }
   }
 
@@ -1102,42 +1155,46 @@ await sendEventToAPI(eventData);
 
   // Function to track scroll depth
   function trackScroll() {
-    console.log(" trackScroll consentTrack ", consentTrack)
-    console.log("trackscroll")
+    try {
+      console.log(" trackScroll consentTrack ", consentTrack)
+      console.log("trackscroll")
 
-    // Add an event listener to the scroll event
-    window.addEventListener('scroll', function () {
-      // Calculate the current scroll position (distance from top) + visible window height
-      const scrollPosition = window.scrollY + window.innerHeight;
+      // Add an event listener to the scroll event
+      window.addEventListener('scroll', function () {
+        // Calculate the current scroll position (distance from top) + visible window height
+        const scrollPosition = window.scrollY + window.innerHeight;
 
-      // Get the total height of the document (including the part that isn't visible)
-      const documentHeight = document.documentElement.scrollHeight;
+        // Get the total height of the document (including the part that isn't visible)
+        const documentHeight = document.documentElement.scrollHeight;
 
-      // Calculate the percentage of the page that has been scrolled
-      const scrollPercent = (scrollPosition / documentHeight) * 100;
-      if (consentTrack) {
-        // If the user has scrolled past 99.9% and the 100% event hasn't been tracked yet
-        if (scrollPercent >= 99.9 && !scrollTracked[100]) {
-          sendScrollEvent(100);  // Send event for 100% scroll depth
-          scrollTracked[100] = true;  // Mark that 100% has been tracked
-        }
-        // If the user has scrolled between 75% and 99.9% and the 75% event hasn't been tracked yet
-        else if (scrollPercent >= 75 && scrollPercent < 100 && !scrollTracked[75]) {
-          sendScrollEvent(75);  // Send event for 75% scroll depth
-          scrollTracked[75] = true;  // Mark that 75% has been tracked
-        }
-        // If the user has scrolled between 50% and 75% and the 50% event hasn't been tracked yet
-        else if (scrollPercent >= 50 && scrollPercent < 75 && !scrollTracked[50]) {
-          sendScrollEvent(50);  // Send event for 50% scroll depth
-          scrollTracked[50] = true;  // Mark that 50% has been tracked
-        }
-        // If the user has scrolled between 25% and 50% and the 25% event hasn't been tracked yet
-        else if (scrollPercent >= 25 && scrollPercent < 50 && !scrollTracked[25]) {
-          sendScrollEvent(25);  // Send event for 25% scroll depth
-          scrollTracked[25] = true;  // Mark that 25% has been tracked
-        }
-      };
-    });
+        // Calculate the percentage of the page that has been scrolled
+        const scrollPercent = (scrollPosition / documentHeight) * 100;
+        if (consentTrack) {
+          // If the user has scrolled past 99.9% and the 100% event hasn't been tracked yet
+          if (scrollPercent >= 99.9 && !scrollTracked[100]) {
+            sendScrollEvent(100);  // Send event for 100% scroll depth
+            scrollTracked[100] = true;  // Mark that 100% has been tracked
+          }
+          // If the user has scrolled between 75% and 99.9% and the 75% event hasn't been tracked yet
+          else if (scrollPercent >= 75 && scrollPercent < 100 && !scrollTracked[75]) {
+            sendScrollEvent(75);  // Send event for 75% scroll depth
+            scrollTracked[75] = true;  // Mark that 75% has been tracked
+          }
+          // If the user has scrolled between 50% and 75% and the 50% event hasn't been tracked yet
+          else if (scrollPercent >= 50 && scrollPercent < 75 && !scrollTracked[50]) {
+            sendScrollEvent(50);  // Send event for 50% scroll depth
+            scrollTracked[50] = true;  // Mark that 50% has been tracked
+          }
+          // If the user has scrolled between 25% and 50% and the 25% event hasn't been tracked yet
+          else if (scrollPercent >= 25 && scrollPercent < 50 && !scrollTracked[25]) {
+            sendScrollEvent(25);  // Send event for 25% scroll depth
+            scrollTracked[25] = true;  // Mark that 25% has been tracked
+          }
+        };
+      });
+    } catch (error) {
+      console.log("Error : ", error);
+    }
   }
 
   // Function to send scroll data to tracking platforms (e.g., Google Analytics, API)
@@ -1151,8 +1208,7 @@ await sendEventToAPI(eventData);
         await sendEventToAPI(eventData);
       }
     } catch (error) {
-      console.log("Error sendScrollEvent:", error);
-      await errorEvent(error.message)
+      console.log("Error : ", error);
     }
   }
 
@@ -1172,99 +1228,127 @@ await sendEventToAPI(eventData);
         await sendEventToAPI(eventData);
       }
     } catch (error) {
-      console.log("Error trackButtonClick:", error);
-      await errorEvent(error.message)
+      console.log("Error : ", error);
     }
   }
 
   function trackIframeVideos() {
-    console.log(" trackIframeVideos consentTrack ", consentTrack)
-    if (consentTrack) {
-      console.log("trackIframeVideos");
-      // Check for YouTube or Vimeo iframe
-      document.querySelectorAll('iframe').forEach(iframe => {
-        let src = iframe.src;
-        if (src.includes("youtube.com") || src.includes("youtu.be")) {
-          setupYouTubeTracking(iframe);
-        } else if (src.includes("vimeo.com")) {
-          setupVimeoTracking(iframe);
-        }
-      });
+    try {
+      console.log(" trackIframeVideos consentTrack ", consentTrack)
+      if (consentTrack) {
+        console.log("trackIframeVideos");
+        // Check for YouTube or Vimeo iframe
+        document.querySelectorAll('iframe').forEach(iframe => {
+          let src = iframe.src;
+          if (src.includes("youtube.com") || src.includes("youtu.be")) {
+            setupYouTubeTracking(iframe);
+          } else if (src.includes("vimeo.com")) {
+            setupVimeoTracking(iframe);
+          }
+        });
+      }
+    } catch (error) {
+      console.log("Error : ", error);
     }
   }
   function setupYouTubeTracking(iframe) {
-    console.log("setupYouTubeTracking");
-    if (!iframe.id) {
-      iframe.id = "yt-" + Math.random().toString(36).substr(2, 9); // Assign a unique ID if missing
-    }
-    let tag = document.createElement('script');
-    tag.src = "https://www.youtube.com/iframe_api";
-    document.head.appendChild(tag);
+    try {
+      console.log("setupYouTubeTracking");
+      if (!iframe.id) {
+        iframe.id = "yt-" + Math.random().toString(36).substr(2, 9); // Assign a unique ID if missing
+      }
+      let tag = document.createElement('script');
+      tag.src = "https://www.youtube.com/iframe_api";
+      document.head.appendChild(tag);
 
-    window.onYouTubeIframeAPIReady = function () {
-      let player = new YT.Player(iframe.id, {
-        events: {
-          'onStateChange': function (event) {
-            if (event.data === YT.PlayerState.PLAYING) {
-              trackButtonClick(event); // Call your tracking function here
+      window.onYouTubeIframeAPIReady = function () {
+        let player = new YT.Player(iframe.id, {
+          events: {
+            'onStateChange': function (event) {
+              if (event.data === YT.PlayerState.PLAYING) {
+                trackButtonClick(event); // Call your tracking function here
+              }
             }
           }
-        }
-      });
-    };
+        });
+      };
+    } catch (error) {
+      console.log("Error : ", error);
+    }
   }
 
   function setupVimeoTracking(iframe) {
-    console.log("setupVimeoTracking");
-    // let player = new Vimeo.Player(iframe);
-    // player.on('play', function(event) {
-    // trackButtonClick(event); // Call your tracking function here
-    // });
+    try {
+      console.log("setupVimeoTracking");
+      // let player = new Vimeo.Player(iframe);
+      // player.on('play', function(event) {
+      // trackButtonClick(event); // Call your tracking function here
+      // });
+    } catch (error) {
+      console.log("Error : ", error);
+    }
   }
   document.addEventListener('DOMContentLoaded', function () {
-    console.log("addEventListener  DOMContentLoaded ")
-    // Track page view and scroll events after the DOM is loaded
-    trackPageView();  // Track page load (page view event)
-    trackScroll();    // Track scroll events (scroll depth tracking)
-    trackIframeVideos();
+    try {
+      console.log("addEventListener  DOMContentLoaded ")
+      // Track page view and scroll events after the DOM is loaded
+      trackPageView();  // Track page load (page view event)
+      trackScroll();    // Track scroll events (scroll depth tracking)
+      trackIframeVideos();
 
-    document.addEventListener('click', function (event) {
-      let target = event.target.closest('button, iframe, a, [role="button"], img[onclick], [onclick]'); // Get the nearest element
-      if (target) {
-        trackButtonClick(event);
-      }
-    });
-
-  });
-  // Measure page load performance
-  window.addEventListener('load', () => {
-    const loadTime = performance.now(); // Get the load time in milliseconds
-    console.log(" loadTime ", loadTime)
-    const threshold = 2000; // Set threshold to 2000 milliseconds (2 seconds)
-    if (loadTime > threshold) {
-      // Trigger errorEvent if load time exceeds threshold
-      errorEvent("Low Page speed");
+      document.addEventListener('click', async function (event) {
+        let target = event.target.closest('button, iframe, a, [role="button"], img[onclick], [onclick]'); // Get the nearest element
+        if (!target) return;
+        if (target) {
+          trackButtonClick(event);
+        }
+        let url = target.dataset.href || target.href;
+        if (url) {
+          //  event.preventDefault();
+          await fetch(url, { method: "HEAD" }) // Use HEAD request to check if the URL exists
+            .then(async response => {
+              console.log(url, " url response ", response)
+              if (!response.ok) {
+                console.log(`Broken link detected: ${url} (Status: ${response.status})`);
+                await errorEvent(response.status);
+                ////  window.location.href = url;
+              }
+              //else {
+              //console.log("url ", url)
+              //window.location.href = url;
+              //}
+            })
+            .catch(error => {
+              console.log(`Network error checking: ${url}`, error);
+            });
+        }
+      });
+    } catch (error) {
+      console.log("Error : ", error);
     }
   });
 
-  // Global error handler
-  window.addEventListener('error', function (event) {
-    console.error(event, ' Global error caught: ', event.message);
-    // Call the errorEvent function with the error message and category
-    errorEvent(event.message);
-  });
-  // Optionally, you can also capture unhandled promise rejections
 
-  window.addEventListener('unhandledrejection', function (event) {
-    console.error(event, ' Unhandled promise rejection:', event.reason);
-    // Call the errorEvent function with the error message and category
-    errorEvent(event.reason.message);
+  // Measure page load performance
+  window.addEventListener('load', () => {
+    try {
+      const loadTime = performance.now(); // Get the load time in milliseconds
+      console.log(" loadTime ", loadTime)
+      const threshold = 1000; // Set threshold to 1000 milliseconds (1 seconds)
+      if (loadTime > threshold) {
+        // Trigger errorEvent if load time exceeds threshold
+        errorEvent("Low Page speed");
+      }
+    } catch (error) {
+      console.log("Error : ", error);
+    }
   });
 
   // If automatic tracking is disabled, log a message
 } else {
   console.log("Automatic tracking is disabled.");
 }
+
      </script> 
 
   </head>
