@@ -1296,48 +1296,39 @@ if (automaticTracking === true) {
     }
   }
 
-  function handleError(status, message) {
-    debugger;
-    console.log(`Error ${status}: ${message}`);
-    // You can also send this error information to your server for logging
+  async function handleOutboundRequest(target) {
+    let url = target.dataset.href || target.href;
+    if (!url) return;
+    try {
+        let response = await fetch(url, { method: "HEAD" });
+        console.log(`${url} response:`, response);
+        if (!response.ok && response.status >= 400 &&  response.status < 600) {            
+            await errorEvent(response.status);
+        }
+    } catch (error) {
+        console.error(`Network error checking: ${url}`, error);
+    }
 }
 
-// Intercept Fetch API calls
-const originalFetch = window.fetch;
-window.fetch = async function(...args) {
-  debugger;
-    const response = await originalFetch(...args);
-    console.log(" response originalFetch ", response)
-    // Check if the response status is 4xx or 5xx
-    if (response.status >= 400 && response.status < 600) {
-        const errorMessage = await response.text(); // Get the error message from the response
-        handleError(response.status, errorMessage);
-    }
-    
-    return response; // Return the original response
-};
-
-// Optionally, you can also capture XMLHttpRequest errors
-const originalXhrOpen = XMLHttpRequest.prototype.open;
-XMLHttpRequest.prototype.open = function(...args) {
-  debugger;
-    const xhr = this;
-    xhr.addEventListener('load', function() {
-        if (xhr.status >= 400 && xhr.status < 600) {
-            handleError(xhr.status, xhr.statusText);
+  // Function to handle form submissions
+async function handleFormSubmission(form) {
+    let formData = new FormData(form);
+    try {
+        let response = await fetch(form.action, {
+            method: form.method || "POST",
+            body: formData,
+        });
+        console.log(`Form submission response:`, response);
+        if (!response.ok && response.status >= 400 &&  response.status < 600) {
+              await errorEvent(response.status);
+        } else {
+            console.log("Form submitted successfully");
+            window.open(form.action); // Open if successful
         }
-    });
-    return originalXhrOpen.apply(this, args);
-};
-
-// Global error handler for uncaught errors
-window.onerror = function(message, source, lineno, colno, error) {
-  debugger;
-    console.log(`Global Error: ${message} at ${source}:${lineno}:${colno}`);
-    // You can also send this error information to your server for logging
-};
-
-
+    } catch (error) {
+        console.error("Network error:", error);
+    }
+}
   document.addEventListener('DOMContentLoaded', function () {
     try {
       console.log("addEventListener  DOMContentLoaded ")
@@ -1345,46 +1336,30 @@ window.onerror = function(message, source, lineno, colno, error) {
       trackPageView();  // Track page load (page view event)
       trackScroll();    // Track scroll events (scroll depth tracking)
       trackIframeVideos();
-
-      document.addEventListener('click', async function (event) {
+      document.addEventListener('click', async function (event) {     
         debugger;
-        let target = event.target.closest('button, iframe, a, [role="button"], img[onclick], [onclick]'); // Get the nearest element
+        let target = event.target.closest('button, iframe, form, a, [role="button"], img[onclick], [onclick]'); // Get the nearest element
         if (!target) return;
         try{
         if (target) {
           trackButtonClick(event);
         }
+           if (target.tagName === "A" || target.tagName === "BUTTON") {
+            await handleOutboundRequest(target);
+        } else if (target.tagName === "FORM") {
+            event.preventDefault(); // Stop default form submission
+            await handleFormSubmission(target);
+        }
           }catch(error){
      console.log("Error addEventListener trackButtonClick : ", error);
-  }
-
-        let url = target.dataset.href || target.href;
-        if (url) {
-          //  event.preventDefault();
-          await fetch(url, { method: "HEAD" }) // Use HEAD request to check if the URL exists
-            .then(async response => {
-              console.log(url, " url response ", response)
-              if (!response.ok) {
-                console.log(`Broken link detected: ${url} (Status: ${response.status})`);
-                await errorEvent(response.status);
-                ////  window.location.href = url;
-              }
-              //else {
-              //console.log("url ", url)
-              //window.location.href = url;
-              //}
-            })
-            .catch(error => {
-              console.log(`Network error checking: ${url}`, error);
-            });
-        }
+  }          
       });
     } catch (error) {
       console.log("Error : ", error);
     }
   });
 
-
+  
   // Measure page load performance
   window.addEventListener('load', () => {
     try {
