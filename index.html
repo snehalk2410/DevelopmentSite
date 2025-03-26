@@ -1345,15 +1345,26 @@ async function handleFormSubmission(form) {
           trackButtonClick(event);
         }
            if (target.tagName === "A" || target.tagName === "BUTTON") {
+                 let form = target.closest("form"); // Check if the button belongs to a form
+            if (form) return; // Skip if inside a form (form submission will handle it)
             await handleOutboundRequest(target);
-        } else if (target.tagName === "FORM") {
-            event.preventDefault(); // Stop default form submission
-            await handleFormSubmission(target);
-        }
+        } 
           }catch(error){
      console.log("Error addEventListener trackButtonClick : ", error);
   }          
       });
+      document.addEventListener("submit", async function (event) {
+        debugger;
+        try{
+    let form = event.target.closest("form");
+    if (!form) return;
+    event.preventDefault(); // Stop default form submission
+    await handleFormSubmission(form);
+          } catch(error){
+     console.log("Error : ", error);
+  }
+
+});
     } catch (error) {
       console.log("Error : ", error);
     }
