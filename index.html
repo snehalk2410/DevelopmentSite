@@ -1295,7 +1295,29 @@ if (automaticTracking === true) {
       console.log("Error : ", error);
     }
   }
-
+indow.addEventListener('error', function(event) {
+  debugger;
+  if (event.target instanceof HTMLImageElement || event.target instanceof HTMLLinkElement || event.target instanceof HTMLScriptElement) {
+     // Extract URL and check for 4xx or 5xx status codes
+    const url = event.target.src || event.target.href;
+    fetch(url, { method: 'HEAD' })
+      .then(response => {
+        console.log( url , " response ", response)
+        if (response.status >= 400) {
+          // Capture error details
+         
+          // Log the error or send it to an analytics service
+          console.log('Captured error:');
+          // Example: Send error to Google Analytics
+          // gtag('event', 'resource_error', errorDetails);
+        }
+      })
+      .catch(error => {
+        // Handle fetch errors (e.g., network issues)
+        console.log('Error during fetch:', error);
+      });
+  }
+}, true);
   async function handleOutboundRequest(target) {
     let url = target.dataset.href || target.href;
     if (!url) return;
