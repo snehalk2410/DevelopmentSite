@@ -17,7 +17,7 @@
 </script> -->
 
    <script type="text/javascript">
-
+     
 function generateUserID() {
   try {
     let randomPart = crypto.randomUUID();
@@ -43,7 +43,6 @@ let consentFlag = localStorage.getItem("consentObject");
 let consentObj = {};
 let userObj = {};
 let pageObj = {};
-console.log("consentFlag ", consentFlag);
 if (consentFlag) {
   consentObj = JSON.parse(localStorage.getItem("consentObject"))
 }
@@ -71,7 +70,6 @@ function getCookie(name) {
     return null; // Return null if the cookie is not found
   } catch (error) {
     console.log("Error : ", error);
-
   }
 }
 
@@ -172,8 +170,7 @@ function setPersistentCookie(name, value, days = 365) {
 // Function to extract UTM parameters (such as source, medium, campaign) from the URL query string
 function getUTMParams() {
   try {
-    console.log("getUTMParams")
-    const params = {};  // Object to store UTM parameters
+     const params = {};  // Object to store UTM parameters
     const urlParams = new URLSearchParams(window.location.search);  // Parse the query string of the URL
     console.log(" urlParams ", urlParams);
     // List of UTM parameters to check in the URL
@@ -194,14 +191,12 @@ function getUTMParams() {
 // Function to detect the device type (mobile or desktop)
 function getDeviceType() {
   try {
-    console.log("getdevicetype ")
     // Use a regular expression to check if the user agent matches a mobile device
     // return /Mobi|Android|iPhone|iPad|iPod|iOS/i.test(navigator.userAgent) ? 'mobile' : 'desktop';
     const userAgent = navigator.userAgent.toLowerCase();
     const screenWidth = window.innerWidth;
     const screenHeight = window.innerHeight;
     var deviceType = "desktop";
-    console.log(" userAgent ", userAgent, " screenWidth ", screenWidth, screenHeight);
     if (/mobile|android|iphone|ipod/i.test(userAgent)) {
       deviceType = "mobile";
     } else if (/tablet|ipad/i.test(userAgent) || (screenWidth > 600 && screenWidth < 1024)) {
@@ -217,10 +212,8 @@ function getDeviceType() {
 // Function to detect the operating system of the user
 function getOS() {
   try {
-    console.log("getos")
     const userAgent = navigator.userAgent;
     const platform = navigator.platform || navigator.userAgentData?.platform || "Unknown";
-    console.log(" getOS userAgent ", userAgent, " platform ", platform);
     const osMap = [
       { name: "Windows", regex: /Win/i, versionRegex: /Windows NT (\d+\.\d+)/ },
       { name: "MacOS", regex: /Mac/i, versionRegex: /Mac OS X (\d+[_\.\d]+)/ },
@@ -258,7 +251,6 @@ function getOS() {
 // Function to detect the user's browser
 function getBrowser() {
   try {
-    console.log("getbrowser");
     const ua = navigator.userAgent.toLowerCase();
     let browser, versionMatch, browserVersion;
     if (ua.includes("edg")) {
@@ -377,7 +369,6 @@ var customerId = window.dataLayer && window.dataLayer.find(item => item.customer
 async function getLocation() {
   try {
     let locationFlag = sessionStorage.getItem("locationObj");
-    console.log("locationFlag ", locationFlag);
     if (locationFlag) {
       return JSON.parse(sessionStorage.getItem("locationObj"))
     }
@@ -481,7 +472,6 @@ async function consentPayload(allConsented, allConsentsGiven, cmpId, gdprApplies
     let vendorPurposes = [];
     let vendorPurpose = {};
     let trackStatus = allConsentsGiven ? 'optedIn' : 'optedOut';
-    console.log(" trackStatus ", trackStatus, " allConsentsGiven ", allConsentsGiven);
     userID = getCookie('userID');
     sessionID = getCookie('sessionID');
     rdUserID = getCookie('rdUserId');
@@ -498,7 +488,6 @@ async function consentPayload(allConsented, allConsentsGiven, cmpId, gdprApplies
       }
       if (!rdUserID) {
         let referenceDomainUserId = getQueryParam('uid');
-        console.log(" referenceDomainUserId ", referenceDomainUserId);
         if (referenceDomainUserId) {
           rdUserID = referenceDomainUserId;
           setPersistentCookie('rdUserId', referenceDomainUserId, 365);
@@ -517,7 +506,6 @@ async function consentPayload(allConsented, allConsentsGiven, cmpId, gdprApplies
           url.searchParams.delete('uid');
         }
         link.href = url.toString();
-        console.log("userid ", userID, " url.toString ", url.toString())
       }
     });
 
@@ -584,10 +572,7 @@ async function getVendorList(vendorPurposeConsents) {
     const userVendorConsentedPurposes = [];
     var vendorConsents = data.vendors;
     var i = 1;
-    console.log(" vendorPurposeConsents ", vendorPurposeConsents);
-    console.log(" vendorConsents ", vendorConsents);
-
-    for (let [key1, value1] of Object.entries(vendorPurposeConsents)) {
+       for (let [key1, value1] of Object.entries(vendorPurposeConsents)) {
       for (let [key2, value2] of Object.entries(vendorConsents)) {
         // Ensure vendor has an ID before accessing tcData
         if (key1 === key2) {
@@ -600,7 +585,6 @@ async function getVendorList(vendorPurposeConsents) {
         }
       }
     }
-    console.log(userVendorConsentedPurposes)
     return userVendorConsentedPurposes;
   } catch (error) {
     console.log("Error : ", error);
@@ -737,7 +721,6 @@ const callback = (tcData, success) => {
           consent_purposes.forEach(function (purpose) {
             // Check if the user has consented to each purpose based on the TCData
             const purposeConsent = tcData.purpose.consents[purpose._id];
-            console.log('latest value of consent ' + purposeConsent);
             consentedPurposes.push({
               Id: purpose._id,
               isConsented: purposeConsent || false,
@@ -745,37 +728,28 @@ const callback = (tcData, success) => {
             });
 
           });
-
           /// code from 291 to 305 needs to commented/removed once we use getVendorList function output
           const vendorConsentedPurposes = [];
 
           vendor_purposes.forEach(function (vendor) {
             // Check if the user has consented to each purpose based on the TCData
             const vendorConsent = tcData.vendor.consents[vendor._id];
-
-            console.log('Inside vendor foreach');
-
             vendorConsentedPurposes.push({
               Id: vendor._id,
               isConsented: vendorConsent || false,
               name: vendor.name
             });
-
           });
-
 
           // Generated the vendor list from Vendor API 
           var vendorPurposeConsents = tcData.vendor.consents;
           var vendorData = await getVendorList(vendorPurposeConsents); /// result from this function is the new vendor consent array this needs to be passed to consentPayload function
-          console.log("vendorData ", vendorData);
-
           // Generate the consented purposes payload, marking true or false based on matching with consent_purposes
 
           consent_purposes.forEach(function (purpose) {
             // Check if the user has consented to each purpose based on the TCData
             const purposeConsent = tcData.purpose.consents[purpose._id] || false;
             if (purposeConsent) {
-              console.log('inside if clause');
               allConsented.push({
                 Id: purpose._id,
                 isConsented: purposeConsent,
@@ -783,39 +757,26 @@ const callback = (tcData, success) => {
               });
             }
           });
-          console.log(allConsented);
           // Check if all required purposes are consented
           var eventName;
           var allConsentsGiven = hasAllConsents(allConsented);
           var deleteProfile = false; // static flag which can be altered as per client reqt
           // var consentTrack = localStorage.getItem("consentTrack");
           consentTrack = getCookie('consentTrack');
-          console.log('consentTrack :' + consentTrack);
-          console.log('allConsentsGiven :' + allConsentsGiven);
-
           if ((consentTrack === null && allConsentsGiven === true) || (consentTrack === 'false' && allConsentsGiven === true && deleteProfile === false)) {
-
-            console.log('Inside if clause for set consent event name');
             eventName = 'setConsent';
           } else if ((consentTrack === 'true' && allConsentsGiven === true) || (allConsentsGiven === false && deleteProfile === false)) {
             eventName = 'updateConsent';
           } else if (consentTrack === 'true' && allConsentsGiven === false && deleteProfile === true) {
             eventName = 'deleteProfile';
           }
-
-          console.log('before consentPayload function call ');
           // Call consentPayload function to structure the payload if all consents are given
           const payload = await consentPayload(consentedPurposes, allConsentsGiven, cmpId, gdprApplies, gdprConsent, eventName, vendorData);
           console.log(" consent payload ", payload);
-          // Store the consent payload in localStorage
-          //localStorage.setItem('userConsent', JSON.stringify(payload));
-
           if ((consentTrack === null && allConsentsGiven === true) || (consentTrack === 'false' && allConsentsGiven === true && deleteProfile === false)) {
 
             console.log('Formatted Payload:', payload);
             await sendEventToAPI(payload);
-            //localStorage.setItem('consentTrack', allConsentsGiven);
-            //localStorage.setItem('userConsentedPurposes', JSON.stringify(userConsentedPurposes));
             setPersistentCookie('consentTrack', allConsentsGiven);
             consentTrack = allConsentsGiven;
             setPersistentCookie('userConsentedPurposes', JSON.stringify(userConsentedPurposes));
@@ -971,7 +932,6 @@ async function createEventData(eventname, eventCategory, additionalData = {}) {
     try {
       console.log(" analytics.pageView consentTrack ", consentTrack)
       if (consentTrack) {
-        console.log("analytics.pageview")
         await getPageInfo({ pageName, ...properties })
         var eventData = await createEventData("page View", "page", { pageName, ...properties })
         // Push the event data into the analytics array for tracking
@@ -1002,7 +962,6 @@ async function createEventData(eventname, eventCategory, additionalData = {}) {
       console.log(" analytics.userIdentity consentTrack ", consentTrack)
       if (consentTrack) {
         await getUserInfo({ customerId, ...properties })
-        console.log("analytics.useridentity userObj ", userObj);
         var eventData = await createEventData("User Identity", "user", { customerId, ...properties });
         // Merge any additional properties passed into the function with the userInfo properties
         const eventProperties = { ...properties };
@@ -1016,7 +975,6 @@ async function createEventData(eventname, eventCategory, additionalData = {}) {
         };
         userObj = eventData.userInfo;
         localStorage.setItem("userObject", JSON.stringify(eventData.userInfo));
-
         // Push the event data to the analytics array for tracking (this will be processed by analytics services)
         analytics.push(['track', eventData]);
         console.log("analytics.userIdentity eventData ", eventData);
@@ -1057,9 +1015,7 @@ async function createEventData(eventname, eventCategory, additionalData = {}) {
   // Function to send event data to an API
   analytics.sendEventToAPI = async function (eventData) {
     try {
-      console.log("sendEventToAPI")
-      // Log the event data to the console for debugging
-      console.log('Sending event data to API:', eventData);
+       console.log('Sending event data to API:', eventData);
       // Make an asynchronous POST request to the API to send event data
       const response = await fetch('https://web-analytics-dot-uxlwqzc-cdip-sandbox-test.uc.r.appspot.com/sendevent', {
         method: 'POST', // HTTP method (POST for sending data)
@@ -1157,16 +1113,12 @@ if (automaticTracking === true) {
   function trackScroll() {
     try {
       console.log(" trackScroll consentTrack ", consentTrack)
-      console.log("trackscroll")
-
-      // Add an event listener to the scroll event
+          // Add an event listener to the scroll event
       window.addEventListener('scroll', function () {
         // Calculate the current scroll position (distance from top) + visible window height
         const scrollPosition = window.scrollY + window.innerHeight;
-
         // Get the total height of the document (including the part that isn't visible)
         const documentHeight = document.documentElement.scrollHeight;
-
         // Calculate the percentage of the page that has been scrolled
         const scrollPercent = (scrollPosition / documentHeight) * 100;
         if (consentTrack) {
@@ -1217,7 +1169,6 @@ if (automaticTracking === true) {
     try {
       console.log(" trackButtonClick consentTrack ", consentTrack)
       if (consentTrack) {
-        console.log("trackButtonClick")
         const button = event.target;  // The target of the event (i.e., the button clicked)
         console.log(" trackButtonClick button ", button)
         var eventData = await createEventData("Button Click", "interaction");
@@ -1236,7 +1187,6 @@ if (automaticTracking === true) {
     try {
       console.log(" trackIframeVideos consentTrack ", consentTrack)
       if (consentTrack) {
-        console.log("trackIframeVideos");
         // Check for YouTube or Vimeo iframe
         document.querySelectorAll('iframe').forEach(iframe => {
           let src = iframe.src;
@@ -1288,6 +1238,65 @@ if (automaticTracking === true) {
       console.log("Error : ", error);
     }
   }
+
+  // Function to get LCP
+
+  function getLCP() {
+    let lcpEntry;
+    const observer = new PerformanceObserver((entryList) => {
+      const entries = entryList.getEntries();
+      lcpEntry = entries[entries.length - 1];
+    });
+    observer.observe({ type: "largest-contentful-paint", buffered: true });
+    return lcpEntry ? lcpEntry.startTime : 0;
+  }
+  // Function to get TTI (simplified)
+
+  function getTTI() {
+    return performance.timing.domInteractive - performance.timing.navigationStart;
+  }
+
+  async function handleOutboundRequest(target) {
+    let url = target.dataset.href || target.href;
+    if (!url) return;
+    try {
+      let response = await fetch(url, { method: "HEAD" });
+      if (!response.ok && response.status >= 400 && response.status < 600) {
+        await errorEvent(response.status);
+      }
+    } catch (error) {
+      console.error(`Network error checking: ${url}`, error);
+    }
+  }
+
+  // Function to handle form submissions
+  async function handleFormSubmission(form) {
+    let formData = new FormData(form);
+    let actionUrl = form.action;
+    if (actionUrl) {
+      const actionResponse = await fetch(actionUrl, { method: "HEAD" }); // Check if the page exists
+      console.log(`${actionUrl} response:`, actionResponse);
+      if (!actionResponse.ok && actionResponse.status >= 400 && actionResponse.status < 600) {
+        await errorEvent(actionResponse.status);
+        return;
+      }
+    }
+    try {
+      let response = await fetch(form.action, {
+        method: form.method || "POST",
+        body: formData,
+      });
+      console.log(`Form submission response:`, response);
+      if (!response.ok && response.status >= 400 && response.status < 600) {
+        await errorEvent(response.status);
+      } else {
+        console.log("Form submitted successfully");
+        window.open(form.action); // Open if successful
+      }
+    } catch (error) {
+      console.error("Network error:", error);
+    }
+  }
   document.addEventListener('DOMContentLoaded', function () {
     try {
       console.log("addEventListener  DOMContentLoaded ")
@@ -1295,53 +1304,50 @@ if (automaticTracking === true) {
       trackPageView();  // Track page load (page view event)
       trackScroll();    // Track scroll events (scroll depth tracking)
       trackIframeVideos();
-
       document.addEventListener('click', async function (event) {
-        let target = event.target.closest('button, iframe, a, [role="button"], img[onclick], [onclick]'); // Get the nearest element
+        let target = event.target.closest('button, iframe, form, a, [role="button"], img[onclick], [onclick]'); // Get the nearest element
         if (!target) return;
-        if (target) {
-          trackButtonClick(event);
+        try {
+          if (target) {
+            trackButtonClick(event);
+          }
+          if (target.tagName === "A" || target.tagName === "BUTTON") {
+            let form = target.closest("form"); // Check if the button belongs to a form
+            if (form) return; // Skip if inside a form (form submission will handle it)
+            await handleOutboundRequest(target);
+          }
+        } catch (error) {
+          console.log("Error addEventListener trackButtonClick : ", error);
         }
-        let url = target.dataset.href || target.href;
-        if (url) {
-          //  event.preventDefault();
-          await fetch(url, { method: "HEAD" }) // Use HEAD request to check if the URL exists
-            .then(async response => {
-              console.log(url, " url response ", response)
-              if (!response.ok) {
-                console.log(`Broken link detected: ${url} (Status: ${response.status})`);
-                await errorEvent(response.status);
-                ////  window.location.href = url;
-              }
-              //else {
-              //console.log("url ", url)
-              //window.location.href = url;
-              //}
-            })
-            .catch(error => {
-              console.log(`Network error checking: ${url}`, error);
-            });
+      });
+      document.addEventListener("submit", async function (event) {
+        try {
+          let form = event.target.closest("form");
+          if (!form) return;
+          // event.preventDefault(); // Stop default form submission
+          await handleFormSubmission(form);
+        } catch (error) {
+          console.log("Error : ", error);
         }
+
       });
     } catch (error) {
       console.log("Error : ", error);
     }
   });
-
-
-  // Measure page load performance
-  window.addEventListener('load', () => {
-    try {
-      const loadTime = performance.now(); // Get the load time in milliseconds
-      console.log(" loadTime ", loadTime)
-      const threshold = 1000; // Set threshold to 1000 milliseconds (1 seconds)
-      if (loadTime > threshold) {
-        // Trigger errorEvent if load time exceeds threshold
-        errorEvent("Low Page speed");
+  window.addEventListener("load", () => {
+    setTimeout(() => {
+      const performanceData = performance.getEntriesByType("navigation")[0];
+      console.log(" performanceData ", performanceData)
+        if (performanceData) {
+        const lcp = getLCP();
+        const tti = getTTI();
+        const loadTime = performanceData.loadEventEnd - performanceData.startTime;
+        if (lcp > 4000 || tti > 5000 || loadTime > 7000) {
+          errorEvent("Low Page speed");
+        }
       }
-    } catch (error) {
-      console.log("Error : ", error);
-    }
+    }, 0);
   });
 
   // If automatic tracking is disabled, log a message
