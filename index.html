@@ -1295,6 +1295,23 @@ if (automaticTracking === true) {
       console.log("Error : ", error);
     }
   }
+
+  // Function to get LCP
+
+function getLCP() {
+    let lcpEntry;
+    const observer = new PerformanceObserver((entryList) => {
+        const entries = entryList.getEntries();
+        lcpEntry = entries[entries.length - 1];
+    });
+    observer.observe({ type: "largest-contentful-paint", buffered: true });
+    return lcpEntry ? lcpEntry.startTime : 0;
+}
+// Function to get TTI (simplified)
+
+function getTTI() {
+    return performance.timing.domInteractive - performance.timing.navigationStart;
+}
 //window.addEventListener('error', function(event) {
  // debugger;
   //if (event.target instanceof HTMLImageElement || event.target instanceof HTMLLinkElement || event.target instanceof HTMLScriptElement) {
@@ -1402,21 +1419,38 @@ async function handleFormSubmission(form) {
     }
   });
 
+window.addEventListener("load", () => {
+  debugger;
+    setTimeout(() => {
+        const performanceData = performance.getEntriesByType("navigation")[0];
+      console.log(" performanceData ", performanceData )
+      console.log(" performanceData.loadEventEnd ", performanceData.loadEventEnd)
+      console.log(" performanceData.startTime ", performanceData.startTime )
+        if (performanceData) {
+            const lcp = getLCP();
+            const tti = getTTI();
+            const loadTime = performanceData.loadEventEnd - performanceData.startTime;
+            if (lcp > 4000 || tti > 5000 || loadTime > 7000) {
+                  errorEvent("Low Page speed");
+            }
+        }
+    }, 0);
+});
   
   // Measure page load performance
-  window.addEventListener('load', () => {
-    try {
-      const loadTime = performance.now(); // Get the load time in milliseconds
-      console.log(" loadTime ", loadTime)
-      const threshold = 1000; // Set threshold to 1000 milliseconds (1 seconds)
-      if (loadTime > threshold) {
+//  window.addEventListener('load', () => {
+//    try {
+  //    const loadTime = performance.now(); // Get the load time in milliseconds
+  //    console.log(" loadTime ", loadTime)
+   //   const threshold = 1000; // Set threshold to 1000 milliseconds (1 seconds)
+   //   if (loadTime > threshold) {
         // Trigger errorEvent if load time exceeds threshold
-        errorEvent("Low Page speed");
-      }
-    } catch (error) {
-      console.log("Error : ", error);
-    }
-  });
+    //    errorEvent("Low Page speed");
+    //  }
+  //  } catch (error) {
+   //   console.log("Error : ", error);
+ //   }
+//  });
 
   // If automatic tracking is disabled, log a message
 } else {
