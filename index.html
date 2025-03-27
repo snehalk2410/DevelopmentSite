@@ -1029,7 +1029,7 @@ async function createEventData(eventname, eventCategory, additionalData = {}) {
         method: 'POST', // HTTP method (POST for sending data)
         headers: {
           'Content-Type': 'application/json', // Specify the content type as JSON
-          'apikey': '12345abc' // API key for authentication
+          'rightkey': '12345abc' // API key for authentication
         },
         body: JSON.stringify({ eventData }) // Send the event data as a JSON object
       });
@@ -1059,7 +1059,7 @@ async function sendEventToAPI(eventData) {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',  // Set the content type to JSON
-        'apikey': '12345abc',  // Provide the API key for authentication
+        'rightkey': '12345abc',  // Provide the API key for authentication
       },
       body: JSON.stringify(eventData),  // Convert the event data to a JSON string and send it as the body of the request
     });
