@@ -1295,7 +1295,7 @@ if (automaticTracking === true) {
       console.log("Error : ", error);
     }
   }
-indow.addEventListener('error', function(event) {
+window.addEventListener('error', function(event) {
   debugger;
   if (event.target instanceof HTMLImageElement || event.target instanceof HTMLLinkElement || event.target instanceof HTMLScriptElement) {
      // Extract URL and check for 4xx or 5xx status codes
