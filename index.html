@@ -54,15 +54,18 @@ let consentObj = {};
 let userObj = {};
 let pageObj = {};
 if (consentFlag) {
-  consentObj = JSON.parse(localStorage.getItem("consentObject"))
+  consentObj = JSON.parse(CryptoJS.AES.decrypt(consentFlag, secretKey).toString(CryptoJS.enc.Utf8));
+    //JSON.parse(localStorage.getItem("consentObject"))
 }
 let userObjFlag = localStorage.getItem("userObject");
 if (userObjFlag) {
-  userObj = JSON.parse(localStorage.getItem("userObject"))
+  userObj = JSON.parse(CryptoJS.AES.decrypt(userObjFlag, secretKey).toString(CryptoJS.enc.Utf8));
+    //JSON.parse(localStorage.getItem("userObject"))
 }
 let pageInfoFlag = localStorage.getItem("pageObject");
 if (pageInfoFlag) {
-  pageObj = JSON.parse(localStorage.getItem("pageObject"))
+  pageObj =JSON.parse(CryptoJS.AES.decrypt(pageInfoFlag, secretKey).toString(CryptoJS.enc.Utf8));
+    //JSON.parse(localStorage.getItem("pageObject"))
 }
 let consentTrack = getCookie('consentTrack');
 
@@ -383,7 +386,7 @@ async function getLocation() {
     let locationFlag = sessionStorage.getItem("locationObj");
     if (locationFlag) {
       console.log(" JSON.parse(CryptoJS.AES.decrypt(locationFlag, secretKey).toString(CryptoJS.enc.Utf8)) ", JSON.parse(CryptoJS.AES.decrypt(locationFlag, 'your-secret-key').toString(CryptoJS.enc.Utf8)))
-        return JSON.parse(CryptoJS.AES.decrypt(locationFlag, 'your-secret-key').toString(CryptoJS.enc.Utf8));
+        return JSON.parse(CryptoJS.AES.decrypt(locationFlag, secretKey).toString(CryptoJS.enc.Utf8));
      // return JSON.parse(sessionStorage.getItem("locationObj"))
     }
     // Fetch location data from the IPInfo API
@@ -841,15 +844,17 @@ const callback = (tcData, success) => {
           console.log("consentTrack 1 ", consentTrack)
           if (allConsentsGiven) {
             let userObjFlag = localStorage.getItem("userObject");
-            if (userObjFlag) {
-              userObj = JSON.parse(localStorage.getItem("userObject"))
+            if (userObjFlag) {                
+              userObj =  JSON.parse(CryptoJS.AES.decrypt(userObjFlag, secretKey).toString(CryptoJS.enc.Utf8));
+                //JSON.parse(localStorage.getItem("userObject"))
             }
             else {
               await getUserInfo();
             }
             let pageObjFlag = localStorage.getItem("pageObject");
             if (pageObjFlag) {
-              pageObj = JSON.parse(localStorage.getItem("pageObject"))
+              pageObj =  JSON.parse(CryptoJS.AES.decrypt(pageObjFlag, secretKey).toString(CryptoJS.enc.Utf8));
+                //JSON.parse(localStorage.getItem("pageObject"))
             }
             else {
               await getPageInfo();
