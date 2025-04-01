@@ -463,7 +463,7 @@ async function getPageInfo(additionalData = {}) {
       pageLanguage: navigator.language || '', // Language setting of the user's browser
       pageContentType: pageContentType, // The content type (retrieved from dataLayer or cookies)
       pageName: additionalData.pageName || pageName || '', // The name of the page (can be passed in as a parameter)
-      pageLoadTime: performance.now() || '',
+      pageLoadTime: parseFloat(performance.now().toFixed(2)) || '',
       environment: pageEnvironment // The environment (e.g., production, staging) from dataLayer
     }
   //  localStorage.setItem("pageObject", JSON.stringify(pageObj));
@@ -931,7 +931,7 @@ async function createEventData(eventname, eventCategory, additionalData = {}) {
       eventData.userInfo.rdUserId = rdUserID
     }
     if (eventCategory == "Low Page speed") {
-      eventData.eventInfo.pageLoadTime = performance.now() || ''
+      eventData.eventInfo.pageLoadTime = parseFloat(performance.now().toFixed(2)) || ''
     }
     return eventData;
   } catch (error) {
