@@ -466,6 +466,7 @@ async function getPageInfo(additionalData = {}) {
       pageLoadTime: parseFloat(performance.now().toFixed(2)) || '',
       environment: pageEnvironment // The environment (e.g., production, staging) from dataLayer
     }
+      console.log(" performance.now() ", performance.now());
   //  localStorage.setItem("pageObject", JSON.stringify(pageObj));
      const encryptedPageObject = CryptoJS.AES.encrypt(JSON.stringify(pageObj), secretKey).toString();
          localStorage.setItem("pageObject", encryptedPageObject);
@@ -931,6 +932,7 @@ async function createEventData(eventname, eventCategory, additionalData = {}) {
       eventData.userInfo.rdUserId = rdUserID
     }
     if (eventCategory == "Low Page speed") {
+      console.log(" performance.now() ", performance.now());
       eventData.eventInfo.pageLoadTime = parseFloat(performance.now().toFixed(2)) || ''
     }
     return eventData;
