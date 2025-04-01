@@ -107,7 +107,7 @@ function setSessionCookie(name, value) {
     const sameSite = "SameSite=Lax"; // Allow cross-origin requests to a certain extent
     let domain = window.location.hostname.split('.').slice(-2).join('.'); // Get root domain
     //domain=." + domain + ";
-    document.cookie = name + "=" + value + ";" + expires + ";path=/;" + secure + ";" + sameSite;
+    document.cookie = name + "=" + value + ";" + expires + ";path=/;domain=.vercel.app;" + secure + ";" + sameSite;
   } catch (error) {
     console.log("Error : ", error);
 
@@ -164,11 +164,13 @@ function setPersistentCookie(name, value, days = 365) {
     const sameSite = "SameSite=Lax"; // Allow cross-origin requests to a certain extent -- Lax
     const domain = window.location.hostname.split('.').slice(-2).join('.'); // Get root domain     // "domain=.vercel.app"; // Set the highest-level domain
     console.log(" highest-level domain ", domain);
+    let cookiedomain="domain=."+domain;
+    console.log(" cookiedomain ", cookiedomain)
     //  const cookieString = `${name}=${value}; ${expires}; path=/; ${secure}; ${sameSite}`;
     //  console.log("Setting cookie: ", cookieString);
     //  document.cookie = cookieString;
 
-    document.cookie = name + "=" + value + ";" + expires + ";path=/;" + secure + ";" + sameSite;
+    document.cookie = name + "=" + value + ";" + expires + ";path=/;domain=.vercel.app;" + secure + ";" + sameSite;
   } catch (error) {
     console.log("Error : ", error);
 
