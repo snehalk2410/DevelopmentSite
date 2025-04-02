@@ -523,6 +523,7 @@ async function consentPayload(allConsented, allConsentsGiven, cmpId, gdprApplies
 
     }
     document.querySelectorAll('a').forEach(link => {
+      
       let url = new URL(link.href);
       let domain = url.hostname.split('.').slice(-2).join('.');
       if (url.hostname !== window.location.hostname) {
@@ -532,6 +533,7 @@ async function consentPayload(allConsented, allConsentsGiven, cmpId, gdprApplies
         else {
           url.searchParams.delete('uid');
         }
+        console.log(" url.toString() ", url.toString())
         link.href = url.toString();
       }
     });
