@@ -1391,6 +1391,54 @@ if (automaticTracking === true) {
     }, 0);
   });
 
+  const iframeOrigin = 'https://testinovation-cdp.vercel.app';
+ 
+// The name you want to use for the FIRST-PARTY cookie on THIS host domain
+const firstPartyCookieName = 'RDuserID';
+ 
+console.log(`[PARENT] Listening for messages from origin: ${iframeOrigin}`);
+ 
+// Listen for messages from any window/iframe
+window.addEventListener('message', (event) => {
+ debugger;
+  // --- SECURITY CHECK: Verify the origin of the message ---
+  if (event.origin !== iframeOrigin) {
+    // IMPORTANT: Ignore messages from unexpected origins
+    // console.log(`[PARENT] Discarding message from unexpected origin: ${event.origin}`);
+    return;
+  }
+ 
+  console.log('[PARENT] Received message event:', event);
+ 
+  // Check if the received data is the cookie data we expect
+  if (event.data && event.data.type === 'thirdPartyCookieData') {
+    const receivedCookieName = event.data.cookieName; // Should be 'userID'
+    const receivedValue = event.data.value;
+ 
+    // Log confirmation
+    console.log(`[PARENT] Received expected cookie data from iframe: Name='${receivedCookieName}', Value='${receivedValue}'`);
+ 
+    // --- Store the value as a FIRST-PARTY cookie named 'RDuserID' ---
+    const cookieNameToSet = firstPartyCookieName; // Contains 'RDuserID'
+ 
+    // Set the first-party cookie on the host domain
+    const maxAgeSeconds = 60 * 60 * 24 * 30; // 30 days (adjust as needed)
+    // Use encodeURIComponent for safety if value might contain special chars
+    document.cookie = `${cookieNameToSet}=${encodeURIComponent(receivedValue)}; path=/; max-age=${maxAgeSeconds}; Secure; SameSite=Lax`;
+ 
+    console.log(`[PARENT] Successfully stored value as first-party cookie: '${cookieNameToSet}'`);
+ 
+  } else if (event.data && event.data.type === 'thirdPartyCookieNotFound') {
+    // Handle case where the iframe explicitly said the cookie wasn't found
+    console.log(`[PARENT] Received message: iframe could not find cookie '${event.data.cookieName}'.`);
+ 
+  } else {
+    // Handle other unexpected messages if necessary
+    console.log('[PARENT] Received unexpected message data structure:', event.data);
+  }
+}, false); // Use false for the capture phase (standard)
+ 
+
   // If automatic tracking is disabled, log a message
 } else {
   console.log("Automatic tracking is disabled.");
