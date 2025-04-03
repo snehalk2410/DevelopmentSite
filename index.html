@@ -489,6 +489,15 @@ function checkCookie(cookieName) {
 
   }
 }
+     function loadIframe() {
+       debugger;
+  const iframe = document.createElement('iframe');
+  iframe.src = 'https://centraldomain.vercel.app'; // Replace with your iframe source
+  iframe.style.width = '1px'; // Set the width of the iframe
+  iframe.style.height = '1px'; // Set the height of the iframe
+  iframe.style.display ='none';
+  document.body.appendChild(iframe); // Append the iframe to the body or a specific container
+}
 let domainArray = ['example.com', 'vercel.app', 'anotherdomain.com']
 // Function to structure the consent payload
 async function consentPayload(allConsented, allConsentsGiven, cmpId, gdprApplies, gdprConsent, eventName, vendorConsentedPurposes) {
@@ -520,7 +529,7 @@ async function consentPayload(allConsented, allConsentsGiven, cmpId, gdprApplies
           setPersistentCookie('rdUserId', referenceDomainUserId, 365);
         }
       }
-
+       loadIframe();
     }
     document.querySelectorAll('a').forEach(link => {
       
@@ -537,7 +546,7 @@ async function consentPayload(allConsented, allConsentsGiven, cmpId, gdprApplies
         link.href = url.toString();
       }
     });
-
+     
 
 
     // Loop through all the purposes and set them as true/false in the purposes object
@@ -1448,8 +1457,8 @@ window.addEventListener('message', (event) => {
 
   </head>
 <body class="w3-content" style="max-width:1200px">
-<iframe src="https://centraldomain.vercel.app" title="PRM"
-        style="display:none;height:1px;width:1px"></iframe>
+<!--<iframe src="https://centraldomain.vercel.app" title="PRM"
+        style="display:none;height:1px;width:1px"></iframe>-->
 <!-- Sidebar/menu -->
 <nav class="w3-sidebar w3-bar-block w3-white w3-collapse w3-top" style="z-index:3;width:250px" id="mySidebar">
   <div class="w3-container w3-display-container w3-padding-16">
