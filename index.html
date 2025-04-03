@@ -46,6 +46,7 @@ function getQueryParam(param) {
 }
 let secretKey="RW5jcnlwdGlvbktleQ==" // Base64 encoded format of key  "EncryptionKey"
 const crossDomainFlag=true;     
+const multiDomainFlag=true; 
 let rdUserID = getCookie('rdUserId');
 let userID = getCookie('userID');
 let sessionID = getCookie('sessionID');
@@ -529,7 +530,9 @@ async function consentPayload(allConsented, allConsentsGiven, cmpId, gdprApplies
           setPersistentCookie('rdUserId', referenceDomainUserId, 365);
         }
       }
+      if(multiDomainFlag){
        loadIframe();
+      }
     }
     document.querySelectorAll('a').forEach(link => {
       
