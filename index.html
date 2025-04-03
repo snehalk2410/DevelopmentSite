@@ -1436,6 +1436,7 @@ window.addEventListener('message', (event) => {
     document.cookie = `${cookieNameToSet}=${encodeURIComponent(receivedValue)}; path=/; max-age=${maxAgeSeconds}; Secure; SameSite=Lax`;
  
     console.log(`[PARENT] Successfully stored value as first-party cookie: '${cookieNameToSet}'`);
+    rdUserID=receivedValue;
  
   } else if (event.data && event.data.type === 'thirdPartyCookieNotFound') {
     // Handle case where the iframe explicitly said the cookie wasn't found
