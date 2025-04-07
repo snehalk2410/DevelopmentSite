@@ -138,11 +138,13 @@ function OptanonWrapper() { }
     debugger;
     let cookieSyncFlag = sessionStorage.getItem("cookieSyncDone");
     console.log('cookieSyncFlag ', cookieSyncFlag);
+    if(cookieSyncFlag){
     let cookieSyncSessionflag = JSON.parse(CryptoJS.AES.decrypt(cookieSyncFlag, secretKey).toString(CryptoJS.enc.Utf8))
     console.log(' cookieSyncSessionflag ', cookieSyncSessionflag);
     if (cookieSyncSessionflag) {
       console.log('Cookie sync already performed in this session.');
       return;
+    }
     }
 
     try {
