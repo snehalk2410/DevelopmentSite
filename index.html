@@ -25,7 +25,134 @@ function OptanonWrapper() { }
 </script> -->
 
    <script type="text/javascript">
-     
+     class GoogleCookieSync {
+  constructor(bidderNid) {
+    this.bidderNid = bidderNid;
+    this.gcpEndpoint = "https://web-analytics-dot-uxlwqzc-cdip-sandbox-test.uc.r.appspot.com/sendevent";
+    this.googleGid = null;
+  }
+
+  async getGoogleGid() {
+    return new Promise((resolve, reject) => {
+      if (this.googleGid) {
+        console.log("Google GID already available:", this.googleGid);
+        resolve(this.googleGid);
+        return;
+      }
+
+      const img = new Image();
+      img.onload = () => {
+        console.log("Image load failed, trying fetch");
+      };
+
+      img.onerror = () => {
+        console.error("Failed to load match tag image.");
+      };
+
+      img.src = `https://cm.g.doubleclick.net/pixel?google_nid=${this.bidderNid}&google_cm=1`;
+
+      fetch(`https://cm.g.doubleclick.net/pixel?google_nid=${this.bidderNid}&google_cm=1`, {
+        redirect: 'manual',
+      })
+        .then(response => {
+          console.log("Response Status:", response.status);
+          console.log("Response Headers:", response.headers);
+
+          if (response.status === 302) {
+            const locationHeader = response.headers.get('location');
+            console.log("302 Redirect Location:", locationHeader);
+
+            if (locationHeader) {
+              const gidMatch = locationHeader.match(/google_gid=([^&]+)/);
+
+              if (gidMatch && gidMatch[1]) {
+                this.googleGid = gidMatch[1];
+                console.log("Google GID extracted:", this.googleGid);
+                resolve(this.googleGid);
+              } else {
+                console.error('google_gid not found in 302 response location header.');
+                reject('google_gid not found in 302 response location header.');
+              }
+            } else {
+              console.error('Location header not found in 302 response.');
+              reject('Location header not found in 302 response.');
+            }
+          } else {
+            console.error('Expected 302 response, but got:', response.status);
+            reject('Expected 302 response, but got: ' + response.status);
+          }
+        })
+        .catch(error => {
+          console.error('Error fetching match tag:', error);
+          reject('Error fetching match tag: ' + error);
+        });
+    });
+  }
+
+  async syncCookie(userId, secretKey) {
+    debugger;
+    this.userId = userId;
+
+    try {
+      this.googleGid = await this.getGoogleGid();
+      console.log("Google GID for sync:", this.googleGid);
+
+      const params = {
+        eventName: 'cookieSync',
+        userId: this.userId,   // replace with userId cookie
+        googleGid: this.googleGid,
+      };
+
+      const syncUrl = this.gcpEndpoint;  // syncUrl will be sendevent to api url
+
+      const response = await fetch(syncUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(params),
+      });
+
+      console.log('Response Status:', response.status);
+      console.log('Response Body:', await response.text());
+
+      if (response.ok) {
+        console.log('Cookie sync successful.');
+        let encryptedCookieSync = CryptoJS.AES.encrypt('true', secretKey).toString();  
+        console.log(" encryptedCookieSync ", encryptedCookieSync);    
+        sessionStorage.setItem('cookieSyncDone', encryptedCookieSync); // Store sync status in sessionStorage , encrypt sessionstorage
+      } else {
+        console.error('Cookie sync failed:', response.status, response.statusText);
+        let encryptedCookieSync = CryptoJS.AES.encrypt('false', secretKey).toString();  
+        console.log(" encryptedCookieSync ", encryptedCookieSync);    
+        sessionStorage.setItem('cookieSyncDone', encryptedCookieSync);
+      }
+    } catch (error) {
+      console.error('Cookie sync error:', error);
+           let encryptedCookieSync = CryptoJS.AES.encrypt('false', secretKey).toString();     
+           console.log(" encryptedCookieSync ", encryptedCookieSync); 
+      sessionStorage.setItem('cookieSyncDone', encryptedCookieSync);
+    }
+  }
+  async performCookieSync(userId, secretKey) {
+    debugger;
+    let cookieSyncFlag = sessionStorage.getItem("cookieSyncDone");
+    console.log('cookieSyncFlag ', cookieSyncFlag);
+    let cookieSyncSessionflag = JSON.parse(CryptoJS.AES.decrypt(cookieSyncFlag, secretKey).toString(CryptoJS.enc.Utf8))
+    console.log(' cookieSyncSessionflag ', cookieSyncSessionflag);
+    if (cookieSyncSessionflag) {
+      console.log('Cookie sync already performed in this session.');
+      return;
+    }
+
+    try {
+      await this.syncCookie(userId, secretKey);
+      console.log('Cookie synchronization completed.');
+    } catch (error) {
+      console.error('Cookie synchronization failed:', error);
+    }
+  }
+}
 
 function generateUserID() {
   try {
@@ -47,6 +174,7 @@ function getQueryParam(param) {
 let secretKey="RW5jcnlwdGlvbktleQ==" // Base64 encoded format of key  "EncryptionKey"
 const crossDomainFlag=true;     
 const multiDomainFlag=true; 
+const googleCookieSyncFlag = true;     
 let rdUserID = getCookie('rdUserId');
 let userID = getCookie('userID');
 let sessionID = getCookie('sessionID');
@@ -915,6 +1043,18 @@ function waitForTCFAPI(callback, retries = 10, interval = 500) {
 
   }
 }
+
+      // Create a new instance of the GoogleCookieSync class
+  const googleCookieSyncFunc = new GoogleCookieSync('your_bidder_nid');
+  
+  // Call the performCookieSync method when the user's consent is given
+  if (consentTrack && googleCookieSyncFlag) {
+    try{
+    googleCookieSyncFunc.performCookieSync(userID,secretKey);
+    } catch(error){
+      console.log(" Error : ", error)
+    }
+  }
 waitForTCFAPI(() => {
   console.log("_tcfapi is ready!");
   window.__tcfapi('addEventListener', 2, callback);
@@ -944,6 +1084,10 @@ async function createEventData(eventname, eventCategory, additionalData = {}) {
       },
       consent: consentObj
     }
+       // Include Google GID in the event data
+     // const googleGid = await googleCookieSyncFunc.getGoogleGid();
+    //  eventData.eventInfo.googleGid = googleGid;
+    
     if (rdUserID) {
       eventData.userInfo.rdUserId = rdUserID
     }
