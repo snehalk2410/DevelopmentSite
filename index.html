@@ -24,8 +24,27 @@ function OptanonWrapper() { }
  <!--  <script type="text/javascript" src="https://web-analytics-dot-uxlwqzc-cdip-sandbox-test.uc.r.appspot.com/ajhnjdnskjnvcksbc/analytics"> 
 </script> -->
 
-<script type="text/javascript" src="https://web-analytics-dot-uxlwqzc-cdip-sandbox-test.uc.r.appspot.com/static/asdfghjkl123/testing.js?crossdomainflag=true&deleteprofile=true&multiDomainFlag=true&googleCookieSyncFlag=false&automaticTracking=true">
-         </script> 
+<!--<script type="text/javascript" src="https://web-analytics-dot-uxlwqzc-cdip-sandbox-test.uc.r.appspot.com/static/asdfghjkl123/testing.js?crossdomainflag=true&
+    deleteprofile=true&multiDomainFlag=true&googleCookieSyncFlag=false&automaticTracking=true">
+         </script> -->
+<script type="text/javascript"
+     const userDefinedFlags = {
+        crossdomainflag: true,
+        deleteprofile: false,
+        multiDomainFlag:true,
+        googleCookieSyncFlag: false,
+        automaticTracking:true
+        // Add more flags as needed
+    };
+
+    // Construct the URL with query parameters
+    const scriptUrl = `https://web-analytics-dot-uxlwqzc-cdip-sandbox-test.uc.r.appspot.com/static/asdfghjkl123/testing.js?${new URLSearchParams(userDefinedFlags).toString()}`;
+
+    // Create a script element and append it to the document
+    const scriptElement = document.createElement('script');
+    scriptElement.src = scriptUrl;
+    document.head.appendChild(scriptElement);
+  </script> 
          </head>
 <body class="w3-content" style="max-width:1200px">
 <!--<iframe src="https://centraldomain.vercel.app" title="PRM"
