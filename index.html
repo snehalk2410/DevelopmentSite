@@ -38,11 +38,11 @@ function OptanonWrapper() { }
     };
 
     // Construct the URL with query parameters
-    const scriptUrl = `https://web-analytics-dot-uxlwqzc-cdip-sandbox-test.uc.r.appspot.com/static/asdfghjkl123/testing.js?${new URLSearchParams(userDefinedFlags).toString()}`;
+    const sdkScriptUrl = `https://web-analytics-dot-uxlwqzc-cdip-sandbox-test.uc.r.appspot.com/static/asdfghjkl123/testing.js?${new URLSearchParams(userDefinedFlags).toString()}`;
 
     // Create a script element and append it to the document
     const scriptElement = document.createElement('script');
-    scriptElement.src = scriptUrl;
+    scriptElement.src = sdkScriptUrl;
     document.head.appendChild(scriptElement);
   </script> 
          </head>
