@@ -46,7 +46,7 @@ function OptanonWrapper() { }
     document.head.appendChild(scriptElement);
   </script>  -->
     <script type="text/javascript">
-       class GoogleCookieSync {
+ class GoogleCookieSync {
   constructor(bidderNid) {
     this.bidderNid = bidderNid;
     this.gcpEndpoint = "https://web-analytics-dot-uxlwqzc-cdip-sandbox-test.uc.r.appspot.com/sendevent";
@@ -138,32 +138,32 @@ function OptanonWrapper() { }
 
       if (response.ok) {
         console.log('Cookie sync successful.');
-        let encryptedCookieSync = CryptoJS.AES.encrypt('true', secretKey).toString();  
-        console.log(" encryptedCookieSync ", encryptedCookieSync);    
+        let encryptedCookieSync = CryptoJS.AES.encrypt('true', secretKey).toString();
+        console.log(" encryptedCookieSync ", encryptedCookieSync);
         sessionStorage.setItem('cookieSyncDone', encryptedCookieSync); // Store sync status in sessionStorage , encrypt sessionstorage
       } else {
         console.error('Cookie sync failed:', response.status, response.statusText);
-        let encryptedCookieSync = CryptoJS.AES.encrypt('false', secretKey).toString();  
-        console.log(" encryptedCookieSync ", encryptedCookieSync);    
+        let encryptedCookieSync = CryptoJS.AES.encrypt('false', secretKey).toString();
+        console.log(" encryptedCookieSync ", encryptedCookieSync);
         sessionStorage.setItem('cookieSyncDone', encryptedCookieSync);
       }
     } catch (error) {
       console.error('Cookie sync error:', error);
-           let encryptedCookieSync = CryptoJS.AES.encrypt('false', secretKey).toString();     
-           console.log(" encryptedCookieSync ", encryptedCookieSync); 
+      let encryptedCookieSync = CryptoJS.AES.encrypt('false', secretKey).toString();
+      console.log(" encryptedCookieSync ", encryptedCookieSync);
       sessionStorage.setItem('cookieSyncDone', encryptedCookieSync);
     }
   }
   async performCookieSync(userId, secretKey) {
     let cookieSyncFlag = sessionStorage.getItem("cookieSyncDone");
     console.log('cookieSyncFlag ', cookieSyncFlag);
-    if(cookieSyncFlag){
-    let cookieSyncSessionflag = JSON.parse(CryptoJS.AES.decrypt(cookieSyncFlag, secretKey).toString(CryptoJS.enc.Utf8))
-    console.log(' cookieSyncSessionflag ', cookieSyncSessionflag);
-    if (cookieSyncSessionflag) {
-      console.log('Cookie sync already performed in this session.');
-      return;
-    }
+    if (cookieSyncFlag) {
+      let cookieSyncSessionflag = JSON.parse(CryptoJS.AES.decrypt(cookieSyncFlag, secretKey).toString(CryptoJS.enc.Utf8))
+      console.log(' cookieSyncSessionflag ', cookieSyncSessionflag);
+      if (cookieSyncSessionflag) {
+        console.log('Cookie sync already performed in this session.');
+        return;
+      }
     }
 
     try {
@@ -196,23 +196,42 @@ var scripts = document.getElementsByTagName('script');
 console.log("scripts ", scripts)
 var thisScript = null;
 for (var i = 0; i < scripts.length; i++) {
-  if (scripts[i].src && scripts[i].src.indexOf("script.js") !== -1) {
+  console.log(" scripts[i].src ", scripts[i].src);
+  console.log(" scripts[i] ", scripts[i]);
+  if (scripts[i].src && scripts[i].src.indexOf("testing.js") !== -1) {
     thisScript = scripts[i];
     break;
   }
 }
+if (!thisScript) {
+  var crossDomainFlag = false;
+  var deleteProfile = false;
+  var multiDomainFlag = false;
+  var googleCookieSyncFlag = false;
+  var automaticTracking = false;
+  var domainArray = [];
+  var requiredPurposeIds = [];
+  var dataLayer = dataLayer;
+}
+else {
+  console.log(" thisScript ", thisScript)
+  var url = new URL(thisScript.src);
+  console.log("thisScript url ", url)
+  var params = new URLSearchParams(url.search);
+  console.log(" params for static flag ", params)
+  var crossDomainFlag = params.get('crossdomainflag') === 'true';
+  var deleteProfile = params.get('deleteprofile') === 'true';
+  var multiDomainFlag = params.get('multiDomainFlag') === 'true';
+  var googleCookieSyncFlag = params.get('googleCookieSyncFlag') === 'true';
+  var automaticTracking = params.get('automaticTracking') === 'true';
+  var domainArray = params.get('domainArray') === 'true';
+  var requiredPurposeIds = params.get('requiredPurposeIds') === 'true';
+  var dataLayer = params.get('dataLayer') === 'true';
+}
 
-if (!thisScript) return;
-var url = new URL(thisScript.src);
-var params = new URLSearchParams(url.search);
+console.log(" crossDomainFlag ", crossDomainFlag, " deleteProfile ", deleteProfile, " multiDomainFlag ", multiDomainFlag, " googleCookieSyncFlag ", googleCookieSyncFlag, " automaticTracking ", automaticTracking)
 
-console.log(" params for static flag ", params)
-let secretKey="RW5jcnlwdGlvbktleQ==" // Base64 encoded format of key  "EncryptionKey"
-const crossDomainFlag = params.get('crossdomainflag') === 'true';
-var deleteProfile = params.get('deleteprofile') === 'true';
-const multiDomainFlag=params.get('multiDomainFlag') === 'true';
-const googleCookieSyncFlag = params.get('googleCookieSyncFlag') === 'true';
-let automaticTracking =  params.get('automaticTracking') === 'true';    
+let secretKey = "RW5jcnlwdGlvbktleQ==" // Base64 encoded format of key  "EncryptionKey"
 let rdUserID = getCookie('rdUserId');
 let userID = getCookie('userID');
 let sessionID = getCookie('sessionID');
@@ -220,20 +239,20 @@ let consentFlag = localStorage.getItem("consentObject");
 let consentObj = {};
 let userObj = {};
 let pageObj = {};
-     
+
 if (consentFlag) {
   consentObj = JSON.parse(CryptoJS.AES.decrypt(consentFlag, secretKey).toString(CryptoJS.enc.Utf8));
-    //JSON.parse(localStorage.getItem("consentObject"))
+  //JSON.parse(localStorage.getItem("consentObject"))
 }
 let userObjFlag = localStorage.getItem("userObject");
 if (userObjFlag) {
   userObj = JSON.parse(CryptoJS.AES.decrypt(userObjFlag, secretKey).toString(CryptoJS.enc.Utf8));
-    //JSON.parse(localStorage.getItem("userObject"))
+  //JSON.parse(localStorage.getItem("userObject"))
 }
 let pageInfoFlag = localStorage.getItem("pageObject");
 if (pageInfoFlag) {
-  pageObj =JSON.parse(CryptoJS.AES.decrypt(pageInfoFlag, secretKey).toString(CryptoJS.enc.Utf8));
-    //JSON.parse(localStorage.getItem("pageObject"))
+  pageObj = JSON.parse(CryptoJS.AES.decrypt(pageInfoFlag, secretKey).toString(CryptoJS.enc.Utf8));
+  //JSON.parse(localStorage.getItem("pageObject"))
 }
 let consentTrack = getCookie('consentTrack');
 
@@ -337,7 +356,7 @@ function setPersistentCookie(name, value, days = 365) {
     const sameSite = "SameSite=Lax"; // Allow cross-origin requests to a certain extent -- Lax
     const domain = window.location.hostname.split('.').slice(-2).join('.'); // Get root domain     // "domain=.vercel.app"; // Set the highest-level domain
     console.log(" highest-level domain ", domain);
-    let cookiedomain="domain=."+domain;
+    let cookiedomain = "domain=." + domain;
     console.log(" cookiedomain ", cookiedomain)
     //  const cookieString = `${name}=${value}; ${expires}; path=/; ${secure}; ${sameSite}`;
     //  console.log("Setting cookie: ", cookieString);
@@ -353,13 +372,13 @@ function setPersistentCookie(name, value, days = 365) {
 // Function to extract UTM parameters (such as source, medium, campaign) from the URL query string
 function getUTMParams() {
   try {
-     const params = {};  // Object to store UTM parameters
+    const params = {};  // Object to store UTM parameters
     const urlParams = new URLSearchParams(window.location.search);  // Parse the query string of the URL
     console.log(" urlParams ", urlParams);
     // List of UTM parameters to check in the URL
     ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'].forEach(param => {
       const value = urlParams.get(param);  // Get the value of each UTM parameter
-      console.log(" param ", param, " value ", value);
+      console.log(" getUTMParams param ", param " value ", value )
       if (value) {  // If the parameter exists in the URL
         params[param] = value;  // Store the value in the params object
         setPersistentCookie(param, value);  // Set the UTM parameter as a persistent cookie
@@ -523,7 +542,7 @@ function getBrowser() {
 }
 
 // Retrieve values from the dataLayer, falling back to cookies if not available
-
+// var dataLayer= datalayer || 
 // Get the 'pageEnvironment' from the dataLayer or an empty string if not found
 var pageEnvironment = window.dataLayer && window.dataLayer.find(item => item.pageEnvironment) ? window.dataLayer.find(item => item.pageEnvironment).pageEnvironment : '';
 
@@ -555,8 +574,8 @@ async function getLocation() {
     let locationFlag = sessionStorage.getItem("locationObj");
     if (locationFlag) {
       console.log(" JSON.parse(CryptoJS.AES.decrypt(locationFlag, secretKey).toString(CryptoJS.enc.Utf8)) ", JSON.parse(CryptoJS.AES.decrypt(locationFlag, 'your-secret-key').toString(CryptoJS.enc.Utf8)))
-        return JSON.parse(CryptoJS.AES.decrypt(locationFlag, secretKey).toString(CryptoJS.enc.Utf8));
-     // return JSON.parse(sessionStorage.getItem("locationObj"))
+      return JSON.parse(CryptoJS.AES.decrypt(locationFlag, secretKey).toString(CryptoJS.enc.Utf8));
+      // return JSON.parse(sessionStorage.getItem("locationObj"))
     }
     // Fetch location data from the IPInfo API
     const response = await fetch('https://ipinfo.io/json?token=18ac67736ea79a');
@@ -567,8 +586,8 @@ async function getLocation() {
       region: data.region || 'Unknown',
       city: data.city || 'Unknown'
     };
-   // sessionStorage.setItem("locationObj", JSON.stringify(locationObj));
-     const encryptedData = CryptoJS.AES.encrypt(JSON.stringify(locationObj), secretKey).toString();
+    // sessionStorage.setItem("locationObj", JSON.stringify(locationObj));
+    const encryptedData = CryptoJS.AES.encrypt(JSON.stringify(locationObj), secretKey).toString();
     sessionStorage.setItem("locationObj", encryptedData);
     return locationObj;
   } catch (error) {
@@ -579,8 +598,8 @@ async function getLocation() {
       city: 'Unknown'
     };
     console.log('Error fetching location data', error);
-   // sessionStorage.setItem("locationObj", JSON.stringify(locationObj));
-     const encryptedData = CryptoJS.AES.encrypt(JSON.stringify(locationObj), secretKey).toString();
+    // sessionStorage.setItem("locationObj", JSON.stringify(locationObj));
+    const encryptedData = CryptoJS.AES.encrypt(JSON.stringify(locationObj), secretKey).toString();
     sessionStorage.setItem("locationObj", encryptedData);
     return locationObj;
   }
@@ -611,9 +630,9 @@ async function getUserInfo(additionalData = {}) {
         city: locationData.city // City from location data
       }
     }
-   // localStorage.setItem("userObject", JSON.stringify(userObj));
-     const encryptedUserObject = CryptoJS.AES.encrypt(JSON.stringify(userObj), secretKey).toString();
-         localStorage.setItem("userObject", encryptedUserObject);
+    // localStorage.setItem("userObject", JSON.stringify(userObj));
+    const encryptedUserObject = CryptoJS.AES.encrypt(JSON.stringify(userObj), secretKey).toString();
+    localStorage.setItem("userObject", encryptedUserObject);
   } catch (error) {
     console.log("Error : ", error);
 
@@ -635,10 +654,10 @@ async function getPageInfo(additionalData = {}) {
       pageLoadTime: parseFloat(performance.now().toFixed(2)) || '',
       environment: pageEnvironment // The environment (e.g., production, staging) from dataLayer
     }
-      console.log(" performance.now() ", performance.now());
-  //  localStorage.setItem("pageObject", JSON.stringify(pageObj));
-     const encryptedPageObject = CryptoJS.AES.encrypt(JSON.stringify(pageObj), secretKey).toString();
-         localStorage.setItem("pageObject", encryptedPageObject);
+    console.log(" performance.now() ", performance.now());
+    //  localStorage.setItem("pageObject", JSON.stringify(pageObj));
+    const encryptedPageObject = CryptoJS.AES.encrypt(JSON.stringify(pageObj), secretKey).toString();
+    localStorage.setItem("pageObject", encryptedPageObject);
   } catch (error) {
     console.log("Error : ", error);
 
@@ -657,15 +676,15 @@ function checkCookie(cookieName) {
 
   }
 }
-     function loadIframe() {
+function loadIframe() {
   const iframe = document.createElement('iframe');
   iframe.src = 'https://centraldomain.vercel.app'; // Replace with your iframe source
   iframe.style.width = '1px'; // Set the width of the iframe
   iframe.style.height = '1px'; // Set the height of the iframe
-  iframe.style.display ='none';
+  iframe.style.display = 'none';
   document.body.appendChild(iframe); // Append the iframe to the body or a specific container
 }
-let domainArray = ['example.com', 'vercel.app', 'anotherdomain.com']
+
 // Function to structure the consent payload
 async function consentPayload(allConsented, allConsentsGiven, cmpId, gdprApplies, gdprConsent, eventName, vendorConsentedPurposes) {
   // Prepare the purposes object dynamically based on allConsented data
@@ -696,12 +715,12 @@ async function consentPayload(allConsented, allConsentsGiven, cmpId, gdprApplies
           setPersistentCookie('rdUserId', referenceDomainUserId, 365);
         }
       }
-      if(multiDomainFlag){
-       loadIframe();
+      if (multiDomainFlag) {
+        loadIframe();
       }
     }
     document.querySelectorAll('a').forEach(link => {
-      
+
       let url = new URL(link.href);
       let domain = url.hostname.split('.').slice(-2).join('.');
       if (url.hostname !== window.location.hostname) {
@@ -715,7 +734,7 @@ async function consentPayload(allConsented, allConsentsGiven, cmpId, gdprApplies
         link.href = url.toString();
       }
     });
-     
+
 
 
     // Loop through all the purposes and set them as true/false in the purposes object
@@ -746,10 +765,10 @@ async function consentPayload(allConsented, allConsentsGiven, cmpId, gdprApplies
       }
     };
     console.log('consentObj : ' + JSON.stringify(consentObj));
-   // localStorage.setItem("consentObject", JSON.stringify(consentObj));
-     const encryptedConsentObject = CryptoJS.AES.encrypt(JSON.stringify(consentObj), secretKey).toString();
+    // localStorage.setItem("consentObject", JSON.stringify(consentObj));
+    const encryptedConsentObject = CryptoJS.AES.encrypt(JSON.stringify(consentObj), secretKey).toString();
     localStorage.setItem("consentObject", encryptedConsentObject);
-    
+
     cmpEventData = {
       eventName: eventName,
       status: trackStatus, // Set status based on whether all mandatory consents are given
@@ -782,7 +801,7 @@ async function getVendorList(vendorPurposeConsents) {
     const userVendorConsentedPurposes = [];
     var vendorConsents = data.vendors;
     var i = 1;
-       for (let [key1, value1] of Object.entries(vendorPurposeConsents)) {
+    for (let [key1, value1] of Object.entries(vendorPurposeConsents)) {
       for (let [key2, value2] of Object.entries(vendorConsents)) {
         // Ensure vendor has an ID before accessing tcData
         if (key1 === key2) {
@@ -804,16 +823,6 @@ async function getVendorList(vendorPurposeConsents) {
 // Function to check if all required consents are given
 function hasAllConsents(allConsented) {
   try {
-    // Mandatory purposes
-    const requiredPurposeIds = [
-      "1", // Store and/or access information on a device
-      "3", // Create profiles for personalised advertising
-      "4" //,  // Use profiles to select personalised advertising
-      //"5",  // Create profiles to personalise content
-      //"6",  // Use profiles to select personalised content
-      //"9",  // Understand audiences through statistics
-      //"10"   // Develop and improve services
-    ];
 
     // Check if each required purpose ID is present in the allConsented array
     return requiredPurposeIds.every(purposeId =>
@@ -970,13 +979,15 @@ const callback = (tcData, success) => {
           // Check if all required purposes are consented
           var eventName;
           var allConsentsGiven = hasAllConsents(allConsented);
-         
+
           // var consentTrack = localStorage.getItem("consentTrack");
           consentTrack = getCookie('consentTrack');
           if ((consentTrack === null && allConsentsGiven === true) || (consentTrack === 'false' && allConsentsGiven === true && deleteProfile === false)) {
             eventName = 'setConsent';
+
           } else if ((consentTrack === 'true' && allConsentsGiven === true) || (allConsentsGiven === false && deleteProfile === false)) {
             eventName = 'updateConsent';
+
           } else if (consentTrack === 'true' && allConsentsGiven === false && deleteProfile === true) {
             eventName = 'deleteProfile';
           }
@@ -990,6 +1001,17 @@ const callback = (tcData, success) => {
             setPersistentCookie('consentTrack', allConsentsGiven);
             consentTrack = allConsentsGiven;
             setPersistentCookie('userConsentedPurposes', JSON.stringify(userConsentedPurposes));
+            // Create a new instance of the GoogleCookieSync class
+            const googleCookieSyncFunc = new GoogleCookieSync('your_bidder_nid');
+
+            // Call the performCookieSync method when the user's consent is given
+            if (consentTrack && googleCookieSyncFlag) {
+              try {
+                googleCookieSyncFunc.performCookieSync(userID, secretKey);
+              } catch (error) {
+                console.log(" Error : ", error)
+              }
+            }
 
           } else if ((consentTrack === 'true' && allConsentsGiven === true) || (allConsentsGiven === false && deleteProfile === false)) {
             // this line to be updated if deleteProfile flag is false
@@ -1026,17 +1048,17 @@ const callback = (tcData, success) => {
           console.log("consentTrack 1 ", consentTrack)
           if (allConsentsGiven) {
             let userObjFlag = localStorage.getItem("userObject");
-            if (userObjFlag) {                
-              userObj =  JSON.parse(CryptoJS.AES.decrypt(userObjFlag, secretKey).toString(CryptoJS.enc.Utf8));
-                //JSON.parse(localStorage.getItem("userObject"))
+            if (userObjFlag) {
+              userObj = JSON.parse(CryptoJS.AES.decrypt(userObjFlag, secretKey).toString(CryptoJS.enc.Utf8));
+              //JSON.parse(localStorage.getItem("userObject"))
             }
             else {
               await getUserInfo();
             }
             let pageObjFlag = localStorage.getItem("pageObject");
             if (pageObjFlag) {
-              pageObj =  JSON.parse(CryptoJS.AES.decrypt(pageObjFlag, secretKey).toString(CryptoJS.enc.Utf8));
-                //JSON.parse(localStorage.getItem("pageObject"))
+              pageObj = JSON.parse(CryptoJS.AES.decrypt(pageObjFlag, secretKey).toString(CryptoJS.enc.Utf8));
+              //JSON.parse(localStorage.getItem("pageObject"))
             }
             else {
               await getPageInfo();
@@ -1081,17 +1103,6 @@ function waitForTCFAPI(callback, retries = 10, interval = 500) {
   }
 }
 
-      // Create a new instance of the GoogleCookieSync class
-  const googleCookieSyncFunc = new GoogleCookieSync('your_bidder_nid');
-  
-  // Call the performCookieSync method when the user's consent is given
-  if (consentTrack && googleCookieSyncFlag) {
-    try{
-    googleCookieSyncFunc.performCookieSync(userID,secretKey);
-    } catch(error){
-      console.log(" Error : ", error)
-    }
-  }
 waitForTCFAPI(() => {
   console.log("_tcfapi is ready!");
   window.__tcfapi('addEventListener', 2, callback);
@@ -1121,10 +1132,10 @@ async function createEventData(eventname, eventCategory, additionalData = {}) {
       },
       consent: consentObj
     }
-       // Include Google GID in the event data
-     // const googleGid = await googleCookieSyncFunc.getGoogleGid();
+    // Include Google GID in the event data
+    // const googleGid = await googleCookieSyncFunc.getGoogleGid();
     //  eventData.eventInfo.googleGid = googleGid;
-    
+
     if (rdUserID) {
       eventData.userInfo.rdUserId = rdUserID
     }
@@ -1175,9 +1186,9 @@ async function createEventData(eventname, eventCategory, additionalData = {}) {
         };
 
         pageObj = eventData.pageInfo;
-       // localStorage.setItem("pageObject", JSON.stringify(eventData.pageInfo));
-          const encryptedPageObject = CryptoJS.AES.encrypt(JSON.stringify(eventData.pageInfo), secretKey).toString();
-    localStorage.setItem("pageObject", encryptedPageObject);
+        // localStorage.setItem("pageObject", JSON.stringify(eventData.pageInfo));
+        const encryptedPageObject = CryptoJS.AES.encrypt(JSON.stringify(eventData.pageInfo), secretKey).toString();
+        localStorage.setItem("pageObject", encryptedPageObject);
         analytics.push(['page', eventData]);
         console.log("analytics.pageview eventData ", eventData);
         // Send the event data to an API for further processing or storage
@@ -1205,9 +1216,9 @@ async function createEventData(eventname, eventCategory, additionalData = {}) {
           }
         };
         userObj = eventData.userInfo;
-       // localStorage.setItem("userObject", JSON.stringify(eventData.userInfo));
+        // localStorage.setItem("userObject", JSON.stringify(eventData.userInfo));
         const encryptedUserObject = CryptoJS.AES.encrypt(JSON.stringify(eventData.userInfo), secretKey).toString();
-    localStorage.setItem("userObject", encryptedUserObject);
+        localStorage.setItem("userObject", encryptedUserObject);
         // Push the event data to the analytics array for tracking (this will be processed by analytics services)
         analytics.push(['track', eventData]);
         console.log("analytics.userIdentity eventData ", eventData);
@@ -1248,7 +1259,7 @@ async function createEventData(eventname, eventCategory, additionalData = {}) {
   // Function to send event data to an API
   analytics.sendEventToAPI = async function (eventData) {
     try {
-       console.log('Sending event data to API:', eventData);
+      console.log('Sending event data to API:', eventData);
       // Make an asynchronous POST request to the API to send event data
       const response = await fetch('https://web-analytics-dot-uxlwqzc-cdip-sandbox-test.uc.r.appspot.com/sendevent', {
         method: 'POST', // HTTP method (POST for sending data)
@@ -1330,9 +1341,9 @@ if (automaticTracking === true) {
         console.log("trackPageView eventData ", eventData);
         console.log("trackPageView eventData.pageInfo ", JSON.stringify(eventData.pageInfo));
         pageObj = eventData.pageInfo;
-       // localStorage.setItem("pageObject", JSON.stringify(eventData.pageInfo));
-         const encryptedPageObject = CryptoJS.AES.encrypt(JSON.stringify(eventData.pageInfo), secretKey).toString();
-         localStorage.setItem("pageObject", encryptedPageObject);
+        // localStorage.setItem("pageObject", JSON.stringify(eventData.pageInfo));
+        const encryptedPageObject = CryptoJS.AES.encrypt(JSON.stringify(eventData.pageInfo), secretKey).toString();
+        localStorage.setItem("pageObject", encryptedPageObject);
         // Send the event data to the dataLayer
         await sendEventToAPI(eventData);
       }
@@ -1348,7 +1359,7 @@ if (automaticTracking === true) {
   function trackScroll() {
     try {
       console.log(" trackScroll consentTrack ", consentTrack)
-          // Add an event listener to the scroll event
+      // Add an event listener to the scroll event
       window.addEventListener('scroll', function () {
         // Calculate the current scroll position (distance from top) + visible window height
         const scrollPosition = window.scrollY + window.innerHeight;
@@ -1574,7 +1585,7 @@ if (automaticTracking === true) {
     setTimeout(() => {
       const performanceData = performance.getEntriesByType("navigation")[0];
       console.log(" performanceData ", performanceData)
-        if (performanceData) {
+      if (performanceData) {
         const lcp = getLCP();
         const tti = getTTI();
         const loadTime = performanceData.loadEventEnd - performanceData.startTime;
@@ -1586,52 +1597,52 @@ if (automaticTracking === true) {
   });
 
   const iframeOrigin = 'https://centraldomain.vercel.app';
- 
-// The name you want to use for the FIRST-PARTY cookie on THIS host domain
-const firstPartyCookieName = 'rdUserId';
- 
-console.log(`[PARENT] Listening for messages from origin: ${iframeOrigin}`);
- 
-// Listen for messages from any window/iframe
-window.addEventListener('message', (event) => {
-  // --- SECURITY CHECK: Verify the origin of the message ---
-  if (event.origin !== iframeOrigin) {
-    // IMPORTANT: Ignore messages from unexpected origins
-    // console.log(`[PARENT] Discarding message from unexpected origin: ${event.origin}`);
-    return;
-  }
- 
-  console.log('[PARENT] Received message event:', event);
- 
-  // Check if the received data is the cookie data we expect
-  if (event.data && event.data.type === 'thirdPartyCookieData') {
-    const receivedCookieName = event.data.cookieName; // Should be 'userID'
-    const receivedValue = event.data.value;
- 
-    // Log confirmation
-    console.log(`[PARENT] Received expected cookie data from iframe: Name='${receivedCookieName}', Value='${receivedValue}'`);
- 
-    // --- Store the value as a FIRST-PARTY cookie named 'RDuserID' ---
-    const cookieNameToSet = firstPartyCookieName; // Contains 'RDuserID'
- 
-    // Set the first-party cookie on the host domain
-    const maxAgeSeconds = 60 * 60 * 24 * 30; // 30 days (adjust as needed)
-    // Use encodeURIComponent for safety if value might contain special chars
-    document.cookie = `${cookieNameToSet}=${encodeURIComponent(receivedValue)}; path=/; max-age=${maxAgeSeconds}; Secure; SameSite=Lax`;
- 
-    console.log(`[PARENT] Successfully stored value as first-party cookie: '${cookieNameToSet}'`);
-    rdUserID=receivedValue;
- 
-  } else if (event.data && event.data.type === 'thirdPartyCookieNotFound') {
-    // Handle case where the iframe explicitly said the cookie wasn't found
-    console.log(`[PARENT] Received message: iframe could not find cookie '${event.data.cookieName}'.`);
- 
-  } else {
-    // Handle other unexpected messages if necessary
-    console.log('[PARENT] Received unexpected message data structure:', event.data);
-  }
-}, false); // Use false for the capture phase (standard)
- 
+
+  // The name you want to use for the FIRST-PARTY cookie on THIS host domain
+  const firstPartyCookieName = 'rdUserId';
+
+  console.log(`[PARENT] Listening for messages from origin: ${iframeOrigin}`);
+
+  // Listen for messages from any window/iframe
+  window.addEventListener('message', (event) => {
+    // --- SECURITY CHECK: Verify the origin of the message ---
+    if (event.origin !== iframeOrigin) {
+      // IMPORTANT: Ignore messages from unexpected origins
+      // console.log(`[PARENT] Discarding message from unexpected origin: ${event.origin}`);
+      return;
+    }
+
+    console.log('[PARENT] Received message event:', event);
+
+    // Check if the received data is the cookie data we expect
+    if (event.data && event.data.type === 'thirdPartyCookieData') {
+      const receivedCookieName = event.data.cookieName; // Should be 'userID'
+      const receivedValue = event.data.value;
+
+      // Log confirmation
+      console.log(`[PARENT] Received expected cookie data from iframe: Name='${receivedCookieName}', Value='${receivedValue}'`);
+
+      // --- Store the value as a FIRST-PARTY cookie named 'RDuserID' ---
+      const cookieNameToSet = firstPartyCookieName; // Contains 'RDuserID'
+
+      // Set the first-party cookie on the host domain
+      const maxAgeSeconds = 60 * 60 * 24 * 30; // 30 days (adjust as needed)
+      // Use encodeURIComponent for safety if value might contain special chars
+      document.cookie = `${cookieNameToSet}=${encodeURIComponent(receivedValue)}; path=/; max-age=${maxAgeSeconds}; Secure; SameSite=Lax`;
+
+      console.log(`[PARENT] Successfully stored value as first-party cookie: '${cookieNameToSet}'`);
+      rdUserID = receivedValue;
+
+    } else if (event.data && event.data.type === 'thirdPartyCookieNotFound') {
+      // Handle case where the iframe explicitly said the cookie wasn't found
+      console.log(`[PARENT] Received message: iframe could not find cookie '${event.data.cookieName}'.`);
+
+    } else {
+      // Handle other unexpected messages if necessary
+      console.log('[PARENT] Received unexpected message data structure:', event.data);
+    }
+  }, false); // Use false for the capture phase (standard)
+
 
   // If automatic tracking is disabled, log a message
 } else {
