@@ -231,6 +231,15 @@ else {
 
 console.log(" crossDomainFlag ", crossDomainFlag, " deleteProfile ", deleteProfile, " multiDomainFlag ", multiDomainFlag, " googleCookieSyncFlag ", googleCookieSyncFlag, " automaticTracking ", automaticTracking)
 
+    const urlParamstest = new URLSearchParams(window.location.search);  // Parse the query string of the URL
+      const allparams={};
+    console.log(" urlParamstest ", urlParamstest);
+    for(const [key, value] of urlParamstest.entries()){
+        console.log(" key ", key , " value ", value)
+      allparams[key] = value;
+    }
+      console.log(" allparams ", allparams);
+  
 let secretKey = "RW5jcnlwdGlvbktleQ==" // Base64 encoded format of key  "EncryptionKey"
 let rdUserID = getCookie('rdUserId');
 let userID = getCookie('userID');
