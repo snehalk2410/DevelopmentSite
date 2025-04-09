@@ -359,6 +359,7 @@ function getUTMParams() {
     // List of UTM parameters to check in the URL
     ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'].forEach(param => {
       const value = urlParams.get(param);  // Get the value of each UTM parameter
+      console.log(" param ", param, " value ", value);
       if (value) {  // If the parameter exists in the URL
         params[param] = value;  // Store the value in the params object
         setPersistentCookie(param, value);  // Set the UTM parameter as a persistent cookie
