@@ -646,6 +646,7 @@ async function consentPayload(allConsented, allConsentsGiven, cmpId, gdprApplies
     let vendorPurposes = [];
     let vendorPurpose = {};
     let trackStatus = allConsentsGiven ? 'optedIn' : 'optedOut';
+    debugger;
     userID = getCookie('userID');
     sessionID = getCookie('sessionID');
     rdUserID = getCookie('rdUserId');
@@ -1555,6 +1556,7 @@ if (automaticTracking === true) {
 
   // Listen for messages from any window/iframe
   window.addEventListener('message', (event) => {
+    debugger;
     // --- SECURITY CHECK: Verify the origin of the message ---
     if (event.origin !== iframeOrigin) {
       // IMPORTANT: Ignore messages from unexpected origins
