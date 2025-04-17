@@ -648,6 +648,7 @@ async function consentPayload(allConsented, allConsentsGiven, cmpId, gdprApplies
         // If no userID exists in the cookies, generate a new one
         userID = generateUserID();
         setPersistentCookie('userID', userID, 365);
+        setPersistentCookie('firstTimeUser', 'Yes', 365);
       }
       // If no sessionID exists (e.g., it's a new session), create a new session ID
       if (!sessionID) {
@@ -976,6 +977,7 @@ const callback = (tcData, success) => {
             cookieStore.delete("userConsentedPurposes");
             cookieStore.delete("userID");
             cookieStore.delete("sessionID");
+            cookieStore.delete("firstTimeUser");
             consentTrack = false;
             ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'].forEach(param => {
               cookieStore.delete(param);  // Set the UTM parameter as a persistent cookie  
@@ -1067,6 +1069,7 @@ async function createEventData(eventname, eventCategory, additionalData = {}) {
       userInfo: userObj,
       sessionInfo: {
         sessionId: sessionID, // The current session ID (from cookies)
+        firstTimeUser=getCookie('firstTimeUser') || '';
         startTime: new Date().toISOString(), // Session start time (ISO format)
         source: utmParams.utm_source || getCookie('utm_source') || '', // UTM source (from URL query params)
         medium: utmParams.utm_medium || getCookie('utm_medium') || '', // UTM medium (from URL query params)
@@ -1086,6 +1089,7 @@ async function createEventData(eventname, eventCategory, additionalData = {}) {
       console.log(" performance.now() ", performance.now());
       eventData.eventInfo.pageLoadTime = parseFloat(performance.now().toFixed(2)) || ''
     }
+    cookieStore.delete("firstTimeUser");
     return eventData;
   } catch (error) {
     console.log("Error : ", error);
