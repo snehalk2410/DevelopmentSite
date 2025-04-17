@@ -1069,7 +1069,7 @@ async function createEventData(eventname, eventCategory, additionalData = {}) {
       userInfo: userObj,
       sessionInfo: {
         sessionId: sessionID, // The current session ID (from cookies)
-        firstTimeUser=getCookie('firstTimeUser') || '';
+        firstTimeUser=getCookie('firstTimeUser') || '',
         startTime: new Date().toISOString(), // Session start time (ISO format)
         source: utmParams.utm_source || getCookie('utm_source') || '', // UTM source (from URL query params)
         medium: utmParams.utm_medium || getCookie('utm_medium') || '', // UTM medium (from URL query params)
