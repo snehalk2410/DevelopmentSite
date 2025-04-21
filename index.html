@@ -159,7 +159,7 @@ function OptanonWrapper() { }
 
   for (let i = 0; i < iterations; i++) {
     try {
-      const id = generateUserID();
+      const id = crypto.randomUUID(); //generateUserID();
       if (!id || results.has(id)) {
         failCount++;
       } else {
