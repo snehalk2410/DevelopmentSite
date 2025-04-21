@@ -150,6 +150,37 @@ function OptanonWrapper() { }
   }
 }
 
+   function peakLoadTest(iterations = 1_000_000) {
+  const { performance } = require('perf_hooks'); // For Node.js
+  const start = performance.now();
+
+  let successCount = 0;
+  let failCount = 0;
+  let results = new Set();
+
+  for (let i = 0; i < iterations; i++) {
+    try {
+      const id = generateUserID();
+      if (!id || results.has(id)) {
+        failCount++;
+      } else {
+        results.add(id);
+        successCount++;
+      }
+    } catch (e) {
+      failCount++;
+    }
+  }
+
+  const end = performance.now();
+
+  console.log("Peak Load Test Results:");
+  console.log("Total Executions:", iterations);
+  console.log("Successful IDs:", successCount);
+  console.log("Failed Executions:", failCount);
+  console.log("Time Taken:", (end - start).toFixed(2), "ms");
+  console.log("Average Time per Execution:", ((end - start) / iterations).toFixed(4), "ms");
+}
 function generateUserID() {
   try {
     let randomPart = crypto.randomUUID();
