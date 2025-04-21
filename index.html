@@ -150,9 +150,8 @@ function OptanonWrapper() { }
   }
 }
 
-   function peakLoadTest(iterations = 1_000_000) {
-  const { performance } = require('perf_hooks'); // For Node.js
-  const start = performance.now();
+   function peakLoadTest(iterations = 100000) {
+   const start = performance.now();
 
   let successCount = 0;
   let failCount = 0;
