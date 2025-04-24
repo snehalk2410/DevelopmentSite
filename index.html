@@ -554,7 +554,6 @@ async function getLocation() {
     return locationObj;
   }
 }
-
       function peakLoadTest(iterations = 100000) {
         debugger;
    const start = performance.now();
@@ -565,7 +564,7 @@ async function getLocation() {
    for (let i = 0; i < iterations; i++) {
      try {
        const id = getLocation(); 
-       console.log("await id.json() ", id.json());
+       console.log("await id.json() ", id);
        //crypto.randomUUID(); //generateUserID();
        if (!id || results.has(id)) {
          failCount++;
