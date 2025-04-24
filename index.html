@@ -564,6 +564,7 @@ async function getLocation() {
    for (let i = 0; i < iterations; i++) {
      try {
        const id = getLocation(); 
+       console.log("await id.json() ", id.json());
        //crypto.randomUUID(); //generateUserID();
        if (!id || results.has(id)) {
          failCount++;
