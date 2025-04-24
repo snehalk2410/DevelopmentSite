@@ -169,40 +169,15 @@ function getQueryParam(param) {
   }
 }
 
-var scripts = document.getElementsByTagName('script');
-console.log("scripts ", scripts)
-var thisScript = null;
-for (var i = 0; i < scripts.length; i++) {
-  console.log(" scripts[i].src ", scripts[i].src);
-  console.log(" scripts[i] ", scripts[i]);
-  if (scripts[i].src && scripts[i].src.indexOf("testing.js") !== -1) {
-    thisScript = scripts[i];
-    break;
-  }
-}
-if (!thisScript) {
- var crossDomainFlag = false;
-  var deleteProfile = false;
-  var multiDomainFlag = false;
+ var crossDomainFlag = true;
+  var deleteProfile = true;
+  var multiDomainFlag = true;
   var googleCookieSyncFlag = false;
- var automaticTracking = false;
-  var domainArray = [];
-  var requiredPurposeIds = [];
+ var automaticTracking = true;
+  var domainArray = ["example.com","vercel.app","anotherdomain.com"];
+  var requiredPurposeIds = ["1","3","4"];
   var dataLayerName = 'dataLayer';
-}
-else {
-  var url = new URL(thisScript.src);
-  console.log("thisScript url ", url)
-  var params = new URLSearchParams(url.search);
-  var crossDomainFlag = params.get('crossdomainflag') === 'true';
-  var deleteProfile = params.get('deleteprofile') === 'true';
-  var multiDomainFlag = params.get('multiDomainFlag') === 'true';
-  var googleCookieSyncFlag = params.get('googleCookieSyncFlag') === 'true';
-  var automaticTracking = params.get('automaticTracking') === 'true';
-  var domainArray = JSON.parse(params.get('domainArray')) || [];
-  var requiredPurposeIds = JSON.parse(params.get('requiredPurposeIds')) || [];
-  var dataLayerName = params.get('dataLayer');
-}
+
 
 var dl = window[dataLayerName]; // Access dynamic dataLayer
 console.log(" crossDomainFlag ", crossDomainFlag, " deleteProfile ", deleteProfile, " multiDomainFlag ", multiDomainFlag, " googleCookieSyncFlag ", googleCookieSyncFlag, " automaticTracking ", automaticTracking)
@@ -1039,7 +1014,7 @@ const callback = (tcData, success) => {
             else {
               await getPageInfo();
             }
-           if(getCookie('firstTimeUser')=="Yes"){
+              if(getCookie('firstTimeUser')=="Yes" && automaticTracking === true){
           try {
               console.log(" trackPageView firsttime consentTrack ", consentTrack)
               if (consentTrack) {
