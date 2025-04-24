@@ -23,7 +23,7 @@ function OptanonWrapper() { }
  <!--<script type="text/javascript" src='https://web-analytics-js-dot-uxlwqzc-cdip-sandbox-test.uc.r.appspot.com/static/testing.js?crossdomainflag=false&deleteprofile=false&multiDomainFlag=true&googleCookieSyncFlag=false&automaticTracking=false&domainArray=["example.com","vercel.app","anotherdomain.com"]&requiredPurposeIds=["1","3","4"]&dataLayer="dataLayer"'> 
 </script> -->
     <script type="text/javascript">
-class GoogleCookieSync {
+       class GoogleCookieSync {
   constructor(bidderNid) {
     this.bidderNid = bidderNid;
     this.gcpEndpoint = "https://web-analytics-dot-uxlwqzc-cdip-sandbox-test.uc.r.appspot.com/sendevent";
@@ -169,18 +169,44 @@ function getQueryParam(param) {
   }
 }
 
-  var crossDomainFlag = true;
-  var deleteProfile = true;
-  var multiDomainFlag = true;
+var scripts = document.getElementsByTagName('script');
+console.log("scripts ", scripts)
+var thisScript = null;
+for (var i = 0; i < scripts.length; i++) {
+  console.log(" scripts[i].src ", scripts[i].src);
+  console.log(" scripts[i] ", scripts[i]);
+  if (scripts[i].src && scripts[i].src.indexOf("testing.js") !== -1) {
+    thisScript = scripts[i];
+    break;
+  }
+}
+if (!thisScript) {
+ var crossDomainFlag = false;
+  var deleteProfile = false;
+  var multiDomainFlag = false;
   var googleCookieSyncFlag = false;
-  var automaticTracking = true;
-  var domainArray = ["example.com","vercel.app","anotherdomain.com"];
-  var requiredPurposeIds = ["1","3","4"];
+ var automaticTracking = false;
+  var domainArray = [];
+  var requiredPurposeIds = [];
   var dataLayerName = 'dataLayer';
+}
+else {
+  var url = new URL(thisScript.src);
+  console.log("thisScript url ", url)
+  var params = new URLSearchParams(url.search);
+  var crossDomainFlag = params.get('crossdomainflag') === 'true';
+  var deleteProfile = params.get('deleteprofile') === 'true';
+  var multiDomainFlag = params.get('multiDomainFlag') === 'true';
+  var googleCookieSyncFlag = params.get('googleCookieSyncFlag') === 'true';
+  var automaticTracking = params.get('automaticTracking') === 'true';
+  var domainArray = JSON.parse(params.get('domainArray')) || [];
+  var requiredPurposeIds = JSON.parse(params.get('requiredPurposeIds')) || [];
+  var dataLayerName = params.get('dataLayer');
+}
 
-  var dl = window[dataLayerName]; // Access dynamic dataLayer
-  console.log(" crossDomainFlag ", crossDomainFlag, " deleteProfile ", deleteProfile, " multiDomainFlag ", multiDomainFlag, " googleCookieSyncFlag ", googleCookieSyncFlag, " automaticTracking ", automaticTracking)
-  console.log(" domainArray ", domainArray, " requiredPurposeIds ", requiredPurposeIds, " dataLayerName ", dataLayerName)
+var dl = window[dataLayerName]; // Access dynamic dataLayer
+console.log(" crossDomainFlag ", crossDomainFlag, " deleteProfile ", deleteProfile, " multiDomainFlag ", multiDomainFlag, " googleCookieSyncFlag ", googleCookieSyncFlag, " automaticTracking ", automaticTracking)
+console.log(" domainArray ", domainArray, " requiredPurposeIds ", requiredPurposeIds, " dataLayerName ", dataLayerName)
 
 let secretKey = "RW5jcnlwdGlvbktleQ==" // Base64 encoded format of key  "EncryptionKey"
 let rdUserID = getCookie('rdUserId');
@@ -554,38 +580,6 @@ async function getLocation() {
     return locationObj;
   }
 }
-      async function peakLoadTest(iterations = 100000) {
-        debugger;
-   const start = performance.now();
-   let successCount = 0;
-   let failCount = 0;
-   let results = new Set();
- 
-   for (let i = 0; i < iterations; i++) {
-     try {
-       const id = await getLocation(); 
-       console.log("await id.json() ", id);
-       //crypto.randomUUID(); //generateUserID();
-       if (!id || results.has(id)) {
-         failCount++;
-       } else {
-         results.add(id);
-         successCount++;
-       }
-     } catch (e) {
-       failCount++;
-     }
-   }
- 
-   const end = performance.now();
- 
-   console.log("Peak Load Test Results: ", results);
-   console.log("Total Executions:", iterations);
-   console.log("Successful IDs:", successCount);
-   console.log("Failed Executions:", failCount);
-   console.log("Time Taken:", (end - start).toFixed(2), "ms");
-   console.log("Average Time per Execution:", ((end - start) / iterations).toFixed(4), "ms");
- }
 async function getUserInfo(additionalData = {}) {
   try {
     const locationData = await getLocation();
@@ -1045,6 +1039,26 @@ const callback = (tcData, success) => {
             else {
               await getPageInfo();
             }
+           if(getCookie('firstTimeUser')=="Yes"){
+          try {
+              console.log(" trackPageView firsttime consentTrack ", consentTrack)
+              if (consentTrack) {
+                await getPageInfo();
+                var eventData = await createEventData("Page View", "page");
+                console.log("trackPageView firsttime eventData ", eventData);
+                console.log("trackPageView firsttime eventData.pageInfo ", JSON.stringify(eventData.pageInfo));
+                pageObj = eventData.pageInfo;
+                // localStorage.setItem("pageObject", JSON.stringify(eventData.pageInfo));
+                const encryptedPageObject = CryptoJS.AES.encrypt(JSON.stringify(eventData.pageInfo), secretKey).toString();
+                localStorage.setItem("pageObject", encryptedPageObject);
+                // Send the event data to the dataLayer
+                await sendEventToAPI(eventData);
+              }
+            } catch (error) {
+              console.log("Error : ", error);
+            }
+           }
+
           }
         } else {
           console.log('Failed to retrieve consent data. Success flag is false.');
@@ -1639,7 +1653,6 @@ if (automaticTracking === true) {
 }
 
 
-      
     </script>
          </head>
 <body class="w3-content" style="max-width:1200px">
