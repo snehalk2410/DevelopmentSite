@@ -23,6 +23,19 @@ function OptanonWrapper() { }
  <!--<script type="text/javascript" src='https://web-analytics-js-dot-uxlwqzc-cdip-sandbox-test.uc.r.appspot.com/static/testing.js?crossdomainflag=false&deleteprofile=false&multiDomainFlag=true&googleCookieSyncFlag=false&automaticTracking=false&domainArray=["example.com","vercel.app","anotherdomain.com"]&requiredPurposeIds=["1","3","4"]&dataLayer="dataLayer"'> 
 </script> -->
     <script type="text/javascript">
+    window.dataLayer=window.dataLayer || [];
+    dataLayer.push({
+    'pageEnvironment' : 'testPageEnvironment',
+    'pageContentType': 'pageContentType',
+    'pageName':'Homepage',
+    'loggedIn': 'loggedIn',
+    'consentVersion':'consentVersion',
+    'type': 'type',
+    'segment': 'segment',
+    'customerId':'customerId123'
+  })  
+  </script> 
+    <script type="text/javascript">
        class GoogleCookieSync {
   constructor(bidderNid) {
     this.bidderNid = bidderNid;
