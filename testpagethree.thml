@@ -15,7 +15,19 @@
  
  <!--  <script type="text/javascript" src="https://web-analytics-dot-uxlwqzc-cdip-sandbox-test.uc.r.appspot.com/ajhnjdnskjnvcksbc/analytics"> 
 </script> -->
-
+<script type="text/javascript">
+    window.dataLayer=window.dataLayer || [];
+    dataLayer.push({
+    'pageEnvironment' : 'testPageEnvironment',
+    'pageContentType': 'pageContentType',
+    'pageName':'testpagethree',
+    'loggedIn': 'loggedIn',
+    'consentVersion':'consentVersion',
+    'type': 'type',
+    'segment': 'segment',
+    'customerId':'customerId123'
+  })  
+  </script> 
    <script type="text/javascript">
 
 function generateUserID() {
