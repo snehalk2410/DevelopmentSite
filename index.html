@@ -35,6 +35,42 @@ function OptanonWrapper() { }
   </script> 
  <script type="text/javascript" src='https://web-analytics-js-dot-uxlwqzc-cdip-sandbox-test.uc.r.appspot.com/static/testing.js?crossdomainflag=false&deleteprofile=false&multiDomainFlag=true&googleCookieSyncFlag=false&automaticTracking=true&domainArray=["example.com","vercel.app","anotherdomain.com"]&requiredPurposeIds=["1","3","4"]&dataLayer=dataLayer'> 
 </script> 
+     <script type="text/javascript">
+
+       function setSessionCookie(name, value) {
+  try {
+    debugger;
+    const now = new Date();
+    const midnight = new Date(now);
+    midnight.setHours(24, 0, 0, 0); // Expires at next midnight
+ 
+    const expires = `expires=${midnight.toUTCString()}`;
+    const secure = location.protocol === 'https:' ? 'Secure' : '';
+    const sameSite = 'SameSite=Lax';
+    const hostname = location.hostname;
+    const isLocalhost = hostname === 'localhost' || hostname.endsWith('.localhost');
+ 
+    // Get root domain like "example.com" from "abc.example.com"
+    const parts = hostname.split('.');
+    const rootDomain = parts.length > 2 ? parts.slice(-2).join('.') : hostname;
+    const domain = isLocalhost ? '' : `domain=.${rootDomain}`;
+ 
+    // Build and set cookie string
+    const cookieParts = [
+      `${encodeURIComponent(name)}=${encodeURIComponent(value)}`,
+      expires,
+      'path=/',
+      domain,
+      sameSite,
+      secure
+    ].filter(Boolean); // Remove empty values
+ 
+    document.cookie = cookieParts.join('; ');
+  } catch (error) {
+    console.error('Error setting session cookie:', error);
+  }
+}
+     </script> 
   
 
          </head>
