@@ -232,17 +232,17 @@ let userObj = {};
 let pageObj = {};
 
 if (consentFlag) {
-  consentObj = JSON.parse(CryptoJS.AES.decrypt(consentFlag, "RW5jcnlwdGlvbktleQ" ).toString(CryptoJS.enc.Utf8));
+  consentObj = JSON.parse(CryptoJS.AES.decrypt(consentFlag, secretKey).toString(CryptoJS.enc.Utf8));
   //JSON.parse(localStorage.getItem("consentObject"))
 }
 let userObjFlag = localStorage.getItem("userObject");
 if (userObjFlag) {
-  userObj = JSON.parse(CryptoJS.AES.decrypt(userObjFlag, 'RW5jcnlwdGlvbktleQ').toString(CryptoJS.enc.Utf8));
+  userObj = JSON.parse(CryptoJS.AES.decrypt(userObjFlag, secretKey).toString(CryptoJS.enc.Utf8));
   //JSON.parse(localStorage.getItem("userObject"))
 }
 let pageInfoFlag = localStorage.getItem("pageObject");
 if (pageInfoFlag) {
-  pageObj = JSON.parse(CryptoJS.AES.decrypt(pageInfoFlag, 'RW5jcnlwdGlvbktleQ').toString(CryptoJS.enc.Utf8));
+  pageObj = JSON.parse(CryptoJS.AES.decrypt(pageInfoFlag, secretKey).toString(CryptoJS.enc.Utf8));
   //JSON.parse(localStorage.getItem("pageObject"))
 }
 let consentTrack = getCookie('consentTrack');
@@ -567,7 +567,7 @@ async function getLocation() {
   try {
     let locationFlag = sessionStorage.getItem("locationObj");
     if (locationFlag) {
-      return JSON.parse(CryptoJS.AES.decrypt(locationFlag, secretKey).toString(CryptoJS.enc.Utf8));
+      return JSON.parse(CryptoJS.AES.decrypt(locationFlag, "uytr4567uytr456y").toString(CryptoJS.enc.Utf8));
       // return JSON.parse(sessionStorage.getItem("locationObj"))
     }
     // Fetch location data from the IPInfo API
