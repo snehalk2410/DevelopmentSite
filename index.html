@@ -1558,9 +1558,10 @@ if (automaticTracking === true) {
         return;
       }
     }
-    try {
+    try {   
+      console.log(" form.method ", form.method)
       let response = await fetch(form.action, {
-        method: form.method || "POST",
+        method: form.method.toUpperCase() || "POST",
         body: formData,
       });
       console.log(`Form submission response:`, response);
