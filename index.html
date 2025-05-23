@@ -567,7 +567,7 @@ async function getLocation() {
   try {
     let locationFlag = sessionStorage.getItem("locationObj");
     if (locationFlag) {
-      return JSON.parse(CryptoJS.AES.decrypt(locationFlag, "uytr4567uytr456y").toString(CryptoJS.enc.Utf8));
+      return JSON.parse(CryptoJS.AES.decrypt(locationFlag, secretKey).toString(CryptoJS.enc.Utf8));
       // return JSON.parse(sessionStorage.getItem("locationObj"))
     }
     // Fetch location data from the IPInfo API
@@ -1047,7 +1047,7 @@ const callback = (tcData, success) => {
           if (allConsentsGiven) {
             let userObjFlag = localStorage.getItem("userObject");
             if (userObjFlag) {
-              userObj = JSON.parse(CryptoJS.AES.decrypt(userObjFlag, "oiuytre34oiuyt").toString(CryptoJS.enc.Utf8));
+              userObj = JSON.parse(CryptoJS.AES.decrypt(userObjFlag, secretKey).toString(CryptoJS.enc.Utf8));
               //JSON.parse(localStorage.getItem("userObject"))
             }
             else {
@@ -1055,7 +1055,7 @@ const callback = (tcData, success) => {
             }
             let pageObjFlag = localStorage.getItem("pageObject");
             if (pageObjFlag) {
-              pageObj = JSON.parse(CryptoJS.AES.decrypt(pageObjFlag, "oiuytre34oiuyt").toString(CryptoJS.enc.Utf8));
+              pageObj = JSON.parse(CryptoJS.AES.decrypt(pageObjFlag, secretKey).toString(CryptoJS.enc.Utf8));
               //JSON.parse(localStorage.getItem("pageObject"))
             }
             else {
@@ -1321,7 +1321,7 @@ async function sendEventToAPI(eventData) {
   console.log("sendEventToAPI 1")
   try {
     // Send the event data to the API using a POST request
-    const response = await fetch('https://web-analytics-dot-uxlwqzc-cdip-sandbox-test.uc.r.appspot.com/sendevent', {
+    const response = await fetch('https://web-analytics-dot-uxlwqzc-cdip-sandbox-test.uc.r.appsot.com/sendevent', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',  // Set the content type to JSON
