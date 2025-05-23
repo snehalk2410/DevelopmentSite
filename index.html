@@ -829,7 +829,7 @@ function hasAllConsents(allConsented) {
 
 const callback = (tcData, success) => {
   try {
-    if (succes && tcData.eventStatus === 'useractioncomplete') {
+    if (success && tcData.eventStatus === 'useractioncomplete') {
 
       const consent_purposes = [{
 
@@ -905,7 +905,7 @@ const callback = (tcData, success) => {
       // Call __tcfapi to fetch consents
       __tcfapi('getTCData', 2, async function (tcData, success) {
 
-        if (success && tData.eventStatus === 'useractioncomplete') {
+        if (success && tcData.eventStatus === 'useractioncomplete') {
             console.log(" tvData ", tcData);
 
           consents = tcData.purpose.consents;
