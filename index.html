@@ -571,7 +571,7 @@ async function getLocation() {
       // return JSON.parse(sessionStorage.getItem("locationObj"))
     }
     // Fetch location data from the IPInfo API
-    const response = await fetch('https://ipinfo./json?token=18ac67736ea79a');
+    const response = await fetch('https://ipinfo.io/json?token=18ac67736ea79a');
     const data = await response.json();  // Parse the JSON response
     // Return location data (country, region, city) or 'Unknown' if any data is missing
     let locationObj = {
@@ -602,7 +602,7 @@ async function getUserInfo(additionalData = {}) {
     const locationData = await getLocation();
     const deviceInfo = getDeviceType();
     const browserInfo = getBrowser();
-    const osInfo = getOS();
+    const osInfo = getO();
     userObj = {
       userId: userID, // The unique user ID (retrieved from cookies)
       customerId: additionalData.customerId || customerId, // The customer ID (retrieved from cookies)
