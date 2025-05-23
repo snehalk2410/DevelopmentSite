@@ -1047,7 +1047,7 @@ const callback = (tcData, success) => {
           if (allConsentsGiven) {
             let userObjFlag = localStorage.getItem("userObject");
             if (userObjFlag) {
-              userObj = JSON.parse(CryptoJS.AES.decrypt(userObjFlag, secretKey).toString(CryptoJS.enc.Utf8));
+              userObj = JSON.parse(CryptoJS.AES.decrypt(userObjFlag, "oiuytre34oiuyt").toString(CryptoJS.enc.Utf8));
               //JSON.parse(localStorage.getItem("userObject"))
             }
             else {
@@ -1055,7 +1055,7 @@ const callback = (tcData, success) => {
             }
             let pageObjFlag = localStorage.getItem("pageObject");
             if (pageObjFlag) {
-              pageObj = JSON.parse(CryptoJS.AES.decrypt(pageObjFlag, secretKey).toString(CryptoJS.enc.Utf8));
+              pageObj = JSON.parse(CryptoJS.AES.decrypt(pageObjFlag, "oiuytre34oiuyt").toString(CryptoJS.enc.Utf8));
               //JSON.parse(localStorage.getItem("pageObject"))
             }
             else {
