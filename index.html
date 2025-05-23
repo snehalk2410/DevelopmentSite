@@ -602,7 +602,7 @@ async function getUserInfo(additionalData = {}) {
     const locationData = await getLocation();
     const deviceInfo = getDeviceType();
     const browserInfo = getBrowser();
-    const osInfo = getO();
+    const osInfo = getOS();
     userObj = {
       userId: userID, // The unique user ID (retrieved from cookies)
       customerId: additionalData.customerId || customerId, // The customer ID (retrieved from cookies)
