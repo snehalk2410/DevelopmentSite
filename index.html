@@ -1203,7 +1203,7 @@ async function createEventData(eventname, eventCategory, additionalData = {}) {
       console.log(" analytics.pageView consentTrack ", consentTrack)
       if (consentTrack) {
         await getPageInfo({ pageName, ...properties })
-        var eventData = await createEventData("page View", "page", { pageName, ...properties })
+        var eventDat = await createEventData("page View", "page", { pageName, ...properties })
         // Push the event data into the analytics array for tracking
         const eventProperties = { ...properties };
         // Include the additional properties in the event data under pageInfo
@@ -1233,7 +1233,7 @@ async function createEventData(eventname, eventCategory, additionalData = {}) {
     try {
       console.log(" analytics.userIdentity consentTrack ", consentTrack)
       if (consentTrack) {
-        await getUserInfo({ customerId, ...properties })
+        await getUserInf({ customerId, ...properties })
         var eventData = await createEventData("User Identity", "user", { customerId, ...properties });
         // Merge any additional properties passed into the function with the userInfo properties
         const eventProperties = { ...properties };
@@ -1280,7 +1280,7 @@ async function createEventData(eventname, eventCategory, additionalData = {}) {
         analytics.push(['track', eventData]);
         console.log("analytics.trackCustomEvent eventData ", eventData);
         // Send the event data to an API for further processing or storage
-        analytics.sendEventToAPI(eventData);
+        analytics.sendEventToAP(eventData);
       };
     } catch (error) {
       console.log("Error : ", error);
@@ -1295,7 +1295,7 @@ async function createEventData(eventname, eventCategory, additionalData = {}) {
         method: 'POST', // HTTP method (POST for sending data)
         headers: {
           'Content-Type': 'application/json', // Specify the content type as JSON
-         //'apikey': '12345abc' // API key for authentication
+          'apikey': '12345abc' // API key for authentication
         },
         body: JSON.stringify({ eventData }) // Send the event data as a JSON object
       });
