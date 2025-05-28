@@ -1645,6 +1645,7 @@ if (automaticTracking === true) {
 
   // Listen for messages from any window/iframe
   window.addEventListener('message', (event) => {
+    debugger;
     // --- SECURITY CHECK: Verify the origin of the message ---
     if (event.origin !== iframeOrigin) {
       // IMPORTANT: Ignore messages from unexpected origins
