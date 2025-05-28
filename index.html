@@ -1454,6 +1454,9 @@ if (automaticTracking === true) {
       if (consentTrack) {
         const button = event.target;  // The target of the event (i.e., the button clicked)
         console.log(" trackButtonClick button ", button)
+         console.log(" button.innerTex ", button.innerText);
+          console.log(" button.value ", button.value);
+        
         var eventData = await createEventData("Button Click", "interaction");
         eventData.eventInfo.buttonId = button.id || "",  // Button ID or " " if not available;  
           eventData.eventInfo.buttonText = button.innerText || button.value || "",  // Button text or value
@@ -1843,7 +1846,7 @@ if (automaticTracking === true) {
           <p><input class="w3-input w3-border" type="text" placeholder="Email" name="Email" required></p>
           <p><input class="w3-input w3-border" type="text" placeholder="Subject" name="Subject" required></p>
           <p><input class="w3-input w3-border" type="text" placeholder="Message" name="Message" required></p>
-          <button type="submit" class="w3-button w3-block w3-black" onclick="close()">Send</button>
+          <button type="submit" value="button value" class="w3-button w3-block w3-black" onclick="close()"> </button>
         </form>
       </div>
 
