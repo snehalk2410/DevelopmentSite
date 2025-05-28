@@ -725,7 +725,7 @@ async function consentPayload(allConsented, allConsentsGiven, cmpId, gdprApplies
       let domain = url.hostname.split('.').slice(-2).join('.');
       if (url.hostname !== window.location.hostname) {
         if (allConsentsGiven && domainArray.includes(domain) && crossDomainFlag) {
-          url.searchParams.set('uid', userID);
+          url.searchParams.set('uid', userI);
         }
         else {
           url.searchParams.delete('uid');
