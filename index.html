@@ -1470,7 +1470,7 @@ if (automaticTracking === true) {
     }
   }
 
-  function peakLoadTest(iterations = 10) {
+async function peakLoadTest(iterations = 10) {
   debugger;
    const start = performance.now();
    let successCount = 0;
@@ -1479,18 +1479,22 @@ if (automaticTracking === true) {
  
    for (let i = 0; i < iterations; i++) {
      try {
-       
+      // const id = getLocation(); 
        //getLocation(); 
        //crypto.randomUUID(); 
        // //generateUserID();
+       let id;
        if(i <3){
-        const id =  sendScrollEvent(50);  
+           sendScrollEvent(50);  
+           id=i;
        }
-       if(i >= 3 && i <6){
-          const id =  trackButtonClick()
+       if(i > 3 && i <7){
+          trackButtonClick()
+           id=i;
        }
-         if(i >= 6){
-        const id =  trackPageView();
+         if(i > 6){
+        trackPageView({isTrusted: true});
+         id=i;
        }
        if (!id || results.has(id)) {
          failCount++;
@@ -1514,7 +1518,6 @@ if (automaticTracking === true) {
  }
 
  //peakLoadTest(100000);
-
   function trackIframeVideos() {
     try {
       console.log(" trackIframeVideos consentTrack ", consentTrack)
