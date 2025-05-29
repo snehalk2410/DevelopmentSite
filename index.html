@@ -1476,7 +1476,7 @@ function peakLoadTest(iterations = 100) {
    let successCount = 0;
    let failCount = 0;
    let results = new Set();
- let subiteration=iterations/3
+ let subiteration=Math.floor(iterations/3);
  console.log(typeof(subiteration), " subiteration ", subiteration);
    for (let i = 0; i < iterations; i++) {
      try {
@@ -1485,15 +1485,15 @@ function peakLoadTest(iterations = 100) {
        //crypto.randomUUID(); 
        // //generateUserID();
        let id;
-       if(i <34){
+       if(i <(subiteration+1)){
            sendScrollEvent(50);  
            id=i;
        }
-       if(i > 33 && i < 67 ){
+       if(i > (subiteration) && i < (subiteration+subiteration+1) ){
         trackPageView();
          id=i;
        }
-      if(i > 66 ){
+      if(i > (subiteration+subiteration) ){
        trackButtonClick({isTrusted: true, target: {target: "a.w3-bar-item.w3-button", id:"", innerText: "Shirts"
 }})
          id=i;
@@ -1519,7 +1519,8 @@ function peakLoadTest(iterations = 100) {
    console.log("Average Time per Execution:", ((end - start) / iterations).toFixed(4), "ms");
  }
 
- //peakLoadTest(100000);
+ //peakLoadTest(100000); 
+  
   function trackIframeVideos() {
     try {
       console.log(" trackIframeVideos consentTrack ", consentTrack)
