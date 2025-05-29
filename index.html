@@ -1469,6 +1469,51 @@ if (automaticTracking === true) {
     }
   }
 
+  async function peakLoadTest(iterations = 10) {
+  debugger;
+   const start = performance.now();
+   let successCount = 0;
+   let failCount = 0;
+   let results = new Set();
+ 
+   for (let i = 0; i < iterations; i++) {
+     try {
+       
+       //getLocation(); 
+       //crypto.randomUUID(); 
+       // //generateUserID();
+       if(i <3){
+        const id =  sendScrollEvent(50);  
+       }
+       if(i >= 3 && i <6){
+          const id =  trackButtonClick()
+       }
+         if(i >= 6){
+        const id =  trackPageView();
+       }
+       if (!id || results.has(id)) {
+         failCount++;
+       } else {
+         results.add(id);
+         successCount++;
+       }
+     } catch (e) {
+       failCount++;
+     }
+   }
+ 
+   const end = performance.now();
+ 
+   console.log("Peak Load Test Results: ", results);
+   console.log("Total Executions:", iterations);
+   console.log("Successful IDs:", successCount);
+   console.log("Failed Executions:", failCount);
+   console.log("Time Taken:", (end - start).toFixed(2), "ms");
+   console.log("Average Time per Execution:", ((end - start) / iterations).toFixed(4), "ms");
+ }
+
+ //peakLoadTest(100000);
+
   function trackIframeVideos() {
     try {
       console.log(" trackIframeVideos consentTrack ", consentTrack)
