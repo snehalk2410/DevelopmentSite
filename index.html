@@ -1476,7 +1476,8 @@ function peakLoadTest(iterations = 100) {
    let successCount = 0;
    let failCount = 0;
    let results = new Set();
- 
+ let subiteration=iterations/3
+ console.log(typeof(subiteration), " subiteration ", subiteration);
    for (let i = 0; i < iterations; i++) {
      try {
       // const id = getLocation(); 
