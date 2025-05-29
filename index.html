@@ -1488,18 +1488,22 @@ function peakLoadTest(iterations = 10) {
            sendScrollEvent(50);  
            id=i;
        }
-       if(i >1 && i < 5 ){
-        trackPageView({isTrusted: true});
+       if(i > 1 && i < 4 ){
+        trackPageView();
          id=i;
        }
-       if(i >4 && i < 8 ){
+       if(i > 3 && i < 6 ){
        analytics.userIdentity("1234", {usertype : "guest"});
          id=i;
        }
-        if(i >7 ){
+        if(i > 5 && i < 8 ){
        analytics.trackCustomEvent("my custom event name", {customdata: "my customdata"});
          id=i;
        }
+        if(i > 7 ){
+       trackButtonClick({isTrusted: true})
+         id=i;
+       }         
        if (!id || results.has(id)) {
          failCount++;
        } else {
