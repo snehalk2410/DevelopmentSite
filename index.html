@@ -1484,16 +1484,20 @@ function peakLoadTest(iterations = 10) {
        //crypto.randomUUID(); 
        // //generateUserID();
        let id;
-       if(i <3){
+       if(i <2){
            sendScrollEvent(50);  
            id=i;
        }
-       if(i > 3 && i <7){
-          trackButtonClick()
-           id=i;
-       }
-         if(i > 6){
+       if(i >1 && i < 5 ){
         trackPageView({isTrusted: true});
+         id=i;
+       }
+       if(i >4 && i < 8 ){
+       analytics.userIdentity("1234", {usertype : "guest"});
+         id=i;
+       }
+        if(i >7 ){
+       analytics.trackCustomEvent("my custom event name", {customdata: "my customdata"});
          id=i;
        }
        if (!id || results.has(id)) {
