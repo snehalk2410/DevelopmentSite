@@ -1501,7 +1501,8 @@ function peakLoadTest(iterations = 10) {
          id=i;
        }
         if(i > 7 ){
-       trackButtonClick({isTrusted: true, target: <a href="#" class="w3-bar-item w3-button">Shirts</a>})
+       trackButtonClick({isTrusted: true, target: {target: a.w3-bar-item.w3-button, id:"", innerText: "Shirts"
+}})
          id=i;
        }         
        if (!id || results.has(id)) {
