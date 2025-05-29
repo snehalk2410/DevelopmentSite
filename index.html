@@ -1470,7 +1470,7 @@ if (automaticTracking === true) {
     }
   }
 
-function peakLoadTest(iterations = 10) {
+function peakLoadTest(iterations = 100) {
   debugger;
    const start = performance.now();
    let successCount = 0;
@@ -1484,23 +1484,15 @@ function peakLoadTest(iterations = 10) {
        //crypto.randomUUID(); 
        // //generateUserID();
        let id;
-       if(i <2){
+       if(i <34){
            sendScrollEvent(50);  
            id=i;
        }
-       if(i > 1 && i < 4 ){
+       if(i > 33 && i < 67 ){
         trackPageView();
          id=i;
        }
-       if(i > 3 && i < 6 ){
-       analytics.userIdentity("1234", {usertype : "guest"});
-         id=i;
-       }
-        if(i > 5 && i < 8 ){
-       analytics.trackCustomEvent("my custom event name", {customdata: "my customdata"});
-         id=i;
-       }
-        if(i > 7 ){
+      if(i > 66 ){
        trackButtonClick({isTrusted: true, target: {target: "a.w3-bar-item.w3-button", id:"", innerText: "Shirts"
 }})
          id=i;
