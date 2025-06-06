@@ -1227,7 +1227,7 @@ async function createEventData(eventname, eventCategory, additionalData = {}) {
         analytics.push(['page', eventData]);
         console.log("analytics.pageview eventData ", eventData);
         // Send the event data to an API for further processing or storage
-        analytics.sendEventToAPI(eventData);
+        analytics.sendEventToAPI(eventData)
       }
     } catch (error) {
       console.log("Error : ", error);
