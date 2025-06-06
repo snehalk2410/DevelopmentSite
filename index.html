@@ -1211,23 +1211,23 @@ async function createEventData(eventname, eventCategory, additionalData = {}) {
       if (consentTrack) {
         await getPageInfo({ pageName, ...properties })
         var eventData = await createEventData("page View", "page", { pageName, ...properties })
-         var eventDatatemp = await createEventData("page View", "page", { pageName, ...properties })
         // Push the event data into the analytics array for tracking
         const eventProperties = { ...properties };
         // Include the additional properties in the event data under pageInfo
-        eventData = {
-          ...eventData,
-          pageInfo: {
-            ...eventData.pageInfo,
-            properties: eventProperties // Add the additional properties here
-          }
-        };
-        console.log(" Current eventData ", eventData)
+       // eventData = {
+         // ...eventData,
+          //pageInfo: {
+           // ...eventData.pageInfo,
+            //properties: eventProperties // Add the additional properties here
+          //}
+        // };
+        
+        
 
-eventDatatemp.pageInfo={ ...eventDatatemp.pageInfo,
+eventData.pageInfo={ ...eventData.pageInfo,
             properties: eventProperties}
         
-          console.log(" Modified eventData ", eventDatatemp);
+       console.log(" Current eventData ", eventData)
 
         pageObj = eventData.pageInfo;
         // localStorage.setItem("pageObject", JSON.stringify(eventData.pageInfo));
