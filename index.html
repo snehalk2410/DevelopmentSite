@@ -910,7 +910,7 @@ const callback = (tcData, success) => {
 
       // Call __tcfapi to fetch consents
       __tcfapi('getTCData', 2, async function (tcData, success) {
-
+debugger;
         if (success && tcData.eventStatus === 'useractioncomplete') {
             console.log(" tvData ", tcData);
 
