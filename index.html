@@ -994,6 +994,7 @@ debugger;
             eventName = 'deleteProfile';
           }
           // Call consentPayload function to structure the payload if all consents are given
+          debugger;
           const payload = await consentPayload(consentedPurposes, allConsentsGiven, cmpId, gdprApplies, gdprConsent, eventName, vendorData);
           console.log(" consent payload ", payload);
           if ((consentTrack === null && allConsentsGiven === true) || (consentTrack === 'false' && allConsentsGiven === true && deleteProfile === false)) {
@@ -1018,8 +1019,9 @@ debugger;
           } else if ((consentTrack === 'true' && allConsentsGiven === true) || (allConsentsGiven === false && deleteProfile === false)) {
             // this line to be updated if deleteProfile flag is false
             console.log('Formatted Payload:', payload);
-
+if(payload.userId){
             await sendEventToAPI(payload);
+}
             //localStorage.setItem('userConsentedPurposes', JSON.stringify(userConsentedPurposes));
             setPersistentCookie('userConsentedPurposes', JSON.stringify(userConsentedPurposes));
             setPersistentCookie('consentTrack', allConsentsGiven);
@@ -1027,8 +1029,9 @@ debugger;
             // Update local variable consentTrack if deleteProfile flag is false
 
           } else if (allConsentsGiven === false && deleteProfile === true) {
-
+if(payload.userId){
             await sendEventToAPI(payload);
+  }
             localStorage.clear();
             sessionStorage.clear();
             cookieStore.delete("consentTrack");
