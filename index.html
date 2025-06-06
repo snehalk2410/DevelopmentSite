@@ -1220,15 +1220,9 @@ async function createEventData(eventname, eventCategory, additionalData = {}) {
            // ...eventData.pageInfo,
             //properties: eventProperties // Add the additional properties here
           //}
-        // };
-        
-        
-
-eventData.pageInfo={ ...eventData.pageInfo,
-            properties: eventProperties}
-        
-       console.log(" Current eventData ", eventData)
-
+        // }; 
+           eventData.pageInfo.properties=eventProperties;        
+       console.log(" Current eventData ", eventData);
         pageObj = eventData.pageInfo;
         // localStorage.setItem("pageObject", JSON.stringify(eventData.pageInfo));
         const encryptedPageObject = CryptoJS.AES.encrypt(JSON.stringify(eventData.pageInfo), secretKey).toString();
