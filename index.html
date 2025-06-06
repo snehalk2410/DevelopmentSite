@@ -1209,10 +1209,10 @@ async function createEventData(eventname, eventCategory, additionalData = {}) {
     try {
       console.log(" analytics.pageView consentTrack ", consentTrack)
       if (consentTrack) {
-        await getPageInfo({ pageName, ...properties })
-        var eventData = await createEventData("page View", "page", { pageName, ...properties })
+      //  await getPageInfo({ pageName, ...properties })
+        // var eventData = await createEventData("page View", "page", { pageName, ...properties })
         // Push the event data into the analytics array for tracking
-        const eventProperties = { ...properties };
+        // const eventProperties = { ...properties };
         // Include the additional properties in the event data under pageInfo
        // eventData = {
          // ...eventData,
@@ -1222,14 +1222,25 @@ async function createEventData(eventname, eventCategory, additionalData = {}) {
           //}
         // }; 
           // eventData.pageInfo.properties=eventProperties;        
-       console.log(" Current eventData ", eventData);
+      // console.log(" Current eventData ", eventData);
+       // pageObj = eventData.pageInfo;
+        // localStorage.setItem("pageObject", JSON.stringify(eventData.pageInfo));
+        // const encryptedPageObject = CryptoJS.AES.encrypt(JSON.stringify(eventData.pageInfo), secretKey).toString();
+        // localStorage.setItem("pageObject", encryptedPageObject);
+        // analytics.push(['page', eventData]);
+        // console.log("analytics.pageview eventData ", eventData);
+        // Send the event data to an API for further processing or storage
+        // analytics.sendEventToAPI(eventData);
+
+          await getPageInfo({ pageName, ...properties })
+        var eventData = await createEventData("Page View", "page");
+        console.log("analytics.pageView eventData ", eventData);
+        console.log("analytics.pageView eventData.pageInfo ", JSON.stringify(eventData.pageInfo));
         pageObj = eventData.pageInfo;
         // localStorage.setItem("pageObject", JSON.stringify(eventData.pageInfo));
         const encryptedPageObject = CryptoJS.AES.encrypt(JSON.stringify(eventData.pageInfo), secretKey).toString();
         localStorage.setItem("pageObject", encryptedPageObject);
-        analytics.push(['page', eventData]);
-        console.log("analytics.pageview eventData ", eventData);
-        // Send the event data to an API for further processing or storage
+        // Send the event data to the dataLayer
         analytics.sendEventToAPI(eventData);
       }
     } catch (error) {
