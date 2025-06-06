@@ -998,7 +998,7 @@ const callback = (tcData, success) => {
           if ((consentTrack === null && allConsentsGiven === true) || (consentTrack === 'false' && allConsentsGiven === true && deleteProfile === false)) {
 
             console.log('Formatted Payload:', payload);
-            await sendEventToAPI(payload);
+            await (payload);
             setPersistentCookie('consentTrack', allConsentsGiven);
             consentTrack = allConsentsGiven;
             setPersistentCookie('userConsentedPurposes', JSON.stringify(userConsentedPurposes));
@@ -1203,44 +1203,30 @@ async function createEventData(eventname, eventCategory, additionalData = {}) {
 
   analytics.invoked = true; // Mark that the snippet has been invoked
 
-  // Function to track a "Page View" event asynchronously
+ // Function to track a "Page View" event asynchronously
   analytics.pageView = async function (pageName = '', properties = {}) {
-    debugger;
     try {
       console.log(" analytics.pageView consentTrack ", consentTrack)
       if (consentTrack) {
-      //  await getPageInfo({ pageName, ...properties })
-        // var eventData = await createEventData("page View", "page", { pageName, ...properties })
+        await getPageInfo({ pageName, ...properties })
+        var eventData = await createEventData("page View", "page", { pageName, ...properties })
         // Push the event data into the analytics array for tracking
-        // const eventProperties = { ...properties };
+        const eventProperties = { ...properties };
         // Include the additional properties in the event data under pageInfo
-       // eventData = {
-         // ...eventData,
-          //pageInfo: {
-           // ...eventData.pageInfo,
-            //properties: eventProperties // Add the additional properties here
-          //}
-        // }; 
-          // eventData.pageInfo.properties=eventProperties;        
-      // console.log(" Current eventData ", eventData);
-       // pageObj = eventData.pageInfo;
-        // localStorage.setItem("pageObject", JSON.stringify(eventData.pageInfo));
-        // const encryptedPageObject = CryptoJS.AES.encrypt(JSON.stringify(eventData.pageInfo), secretKey).toString();
-        // localStorage.setItem("pageObject", encryptedPageObject);
-        // analytics.push(['page', eventData]);
-        // console.log("analytics.pageview eventData ", eventData);
-        // Send the event data to an API for further processing or storage
-        // analytics.sendEventToAPI(eventData);
-
-          await getPageInfo({ pageName, ...properties })
-        var eventData = await createEventData("Page View", "page");
-        console.log("analytics.pageView eventData ", eventData);
-        console.log("analytics.pageView eventData.pageInfo ", JSON.stringify(eventData.pageInfo));
+        eventData = {
+          ...eventData,
+          pageInfo: {
+            ...eventData.pageInfo,
+            properties: eventProperties // Add the additional properties here
+          }
+        };
         pageObj = eventData.pageInfo;
         // localStorage.setItem("pageObject", JSON.stringify(eventData.pageInfo));
         const encryptedPageObject = CryptoJS.AES.encrypt(JSON.stringify(eventData.pageInfo), secretKey).toString();
         localStorage.setItem("pageObject", encryptedPageObject);
-        // Send the event data to the dataLayer
+        analytics.push(['page', eventData]);
+        console.log("analytics.pageview eventData ", eventData);
+        // Send the event data to an API for further processing or storage
         analytics.sendEventToAPI(eventData);
       }
     } catch (error) {
@@ -1316,7 +1302,7 @@ async function createEventData(eventname, eventCategory, additionalData = {}) {
           'Content-Type': 'application/json', // Specify the content type as JSON
           'apikey': '12345abc' // API key for authentication
         },
-        body: JSON.stringify({ eventData }) // Send the event data as a JSON object
+        body: JSON.stringify(eventData); // Send the event data as a JSON object
       });
 
       // Parse the response from the API as JSON
