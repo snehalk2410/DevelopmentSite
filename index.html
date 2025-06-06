@@ -1205,11 +1205,13 @@ async function createEventData(eventname, eventCategory, additionalData = {}) {
 
   // Function to track a "Page View" event asynchronously
   analytics.pageView = async function (pageName = '', properties = {}) {
+    debugger;
     try {
       console.log(" analytics.pageView consentTrack ", consentTrack)
       if (consentTrack) {
         await getPageInfo({ pageName, ...properties })
         var eventData = await createEventData("page View", "page", { pageName, ...properties })
+         var eventDatatemp = await createEventData("page View", "page", { pageName, ...properties })
         // Push the event data into the analytics array for tracking
         const eventProperties = { ...properties };
         // Include the additional properties in the event data under pageInfo
@@ -1220,6 +1222,12 @@ async function createEventData(eventname, eventCategory, additionalData = {}) {
             properties: eventProperties // Add the additional properties here
           }
         };
+        console.log(" Current eventData ", eventData)
+
+eventDatatemp.pageInfo={ ...eventDatatemp.pageInfo,
+            properties: eventProperties}
+        
+          console.log(" Modified eventData ", eventDatatemp);
 
         pageObj = eventData.pageInfo;
         // localStorage.setItem("pageObject", JSON.stringify(eventData.pageInfo));
@@ -1327,7 +1335,7 @@ async function sendEventToAPI(eventData) {
   console.log("sendEventToAPI 1")
   try {
     // Send the event data to the API using a POST request
-    const response = await fetch('https://sampleapi-6ga3n1nh.uc.gateway.dev', {
+    const response = await fetch('https://web-analytics-dot-uxlwqzc-cdip-sandbox-test.uc.r.appspot.com/sendevent', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',  // Set the content type to JSON
