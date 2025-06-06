@@ -792,6 +792,7 @@ async function consentPayload(allConsented, allConsentsGiven, cmpId, gdprApplies
 // Fetch vendor list function
 async function getVendorList(vendorPurposeConsents) {
   try {
+    debugger;
     console.log(" getVendorList called with vendorPurposeConsents ", vendorPurposeConsents)
     const response = await fetch('https://cdn.cookielaw.org/vendorlist/iab2Data.json');
     if (!response.ok) {
