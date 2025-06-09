@@ -224,7 +224,8 @@ console.log(" domainArray ", domainArray, " requiredPurposeIds ", requiredPurpos
 let secretKey = "RW5jcnlwdGlvbktleQ==" // Base64 encoded format of key  "EncryptionKey"
 let rdUserID = getCookie('rdUserId');
 let userID = getCookie('userID');
-let visitId = getCookie('visitId');
+let visitId = getCookie('visitId');   
+let sessionStartTime = getCookie('sessionStartTime');
 let hitCount = parseInt(getCookie('hitCount')) || 0;
 let consentFlag = localStorage.getItem("consentObject");
 let consentObj = {};
@@ -327,6 +328,7 @@ function trackInactivity() {
       clearTimeout(inactivityTimeout); // Clear any previous inactivity timeout
       inactivityTimeout = setTimeout(() => {
         setSessionCookie('visitId', ''); // Reset session after inactivity
+        setSessionCookie('sessionStartTime', '');
         setSessionCookie('hitCount', 0);
         console.log("Session expired due to inactivity.");
       }, 30 * 60 * 1000); // Set timeout for 30 minutes of inactivity
@@ -695,7 +697,8 @@ async function consentPayload(allConsented, allConsentsGiven, cmpId, gdprApplies
     let vendorPurpose = {};
     let trackStatus = allConsentsGiven ? 'optedIn' : 'optedOut';
     userID = getCookie('userID');
-    visitId = getCookie('visitId');
+    visitId = getCookie('visitId');    
+    sessionStartTime = getCookie('sessionStartTime');
     rdUserID = getCookie('rdUserId');
     if (allConsentsGiven) {
       if (!userID) {
@@ -707,7 +710,9 @@ async function consentPayload(allConsented, allConsentsGiven, cmpId, gdprApplies
       // If no visitId exists (e.g., it's a new session), create a new session ID
       if (!visitId) {
         visitId = crypto.randomUUID(); //Math.random().toString(36).substr(2, 9); // Generate a random session ID (9 characters)
+        sessionStartTime = new Date().toISOString()
         setSessionCookie('visitId', visitId); // Store session ID as a session cookie (expires when the browser is closed)  
+        setSessionCookie('sessionStartTime', sessionStartTime); 
       }
       if (!rdUserID) {
         let referenceDomainUserId = getQueryParam('uid');
@@ -1038,6 +1043,7 @@ if(payload.userId){
             cookieStore.delete("userConsentedPurposes");
             cookieStore.delete("userID");
             cookieStore.delete("visitId");
+            cookieStore.delete("sessionStartTime");
             cookieStore.delete("hitCount");
             cookieStore.delete("firstTimeUser");
             cookieStore.delete("firstPage");
@@ -1144,7 +1150,9 @@ async function createEventData(eventname, eventCategory, additionalData = {}) {
     visitId = getCookie('visitId');
     if (!visitId) {
       visitId = crypto.randomUUID();
+      sessionStartTime=new Date().toISOString();
       setSessionCookie('visitId', visitId);
+      setSessionCookie('sessionStartTime', sessionStartTime);
     }
     const utmParams = getUTMParams();
     let prevHitCount = parseInt(getCookie('hitCount')) || 0;
@@ -1166,7 +1174,7 @@ async function createEventData(eventname, eventCategory, additionalData = {}) {
         visitId: visitId, // The current session ID (from cookies)
         firstTimeUser: getCookie('firstTimeUser') == 'true' || false,
         firstPage: getCookie('firstPage') || "",
-        startTime: new Date().toISOString(), // Session start time (ISO format)
+        startTime: sessionStartTime, // Session start time (ISO format)
         source: utmParams.utm_source || getCookie('utm_source') || '', // UTM source (from URL query params)
         medium: utmParams.utm_medium || getCookie('utm_medium') || '', // UTM medium (from URL query params)
         campaign: utmParams.utm_campaign || getCookie('utm_campaign') || '', // UTM campaign (from URL query params)
