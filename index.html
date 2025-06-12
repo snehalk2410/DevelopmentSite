@@ -861,31 +861,33 @@ function determineEventName(consentTrack, allConsentsGiven) {
   return null;
 }
 
-async function handleConsentLogic(consentTrack, allConsentsGiven, userConsentedPurposes, payload) {
-  const eventCondition = {
-    set: (consentTrack === null || consentTrack === 'false') && allConsentsGiven && !deleteProfile,
-    update: (consentTrack === 'true' && allConsentsGiven) || (!allConsentsGiven && !deleteProfile),
-    delete: !allConsentsGiven && deleteProfile
-  };
+     async function handleConsentLogic(consentTrackflag, allConsentsGiven, userConsentedPurposes, payload) {
+        const eventCondition = {
+          set: (consentTrackflag === null || consentTrackflag === 'false') && allConsentsGiven && !deleteProfile,
+          update: (consentTrackflag === 'true' && allConsentsGiven) || (!allConsentsGiven && !deleteProfile),
+          delete: !allConsentsGiven && deleteProfile
+        };
 
-  if (eventCondition.set || eventCondition.update) {
-    console.log('Formatted Payload:', payload);
-    if (payload.userId) await sendEventToAPI(payload);
-    setPersistentCookie('consentTrack', allConsentsGiven);
-    setPersistentCookie('userConsentedPurposes', JSON.stringify(userConsentedPurposes));
+        if (eventCondition.set || eventCondition.update) {
+          console.log('Formatted Payload:', payload);
+          if (payload.userId) await sendEventToAPI(payload);
+          setPersistentCookie('consentTrack', allConsentsGiven);
+          consentTrack = allConsentsGiven;
+          setPersistentCookie('userConsentedPurposes', JSON.stringify(userConsentedPurposes));
 
-    if (eventCondition.set && googleCookieSyncFlag) {
-      try {
-        const googleCookieSyncFunc = new GoogleCookieSync('your_bidder_nid');
-        await googleCookieSyncFunc.performCookieSync(userID, secretKey);
-      } catch (err) {
-        console.log("Error during Google Sync:", err);
+          if (eventCondition.set && googleCookieSyncFlag) {
+            try {
+              const googleCookieSyncFunc = new GoogleCookieSync('your_bidder_nid');
+              await googleCookieSyncFunc.performCookieSync(userID, secretKey);
+            } catch (err) {
+              console.log("Error during Google Sync:", err);
+            }
+          }
+        } else if (eventCondition.delete) {
+          await handleDeleteConsent(payload);
+        }
       }
-    }
-  } else if (eventCondition.delete) {
-    await handleDeleteConsent(payload);
-  }
-}
+
 
 async function handleDeleteConsent(payload) {
   if (payload.userId) await sendEventToAPI(payload);
