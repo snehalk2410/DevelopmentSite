@@ -36,10 +36,10 @@ function OptanonWrapper() { }
 <!-- <script type="text/javascript" src='https://web-analytics-js-dot-uxlwqzc-cdip-sandbox-test.uc.r.appspot.com/static/tes.js?crossdomainflag=false&deleteprofile=false&multiDomainFlag=true&googleCookieSyncFlag=false&automaticTracking=true&domainArray=["example.com","vercel.app","anotherdomain.com"]&requiredPurposeIds=["1","3","4"]&dataLayer=dataLayer'> 
 </script> -->
  <script type="text/javascript">
-class GoogleCookieSync {
+  class GoogleCookieSync {
   constructor(bidderNid) {
     this.bidderNid = bidderNid;
-    this.gcpEndpoint = "https://sampleapi-6ga3n1nh.uc.gateway.dev";
+    this.gcpEndpoint = "https://web-analytics-dot-uxlwqzc-cdip-sandbox-test.uc.r.appspot.com/sendevent";
     this.googleGid = null;
   }
 
@@ -181,41 +181,40 @@ function getQueryParam(param) {
     console.log("Error : ", error);
   }
 }
-// var scripts = document.getElementsByTagName('script');
-// console.log("scripts ", scripts)
-// var thisScript = null;
-// for (var i = 0; i < scripts.length; i++) {
-//   console.log(" scripts[i].src ", scripts[i].src);
-//   console.log(" scripts[i] ", scripts[i]);
-//   if (scripts[i].src && scripts[i].src.indexOf("testing.js") !== -1) {
-//     thisScript = scripts[i];
-//     break;
-//   }
-// }
-// if (!thisScript) {
-  var crossDomainFlag = true;
-  var deleteProfile = true;
-  var multiDomainFlag = true;
+var scripts = document.getElementsByTagName('script');
+console.log("scripts ", scripts)
+var thisScript = null;
+for (var i = 0; i < scripts.length; i++) {
+  console.log(" scripts[i].src ", scripts[i].src);
+  console.log(" scripts[i] ", scripts[i]);
+  if (scripts[i].src && scripts[i].src.indexOf("testing.js") !== -1) {
+    thisScript = scripts[i];
+    break;
+  }
+}
+if (!thisScript) {
+  var crossDomainFlag = false;
+  var deleteProfile = false;
+  var multiDomainFlag = false;
   var googleCookieSyncFlag = false;
-  var automaticTracking = true;
-  var domainArray = ["example.com","vercel.app","anotherdomain.com"];
-  var requiredPurposeIds = ["1","3","4"];
+  var automaticTracking = false;
+  var domainArray = [];
+  var requiredPurposeIds = [];
   var dataLayerName = 'dataLayer';
-// }
-// else {
-//   var url = new URL(thisScript.src);
-//   console.log("thisScript url ", url)
-//   var params = new URLSearchParams(url.search);
-//   var crossDomainFlag = params.get('crossdomainflag') === 'true';
-//   var deleteProfile = params.get('deleteprofile') === 'true';
-//   var multiDomainFlag = params.get('multiDomainFlag') === 'true';
-//   var googleCookieSyncFlag = params.get('googleCookieSyncFlag') === 'true';
-//   var automaticTracking = params.get('automaticTracking') === 'true';
-//   var domainArray = JSON.parse(params.get('domainArray')) || [];
-//   var requiredPurposeIds = JSON.parse(params.get('requiredPurposeIds')) || [];
-//   var dataLayerName = params.get('dataLayer');
-// }
-
+}
+else {
+  var url = new URL(thisScript.src);
+  console.log("thisScript url ", url)
+  var params = new URLSearchParams(url.search);
+  var crossDomainFlag = params.get('crossdomainflag') === 'true';
+  var deleteProfile = params.get('deleteprofile') === 'true';
+  var multiDomainFlag = params.get('multiDomainFlag') === 'true';
+  var googleCookieSyncFlag = params.get('googleCookieSyncFlag') === 'true';
+  var automaticTracking = params.get('automaticTracking') === 'true';
+  var domainArray = JSON.parse(params.get('domainArray')) || [];
+  var requiredPurposeIds = JSON.parse(params.get('requiredPurposeIds')) || [];
+  var dataLayerName = params.get('dataLayer');
+}
 var dl = window[dataLayerName]; // Access dynamic dataLayer
 console.log(" dl ", dl);
 console.log(" crossDomainFlag ", crossDomainFlag, " deleteProfile ", deleteProfile, " multiDomainFlag ", multiDomainFlag, " googleCookieSyncFlag ", googleCookieSyncFlag, " automaticTracking ", automaticTracking)
@@ -224,7 +223,7 @@ console.log(" domainArray ", domainArray, " requiredPurposeIds ", requiredPurpos
 let secretKey = "RW5jcnlwdGlvbktleQ==" // Base64 encoded format of key  "EncryptionKey"
 let rdUserID = getCookie('rdUserId');
 let userID = getCookie('userID');
-let visitId = getCookie('visitId');   
+let visitId = getCookie('visitId');
 let sessionStartTime = getCookie('sessionStartTime');
 let hitCount = parseInt(getCookie('hitCount')) || 0;
 let consentFlag = localStorage.getItem("consentObject");
@@ -328,7 +327,7 @@ function trackInactivity() {
       clearTimeout(inactivityTimeout); // Clear any previous inactivity timeout
       inactivityTimeout = setTimeout(() => {
         setSessionCookie('visitId', ''); // Reset session after inactivity
-        setSessionCookie('sessionStartTime', '');
+        setSessionCookie('sessionStartTime', '');         
         setSessionCookie('hitCount', 0);
         console.log("Session expired due to inactivity.");
       }, 30 * 60 * 1000); // Set timeout for 30 minutes of inactivity
@@ -678,18 +677,11 @@ function loadIframe() {
   iframe.style.height = '1px'; // Set the height of the iframe
   iframe.style.display = 'none';
   document.body.appendChild(iframe); // Append the iframe to the body or a specific container
-   const iframetest = document.createElement('iframe');
-  iframetest.src = 'https://malicious-beta.vercel.app'; // Replace with your iframe source
-  iframetest.style.width = '1px'; // Set the width of the iframe
-  iframetest.style.height = '1px'; // Set the height of the iframe
-  iframetest.style.display = 'none';
-  document.body.appendChild(iframetest); // Append the iframe to the body or a specific container
 }
 
 // Function to structure the consent payload
 async function consentPayload(allConsented, allConsentsGiven, cmpId, gdprApplies, gdprConsent, eventName, vendorConsentedPurposes) {
   // Prepare the purposes object dynamically based on allConsented data
-  console.log(" consentPayload  called ");
   try {
     let purposes = [];
     let consentPurpose = {};
@@ -697,8 +689,8 @@ async function consentPayload(allConsented, allConsentsGiven, cmpId, gdprApplies
     let vendorPurpose = {};
     let trackStatus = allConsentsGiven ? 'optedIn' : 'optedOut';
     userID = getCookie('userID');
-    visitId = getCookie('visitId');    
-    sessionStartTime = getCookie('sessionStartTime');
+    visitId = getCookie('visitId');
+    sessionStartTime = getCookie('sessionStartTime');    
     rdUserID = getCookie('rdUserId');
     if (allConsentsGiven) {
       if (!userID) {
@@ -730,7 +722,7 @@ async function consentPayload(allConsented, allConsentsGiven, cmpId, gdprApplies
       let domain = url.hostname.split('.').slice(-2).join('.');
       if (url.hostname !== window.location.hostname) {
         if (allConsentsGiven && domainArray.includes(domain) && crossDomainFlag) {
-          url.searchParams.set('uid', userI);
+          url.searchParams.set('uid', userID);
         }
         else {
           url.searchParams.delete('uid');
@@ -797,8 +789,6 @@ async function consentPayload(allConsented, allConsentsGiven, cmpId, gdprApplies
 // Fetch vendor list function
 async function getVendorList(vendorPurposeConsents) {
   try {
-    debugger;
-    console.log(" getVendorList called with vendorPurposeConsents ", vendorPurposeConsents)
     const response = await fetch('https://cdn.cookielaw.org/vendorlist/iab2Data.json');
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
@@ -916,9 +906,8 @@ const callback = (tcData, success) => {
 
       // Call __tcfapi to fetch consents
       __tcfapi('getTCData', 2, async function (tcData, success) {
-debugger;
+
         if (success && tcData.eventStatus === 'useractioncomplete') {
-            console.log(" tvData ", tcData);
 
           consents = tcData.purpose.consents;
           vendorConsents = tcData.vendor.consents;
@@ -999,13 +988,12 @@ debugger;
             eventName = 'deleteProfile';
           }
           // Call consentPayload function to structure the payload if all consents are given
-          debugger;
           const payload = await consentPayload(consentedPurposes, allConsentsGiven, cmpId, gdprApplies, gdprConsent, eventName, vendorData);
           console.log(" consent payload ", payload);
           if ((consentTrack === null && allConsentsGiven === true) || (consentTrack === 'false' && allConsentsGiven === true && deleteProfile === false)) {
 
             console.log('Formatted Payload:', payload);
-            await (payload);
+            await sendEventToAPI(payload);
             setPersistentCookie('consentTrack', allConsentsGiven);
             consentTrack = allConsentsGiven;
             setPersistentCookie('userConsentedPurposes', JSON.stringify(userConsentedPurposes));
@@ -1024,9 +1012,9 @@ debugger;
           } else if ((consentTrack === 'true' && allConsentsGiven === true) || (allConsentsGiven === false && deleteProfile === false)) {
             // this line to be updated if deleteProfile flag is false
             console.log('Formatted Payload:', payload);
-if(payload.userId){
-            await sendEventToAPI(payload);
-}
+            if (payload.userId) {
+              await sendEventToAPI(payload);
+            }
             //localStorage.setItem('userConsentedPurposes', JSON.stringify(userConsentedPurposes));
             setPersistentCookie('userConsentedPurposes', JSON.stringify(userConsentedPurposes));
             setPersistentCookie('consentTrack', allConsentsGiven);
@@ -1034,9 +1022,9 @@ if(payload.userId){
             // Update local variable consentTrack if deleteProfile flag is false
 
           } else if (allConsentsGiven === false && deleteProfile === true) {
-if(payload.userId){
-            await sendEventToAPI(payload);
-  }
+            if (payload.userId) {
+              await sendEventToAPI(payload);
+            }
             localStorage.clear();
             sessionStorage.clear();
             cookieStore.delete("consentTrack");
@@ -1116,7 +1104,7 @@ if(payload.userId){
       })
     }
   } catch (error) {
-    console.log("Error in callback method : ", error);
+    console.log("Error : ", error);
 
   }
 };
@@ -1215,7 +1203,7 @@ async function createEventData(eventname, eventCategory, additionalData = {}) {
 
   analytics.invoked = true; // Mark that the snippet has been invoked
 
- // Function to track a "Page View" event asynchronously
+  // Function to track a "Page View" event asynchronously
   analytics.pageView = async function (pageName = '', properties = {}) {
     try {
       console.log(" analytics.pageView consentTrack ", consentTrack)
@@ -1232,6 +1220,7 @@ async function createEventData(eventname, eventCategory, additionalData = {}) {
             properties: eventProperties // Add the additional properties here
           }
         };
+
         pageObj = eventData.pageInfo;
         // localStorage.setItem("pageObject", JSON.stringify(eventData.pageInfo));
         const encryptedPageObject = CryptoJS.AES.encrypt(JSON.stringify(eventData.pageInfo), secretKey).toString();
@@ -1308,7 +1297,7 @@ async function createEventData(eventname, eventCategory, additionalData = {}) {
     try {
       console.log('Sending event data to API:', eventData);
       // Make an asynchronous POST request to the API to send event data
-      const response = await fetch('https://sampleapi-6ga3n1nh.uc.gateway.dev', {
+      const response = await fetch('https://web-analytics-dot-uxlwqzc-cdip-sandbox-test.uc.r.appspot.com/sendevent', {
         method: 'POST', // HTTP method (POST for sending data)
         headers: {
           'Content-Type': 'application/json', // Specify the content type as JSON
@@ -1338,7 +1327,7 @@ async function sendEventToAPI(eventData) {
   console.log("sendEventToAPI 1")
   try {
     // Send the event data to the API using a POST request
-    const response = await fetch('https://sampleapi-6ga3n1nh.uc.gateway.dev', {
+    const response = await fetch('https://web-analytics-dot-uxlwqzc-cdip-sandbox-test.uc.r.appspot.com/sendevent', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',  // Set the content type to JSON
@@ -1463,12 +1452,8 @@ if (automaticTracking === true) {
     try {
       console.log(" trackButtonClick consentTrack ", consentTrack)
       if (consentTrack) {
-        console.log(" trackButtonClick event ", event)
         const button = event.target;  // The target of the event (i.e., the button clicked)
         console.log(" trackButtonClick button ", button)
-         console.log(" button.innerTex ", button.innerText);
-          console.log(" button.value ", button.value);
-        
         var eventData = await createEventData("Button Click", "interaction");
         eventData.eventInfo.buttonId = button.id || "",  // Button ID or " " if not available;  
           eventData.eventInfo.buttonText = button.innerText || button.value || "",  // Button text or value
@@ -1481,57 +1466,6 @@ if (automaticTracking === true) {
     }
   }
 
-function peakLoadTest(iterations = 100) {
-  debugger;
-   const start = performance.now();
-   let successCount = 0;
-   let failCount = 0;
-   let results = new Set();
- let subiteration=Math.floor(iterations/3);
- console.log(typeof(subiteration), " subiteration ", subiteration);
-   for (let i = 0; i < iterations; i++) {
-     try {
-      // const id = getLocation(); 
-       //getLocation(); 
-       //crypto.randomUUID(); 
-       // //generateUserID();
-       let id;
-       if(i <(subiteration+1)){
-           sendScrollEvent(50);  
-           id=i;
-       }
-       if(i > (subiteration) && i < (subiteration+subiteration+1) ){
-        trackPageView();
-         id=i;
-       }
-      if(i > (subiteration+subiteration) ){
-       trackButtonClick({isTrusted: true, target: {target: "a.w3-bar-item.w3-button", id:"", innerText: "Shirts"
-}})
-         id=i;
-       }         
-       if (!id || results.has(id)) {
-         failCount++;
-       } else {
-         results.add(id);
-         successCount++;
-       }
-     } catch (e) {
-       failCount++;
-     }
-   }
- 
-   const end = performance.now();
- 
-   console.log("Peak Load Test Results: ", results);
-   console.log("Total Executions:", iterations);
-   console.log("Successful IDs:", successCount);
-   console.log("Failed Executions:", failCount);
-   console.log("Time Taken:", (end - start).toFixed(2), "ms");
-   console.log("Average Time per Execution:", ((end - start) / iterations).toFixed(4), "ms");
- }
-
- //peakLoadTest(100000); 
-  
   function trackIframeVideos() {
     try {
       console.log(" trackIframeVideos consentTrack ", consentTrack)
@@ -1630,10 +1564,9 @@ function peakLoadTest(iterations = 100) {
         return;
       }
     }
-    try {   
-      console.log(" form.method ", form.method)
+    try {
       let response = await fetch(form.action, {
-        method: form.method.toUpperCase() || "POST",
+        method: form.method || "POST",
         body: formData,
       });
       console.log(`Form submission response:`, response);
@@ -1711,11 +1644,10 @@ function peakLoadTest(iterations = 100) {
 
   // Listen for messages from any window/iframe
   window.addEventListener('message', (event) => {
-    debugger;
     // --- SECURITY CHECK: Verify the origin of the message ---
     if (event.origin !== iframeOrigin) {
       // IMPORTANT: Ignore messages from unexpected origins
-       console.log(`[PARENT] Discarding message from unexpected origin: ${event.origin}`);
+      // console.log(`[PARENT] Discarding message from unexpected origin: ${event.origin}`);
       return;
     }
 
@@ -1754,7 +1686,7 @@ function peakLoadTest(iterations = 100) {
   // If automatic tracking is disabled, log a message
 } else {
   console.log("Automatic tracking is disabled.");
-}    
+}
      </script> 
   
 
