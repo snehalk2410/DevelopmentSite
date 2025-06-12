@@ -521,6 +521,7 @@ async function getLocation() {
   }
 }
 async function getUserInfo(additionalData = {}) {
+  debugger;
   try {
     const locationData = await getLocation();
     const deviceInfo = getDeviceType();
@@ -555,6 +556,7 @@ async function getUserInfo(additionalData = {}) {
 
 async function getPageInfo(additionalData = {}) {
   try {
+    debugger;
     console.log(" getPageInfo ", window.location);
     pageObj = {
       pageUrl: window.location.href, // The full URL of the page
@@ -914,6 +916,7 @@ async function processPageViewTracking() {
 
   if (getCookie('firstTimeUser') === 'true' && automaticTracking) {
     try {
+         debugger;
       const eventData = await createEventData("Page View", "page");
       const firstPageName = eventData.pageInfo.pageName;
       setPersistentCookie('firstPage', firstPageName, 365);
