@@ -779,11 +779,18 @@ __tcfapi('getTCData', 2, async function (tcData, success) {
     gdprConsent: tcData.tcString,
   };
 
+  console.log(" tcData.vendor.consents ", tcData.vendor.consents);
+// Get first 10 vendor consents
+const limitedVendorConsents = Object.fromEntries(
+  Object.entries(tcData.vendor.consents).slice(0, 10)
+);
+    console.log(" limitedVendorConsents ", limitedVendorConsents);
   const userConsentedPurposes = getUserConsentedPurposes(tcData);
   const consentedPurposes = getPayloadConsentedPurposes(tcData);
   const allConsented = getAllConsentedPurposes(tcData);
   const allConsentsGiven = hasAllConsents(allConsented);
   const vendorData = await getVendorList(tcData.vendor.consents);
+  console.log(" vendorData ", vendorData)
   consentTrack = getCookie('consentTrack');
   const eventName = determineEventName(consentTrack, allConsentsGiven);
 
