@@ -862,7 +862,8 @@ function determineEventName(consentTrack, allConsentsGiven) {
 }
 
      async function handleConsentLogic(consentTrackflag, allConsentsGiven, userConsentedPurposes, payload) {
-        const eventCondition = {
+       debugger;
+       const eventCondition = {
           set: (consentTrackflag === null || consentTrackflag === 'false') && allConsentsGiven && !deleteProfile,
           update: (consentTrackflag === 'true' && allConsentsGiven) || (!allConsentsGiven && !deleteProfile),
           delete: !allConsentsGiven && deleteProfile
