@@ -647,6 +647,7 @@ function checkCookie(cookieName) {
   }
 }
 function loadIframe() {
+  debugger;
   const iframe = document.createElement('iframe');
   iframe.src = 'https://centraldomain.vercel.app'; // Replace with your iframe source
   iframe.style.width = '1px'; // Set the width of the iframe
@@ -1621,6 +1622,7 @@ if (automaticTracking === true) {
 
   // Listen for messages from any window/iframe
   window.addEventListener('message', (event) => {
+    debugger;
     // --- SECURITY CHECK: Verify the origin of the message ---
     if (event.origin !== iframeOrigin) {
       // IMPORTANT: Ignore messages from unexpected origins
