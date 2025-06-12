@@ -738,10 +738,10 @@ function hasAllConsents(allConsented) {
 }
 
 const callback = (tcData, success) => {
-  debugger;
+ 
   try {
     if (success && tcData.eventStatus === 'useractioncomplete') {
-
+ debugger;
       const consent_purposes = [{
 
         _id: '1',
@@ -777,6 +777,7 @@ const callback = (tcData, success) => {
       ];
 
 __tcfapi('getTCData', 2, async function (tcData, success) {
+   debugger;
   if (!success || tcData.eventStatus !== 'useractioncomplete') {
     console.log('Failed to retrieve consent data. Success flag is false.');
     return;
