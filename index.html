@@ -906,33 +906,44 @@ async function handleDeleteConsent(payload) {
   }
 }
 
+      
+      async function processPageViewTracking() {
+        let userObjFlag = localStorage.getItem("userObject");
+        let pageObjFlag = localStorage.getItem("pageObject");
 
-async function processPageViewTracking() {
-  const userObjFlag = localStorage.getItem("userObject");
-  const pageObjFlag = localStorage.getItem("pageObject");
+        if (userObjFlag) {
+          userObj = JSON.parse(CryptoJS.AES.decrypt(userObjFlag, secretKey).toString(CryptoJS.enc.Utf8));
+          //JSON.parse(localStorage.getItem("userObject"))
+        }
+        else {
+          await getUserInfo();
+        }
+        if (pageObjFlag) {
+          pageObj = JSON.parse(CryptoJS.AES.decrypt(pageObjFlag, secretKey).toString(CryptoJS.enc.Utf8));
+          //JSON.parse(localStorage.getItem("pageObject"))
+        }
+        else {
+          await getPageInfo();
+        }
 
-  userObj = userObjFlag ? JSON.parse(CryptoJS.AES.decrypt(userObjFlag, secretKey).toString(CryptoJS.enc.Utf8)) : await getUserInfo();
-  pageObj = pageObjFlag ? JSON.parse(CryptoJS.AES.decrypt(pageObjFlag, secretKey).toString(CryptoJS.enc.Utf8)) : await getPageInfo();
-
-  if (getCookie('firstTimeUser') === 'true' && automaticTracking) {
-    try {
-         debugger;
-      const eventData = await createEventData("Page View", "page");
-      const firstPageName = eventData.pageInfo.pageName;
-      setPersistentCookie('firstPage', firstPageName, 365);
-
-      const encryptedPageObject = CryptoJS.AES.encrypt(JSON.stringify(eventData.pageInfo), secretKey).toString();
-      localStorage.setItem("pageObject", encryptedPageObject);
-
-      eventData.sessionInfo.firstPage = firstPageName;
-      await sendEventToAPI(eventData);
-    } catch (error) {
-      console.log("Error tracking page view:", error);
-    }
-  }
-}
-
-
+        if (getCookie('firstTimeUser') === 'true' && automaticTracking) {
+          try {
+             if (consentTrack) {
+                 await getPageInfo();
+                  var eventData = await createEventData("Page View", "page");                
+                  let firstPageName = eventData.pageInfo.pageName;
+                  setPersistentCookie('firstPage', firstPageName, 365);
+                  pageObj = eventData.pageInfo;
+                  eventData.sessionInfo.firstPage = firstPageName;               
+                  const encryptedPageObject = CryptoJS.AES.encrypt(JSON.stringify(eventData.pageInfo), secretKey).toString();
+                  localStorage.setItem("pageObject", encryptedPageObject);
+                  await sendEventToAPI(eventData);
+             }
+          } catch (error) {
+            console.log("Error tracking page view:", error);
+          }
+        }
+      }
 
 
     }
