@@ -686,7 +686,7 @@ async function consentPayload(allConsented, allConsentsGiven, cmpId, gdprApplies
       }
       if (!rdUserID) {
         let referenceDomainUserId = getQueryParam('uid');
-        if (referenceDomainUserId) {
+        if (referenceDomainUserId && crossDomainFlag) {
           rdUserID = referenceDomainUserId;
           setPersistentCookie('rdUserId', referenceDomainUserId, 365);
         }
