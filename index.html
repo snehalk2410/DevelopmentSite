@@ -935,10 +935,16 @@ const callback = (tcData, success) => {
           });
 
           // Generated the vendor list from Vendor API 
+          const limitedVendorConsents = Object.fromEntries(
+  Object.entries(tcData.vendor.consents).slice(0, 10)
+);
+          console.log(" limitedVendorConsents " , limitedVendorConsents );
+        
           var vendorPurposeConsents = tcData.vendor.consents;
           var vendorData = await getVendorList(vendorPurposeConsents); /// result from this function is the new vendor consent array this needs to be passed to consentPayload function
           // Generate the consented purposes payload, marking true or false based on matching with consent_purposes
-
+  console.log(" vendorPurposeConsents " , vendorPurposeConsents);
+           console.log(" vendorData " , vendorData);
           consent_purposes.forEach(function (purpose) {
             // Check if the user has consented to each purpose based on the TCData
             const purposeConsent = tcData.purpose.consents[purpose._id] || false;
