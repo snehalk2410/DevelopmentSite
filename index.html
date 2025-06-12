@@ -907,11 +907,10 @@ async function handleDeleteConsent(payload) {
     cookieStore.delete("rdUserId");
   }
 }      
-      async function processPageViewTracking() {
-        debugger;
+  async function processPageViewTracking() {
+    debugger;
         let userObjFlag = localStorage.getItem("userObject");
-        let pageObjFlag = localStorage.getItem("pageObject");
-
+        let pageObjFlag = localStorage.getItem("pageObject");       
         if (userObjFlag) {
           userObj = JSON.parse(CryptoJS.AES.decrypt(userObjFlag, secretKey).toString(CryptoJS.enc.Utf8));
           //JSON.parse(localStorage.getItem("userObject"))
@@ -926,7 +925,8 @@ async function handleDeleteConsent(payload) {
         else {
           await getPageInfo();
         }
-
+      debugger;
+            consentTrack = getCookie('consentTrack');
         if (getCookie('firstTimeUser') === 'true' && automaticTracking) {
           try {
              if (consentTrack) {
@@ -945,6 +945,7 @@ async function handleDeleteConsent(payload) {
           }
         }
       }
+
 
 
     }
