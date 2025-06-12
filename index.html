@@ -904,10 +904,9 @@ async function handleDeleteConsent(payload) {
   if (checkCookie('rdUserId')) {
     cookieStore.delete("rdUserId");
   }
-}
-
-      
+}      
       async function processPageViewTracking() {
+        debugger;
         let userObjFlag = localStorage.getItem("userObject");
         let pageObjFlag = localStorage.getItem("pageObject");
 
