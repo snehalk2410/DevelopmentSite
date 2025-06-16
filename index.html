@@ -849,17 +849,17 @@ function getAllConsentedPurposes(tcData) {
 }
 
 function determineEventName(consentTrack, allConsentsGiven) {
-  if ((consentTrack === null || consentTrack === 'false') && allConsentsGiven && !deleteProfile) {
-    return 'setConsent';
-  }
-  if ((consentTrack === 'true' && allConsentsGiven) || (!allConsentsGiven && !deleteProfile)) {
-    return 'updateConsent';
-  }
-  if (consentTrack === 'true' && !allConsentsGiven && deleteProfile) {
-    return 'deleteProfile';
-  }
-  return null;
-}
+        if ((consentTrack === null && allConsentsGiven === true) || (consentTrack === 'false' && allConsentsGiven === true && deleteProfile === false)) {
+          return 'setConsent';
+        }
+        if ((consentTrack === 'true' && allConsentsGiven === true) || (allConsentsGiven === false && deleteProfile === false)) {
+          return 'updateConsent';
+        }
+        if (consentTrack === 'true' && allConsentsGiven === false && deleteProfile === true) {
+          return 'deleteProfile';
+        }
+        return null;
+      }
 
      async function handleConsentLogic(consentTrackflag, allConsentsGiven, userConsentedPurposes, payload) {
        debugger;
