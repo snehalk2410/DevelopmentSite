@@ -924,10 +924,11 @@ const callback = (tcData, success) => {
             "sessionStartTime", "hitCount", "firstTimeUser", "firstPage"
           ].forEach(param => {(cookieStore.delete(param))});
           ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content']
-            .forEach(param => {(cookieStore.delete(param))});
+            .forEach(param => {(cookieStore.delete(param))});            
           if (checkCookie('rdUserId')) {
             cookieStore.delete("rdUserId");
           }
+          consentTrack = false;
         } catch (error) {
           console.log("Error : ", error);
         }
