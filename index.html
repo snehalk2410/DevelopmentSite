@@ -880,6 +880,7 @@ const callback = (tcData, success) => {
       }
 
       async function handleConsentLogic(consentTrackflag, allConsentsGiven, userConsentedPurposes, payload) {
+       debugger
         try {
           const eventCondition = {
             set: ((consentTrackflag === null && allConsentsGiven === true) || (consentTrackflag === 'false' && allConsentsGiven === true && deleteProfile === false)),
@@ -913,7 +914,7 @@ const callback = (tcData, success) => {
       async function handleDeleteConsent(payload) {
         try {
           if (payload.userId) await sendEventToAPI(payload);
-
+//  .forEach(param => {(cookieStore.delete(param))});
           localStorage.clear();
           sessionStorage.clear();
           [
