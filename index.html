@@ -681,9 +681,11 @@ async function consentPayload(allConsented, allConsentsGiven, cmpId, gdprApplies
     console.log('consentObj : ' + JSON.stringify(consentObj));
     const encryptedConsentObject = CryptoJS.AES.encrypt(JSON.stringify(consentObj), secretKey).toString();
     localStorage.setItem("consentObject", encryptedConsentObject);
+     if(userID){
      let prevHitCount = parseInt(getCookie('hitCount')) || 0;
     hitCount = prevHitCount + 1;
     setSessionCookie('hitCount', hitCount);
+     }
     let cmpEventData = {
       eventName: eventName,
       eventTimestamp: new Date().toISOString(),
