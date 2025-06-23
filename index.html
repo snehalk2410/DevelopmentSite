@@ -920,9 +920,9 @@ const callback = (tcData, success) => {
           [
             "consentTrack", "userConsentedPurposes", "userID", "visitId",
             "sessionStartTime", "hitCount", "firstTimeUser", "firstPage"
-          ].forEach(cookieStore.delete);
+          ].forEach(param => {(cookieStore.delete(param))});
           ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content']
-            .forEach(cookieStore.delete);
+            .forEach(param => {(cookieStore.delete(param))});
           if (checkCookie('rdUserId')) {
             cookieStore.delete("rdUserId");
           }
