@@ -882,8 +882,7 @@ const callback = (tcData, success) => {
       }
 
       async function handleConsentLogic(consentTrackflag, allConsentsGiven, userConsentedPurposes, payload) {
-       debugger
-        try {
+             try {
           const eventCondition = {
             set: ((consentTrackflag === null && allConsentsGiven === true) || (consentTrackflag === 'false' && allConsentsGiven === true && deleteProfile === false)),
             update: ((consentTrackflag === 'true' && allConsentsGiven === true) || (allConsentsGiven === false && deleteProfile === false)),
