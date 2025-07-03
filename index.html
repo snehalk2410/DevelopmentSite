@@ -1332,7 +1332,7 @@ if (automaticTracking === true) {
       console.log("Error : ", error);
     }
   }
-
+window.trackPageView=trackPageView;
   // Object to keep track of scroll percentages
   let scrollTracked = { 25: false, 50: false, 75: false, 100: false };
 
@@ -1390,7 +1390,7 @@ if (automaticTracking === true) {
       console.log("Error : ", error);
     }
   }
-
+window.sendScrollEvent=sendScrollEvent
   // Function to track button clicks
   async function trackButtonClick(event) {
     try {
@@ -1408,7 +1408,7 @@ if (automaticTracking === true) {
       console.log("Error : ", error);
     }
   }
-
+window.trackButtonClick=trackButtonClick
   // function trackIframeVideos() {
   //   try {
   //     console.log(" trackIframeVideos consentTrack ", consentTrack)
