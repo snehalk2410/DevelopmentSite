@@ -1213,6 +1213,7 @@ async function createEventData(eventname, eventCategory, additionalData = {}) {
 
 async function sendEventToAPI(eventData) {
   console.log("sendEventToAPI 1")
+  debugger;
   try {
     if (!eventData.cmpId) {
       const required = {
