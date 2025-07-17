@@ -628,7 +628,8 @@ async function consentPayload(allConsented, allConsentsGiven, cmpId, gdprApplies
     visitId = getCookie('visitId');
     sessionStartTime = getCookie('sessionStartTime');
     rdUserID = getCookie('rdUserId');
-     const currenttime = getAccurateTimestamp();
+     const currenttime = await getAccurateTimestamp();
+    console.log(" consentPayload currenttime ", currenttime)
     if (allConsentsGiven) {
       if (!userID) {
         // If no userID exists in the cookies, generate a new one
@@ -1028,7 +1029,7 @@ waitForTCFAPI(() => {
 async function createEventData(eventname, eventCategory, additionalData = {}) {
   try {
     visitId = getCookie('visitId');
-     const currenttime = getAccurateTimestamp();
+     const currenttime = await getAccurateTimestamp();
     if (!visitId) {
       visitId = crypto.randomUUID();
       sessionStartTime = new Date(currenttime).toISOString();
