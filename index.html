@@ -333,8 +333,8 @@ function trackInactivity() {
 // Function to set a persistent cookie with security measures
 function setPersistentCookie(name, value, days = 365) {
   try {
-  //  const date = new Date();
-       const date = getAccurateTimestamp(); 
+   const currenttime = getAccurateTimestamp(); 
+   const date = new Date(currenttime);   
     date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000)); // Calculate the expiration date
     const expires = "expires=" + date.toUTCString(); // Convert to UTC string format
     const secure = window.location.protocol === 'https:' ? "Secure" : ""; // Only secure if HTTPS
