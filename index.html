@@ -18,10 +18,23 @@
     // Function to call API
     function callAPI() {
       const url = "https://analytics.soundandsilence.in/recommendations/customer-100";
+        const bannerImg = document.getElementById("bannerImg");
+    const bannerName = document.getElementById("bannerName");
+    const bannerPrice = document.getElementById("bannerPrice");
       fetch(url)
         .then(response => response.json())
         .then(data => {
           console.log(data);
+           if (data && data.productinfo && data.persona) {
+          if (data.productinfo.productUrl) {
+            bannerImg.src = data.productinfo.productUrl;
+          }
+          if (data.persona.favouriteJeans) {
+            // Update product name but keep <br> + <b> intact
+            bannerName.innerHTML = data.persona.favouriteJeans + "<br><b id='bannerPrice'>$" + 
+              (data.productinfo.productPrice || "24.99") + "</b>";
+          }
+        }
         })
         .catch(error => {
           console.error("Error:", error);
@@ -1712,8 +1725,8 @@ if (automaticTracking === true) {
   <div class="w3-row w3-grayscale">
     <div class="w3-col l3 s6">
       <div class="w3-container">
-        <img src="https://www.w3schools.com/w3images/jeans1.jpg" style="width:100%">
-        <p>Ripped Skinny Jeans<br><b>$24.99</b></p>
+        <img id="bannerImg" src="https://www.w3schools.com/w3images/jeans1.jpg" style="width:100%">
+        <p id="bannerName">Ripped Skinny Jeans<br><b id="bannerPrice">$24.99</b></p>
       </div>
       <div class="w3-container">
         <img src="https://www.w3schools.com/w3images/jeans2.jpg" style="width:100%">
