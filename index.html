@@ -16,9 +16,10 @@
     <script src="https://assets.adobedtm.com/e72b4113c11a/5ebd3516dcb5/launch-819a7f37f5dd-development.min.js" async></script>
    <script>
     // Function to call API
+     let userIDcookie = getCookie('userID');
     function callAPI() {
-      const url = "https://analytics.soundandsilence.in/recommendations/customer-100";
-        const bannerImg = document.getElementById("bannerImg");
+    const url = "https://analytics.soundandsilence.in/recommendations/customer-100";
+    const bannerImg = document.getElementById("bannerImg");
     const bannerName = document.getElementById("bannerName");
     const bannerPrice = document.getElementById("bannerPrice");
       fetch(url)
