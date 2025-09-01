@@ -16,7 +16,22 @@
     <script src="https://assets.adobedtm.com/e72b4113c11a/5ebd3516dcb5/launch-819a7f37f5dd-development.min.js" async></script>
    <script>
     // Function to call API
+     function getCookie(name) {
+  try {
+    const cookies = document.cookie.split(';');
+    for (let cookie of cookies) {
+      const [key, value] = cookie.split('=');
+      if (key.trim() === name.trim()) {
+        return decodeURIComponent(value);
+      }
+    }
+    return null; // Return null if the cookie is not found
+  } catch (error) {
+    console.log("Error : ", error);
+  }
+}
      let userIDcookie = getCookie('userID');
+     console.log("userIDcookie ", userIDcookie);
     function callAPI() {
     const url = "https://analytics.soundandsilence.in/recommendations/customer-100";
     const bannerImg = document.getElementById("bannerImg");
