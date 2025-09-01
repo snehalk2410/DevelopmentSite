@@ -17,9 +17,7 @@
    <script>
     // Function to call API
        
-    const bannerImg = document.getElementById("bannerImg");
-    const bannerName = document.getElementById("bannerName");
-    const bannerPrice = document.getElementById("bannerPrice");
+   
      function getCookie(name) {
   try {
     const cookies = document.cookie.split(';');
@@ -34,15 +32,20 @@
     console.log("Error : ", error);
   }
 }
-     let userIDcookie = getCookie('userID');
+   
+    function callAPI() { 
+        let userIDcookie = getCookie('userID');
      console.log("userIDcookie ", userIDcookie);
-    //  if (!userIDcookie) {
-      //  console.warn("No useridcookie found, showing default banner");
-       // return; // keep default values
-      //}
-    function callAPI() {  
+      if (!userIDcookie) {
+       console.warn("No useridcookie found, showing default banner");
+        return; // keep default values
+      }
       const url = "https://analytics.soundandsilence.in/recommendations/"+userIDcookie;
+      
       console.log("api url ", url);
+       const bannerImg = document.getElementById("bannerImg");
+    const bannerName = document.getElementById("bannerName");
+    const bannerPrice = document.getElementById("bannerPrice");
       fetch(url)
         .then(response => response.json())
         .then(data => {
