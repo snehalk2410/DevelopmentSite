@@ -46,7 +46,7 @@
       fetch(url)
         .then(response => response.json())
         .then(data => {
-          console.log(data);
+          console.log("api data ", data);
            if (data && data.productinfo && data.persona) {
           if (data.productinfo.productUrl) {
             bannerImg.src = data.productinfo.productUrl;
