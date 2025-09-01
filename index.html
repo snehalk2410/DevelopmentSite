@@ -36,10 +36,10 @@
 }
      let userIDcookie = getCookie('userID');
      console.log("userIDcookie ", userIDcookie);
-      if (!userIDcookie) {
-        console.warn("No useridcookie found, showing default banner");
-        return; // keep default values
-      }
+    //  if (!userIDcookie) {
+      //  console.warn("No useridcookie found, showing default banner");
+       // return; // keep default values
+      //}
     function callAPI() {  
       const url = "https://analytics.soundandsilence.in/recommendations/${userIDcookie}";
       console.log("api url ", url);
